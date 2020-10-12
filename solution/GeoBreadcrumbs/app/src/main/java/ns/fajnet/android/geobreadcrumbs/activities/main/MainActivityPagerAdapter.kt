@@ -5,21 +5,27 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import ns.fajnet.android.geobreadcrumbs.R
+import ns.fajnet.android.geobreadcrumbs.activities.main.live_gps.LiveGPSFragment
 
 private val TAB_TITLES = arrayOf(
-    R.string.tab_text_1,
-    R.string.tab_text_2,
-    R.string.tab_text_3
+    R.string.tab_text_live_gps
 )
 
 class MainActivityPagerAdapter(private val context: Context, fm: FragmentManager) :
     FragmentPagerAdapter(fm) {
 
+    // members ################################################
+    private var fragments = arrayOf<Fragment>()
+
+    // constructors / init ####################################
+    init {
+        val liveGpsFragment = LiveGPSFragment.newInstance()
+        fragments = arrayOf(liveGpsFragment)
+    }
+
+    // overrides ##############################################
     override fun getItem(position: Int): Fragment {
-        // getItem is called to instantiate the fragment for the given page.
-        // Return a PlaceholderFragment (defined as a static inner class below).
-        // return PlaceholderFragment.newInstance(position + 1)
-        return Fragment()
+        return fragments[position]
     }
 
     override fun getPageTitle(position: Int): CharSequence? {
@@ -27,6 +33,6 @@ class MainActivityPagerAdapter(private val context: Context, fm: FragmentManager
     }
 
     override fun getCount(): Int {
-        return 3
+        return 1
     }
 }

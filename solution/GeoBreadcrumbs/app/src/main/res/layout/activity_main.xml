@@ -16,14 +16,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="?attr/colorPrimary"
-            app:titleTextColor="@color/toolbar_text"
+            app:titleTextColor="@color/white_text"
             app:title="@string/app_name"/>
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary" />
+            android:background="?attr/colorPrimary"
+            app:tabTextColor="@color/gray_text"
+            app:tabSelectedTextColor="@color/white_text"/>
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.viewpager.widget.ViewPager
