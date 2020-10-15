@@ -8,4 +8,15 @@
 
     <dimen name="default_container_margin">16dp</dimen>
     <dimen name="default_component_margin">8dp</dimen>
+
+    <!-- typography guidelines https://learnui.design/blog/android-material-design-font-size-guidelines.html -->
+    <dimen name="typography_title">20sp</dimen>
+    <dimen name="typography_body">14sp</dimen>
+    <dimen name="typography_list_title_add_bold_style">14sp</dimen>
+    <dimen name="typography_list_item">16sp</dimen>
+    <dimen name="typography_secondary_captions_add_lighter_color">14sp</dimen>
+    <dimen name="typography_buttons_tabs_add_bold_style">14sp</dimen>
+    <dimen name="typography_input">16sp</dimen>
+    <dimen name="typography_input_error">12sp</dimen>
+
 </resources>

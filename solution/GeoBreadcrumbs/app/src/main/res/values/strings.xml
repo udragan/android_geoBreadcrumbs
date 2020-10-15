@@ -1,7 +1,13 @@
 <resources>
     <string name="app_name">Geo Breadcrumbs</string>
-    <string name="title_activity_for_testing">ForTestingActivity</string>
-    <string name="tab_text_live_gps">Live GPS</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="live_gps_tab_text">Live GPS</string>
+    <string name="live_gps_longitude_hint">longitude</string>
+    <string name="live_gps_latitude_hint">latitude</string>
+    <string name="live_gps_altitude_hint">altitude</string>
+    <string name="live_gps_time_hint">Time</string>
+    <string name="live_gps_accuracy_hint">Accuracy</string>
+    <string name="live_gps_speed_hint">Speed</string>
+    <string name="live_gps_bearing_hint">Bearing</string>
+
 </resources>
