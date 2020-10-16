@@ -10,4 +10,6 @@
     <string name="live_gps_speed_hint">Speed</string>
     <string name="live_gps_bearing_hint">Bearing</string>
 
+    <string name="main_menu_action_settings">Settings</string>
+
 </resources>
