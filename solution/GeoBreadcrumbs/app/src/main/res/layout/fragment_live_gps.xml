@@ -30,6 +30,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@android:color/transparent"
                     android:enabled="false"
                     android:clickable="false"
                     android:textIsSelectable="false"
@@ -47,6 +48,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@android:color/transparent"
                     android:enabled="false"
                     android:clickable="false"
                     android:textIsSelectable="false"
@@ -66,6 +68,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@android:color/transparent"
                     android:enabled="false"
                     android:clickable="false"
                     android:textIsSelectable="false"
@@ -73,7 +76,7 @@
             </com.google.android.material.textfield.TextInputLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
-    
+
     <androidx.cardview.widget.CardView
         android:id="@+id/time_card"
         android:layout_width="0dp"
@@ -83,7 +86,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/coordinates_card"
         app:layout_constraintWidth_percent="0.45">
-        
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/time_layout"
             android:layout_width="match_parent"
@@ -93,6 +96,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@android:color/transparent"
                 android:enabled="false"
                 android:clickable="false"
                 android:textIsSelectable="false"
@@ -119,6 +123,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@android:color/transparent"
                 android:enabled="false"
                 android:clickable="false"
                 android:textIsSelectable="false"
@@ -145,6 +150,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@android:color/transparent"
                 android:enabled="false"
                 android:clickable="false"
                 android:textIsSelectable="false"
@@ -171,6 +177,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@android:color/transparent"
                 android:enabled="false"
                 android:clickable="false"
                 android:textIsSelectable="false"

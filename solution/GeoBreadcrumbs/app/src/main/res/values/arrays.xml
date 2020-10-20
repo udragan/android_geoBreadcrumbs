@@ -1,0 +1,25 @@
+<resources>
+    <!-- Reply Preference  TODO: remove -->
+<!--    <string-array name="reply_entries">-->
+<!--        <item>Reply</item>-->
+<!--        <item>Reply to all</item>-->
+<!--    </string-array>-->
+
+<!--    <string-array name="reply_values">-->
+<!--        <item>reply</item>-->
+<!--        <item>reply_all</item>-->
+<!--    </string-array>-->
+
+    <!-- Preferences -->
+    <!-- Coordinates display -->
+    <string-array name="coordinates_display_entries">
+        <item>Decimal</item>
+        <item>Degrees, minutes, seconds</item>
+    </string-array>
+
+    <string-array name="coordinates_display_values">
+        <item>decimal</item>
+        <item>degrees_minutes_seconds</item>
+    </string-array>
+
+</resources>

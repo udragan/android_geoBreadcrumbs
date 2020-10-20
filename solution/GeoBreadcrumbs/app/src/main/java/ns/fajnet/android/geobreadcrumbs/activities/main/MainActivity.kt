@@ -1,24 +1,25 @@
 package ns.fajnet.android.geobreadcrumbs.activities.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import ns.fajnet.android.geobreadcrumbs.R
+import ns.fajnet.android.geobreadcrumbs.activities.settings.SettingsActivity
 
 class MainActivity : AppCompatActivity() {
 
-    // members #####################################################################################
+    // members -------------------------------------------------------------------------------------
 
     private lateinit var toolbar: Toolbar
     private lateinit var tabs: TabLayout
     private lateinit var viewPager: ViewPager
 
-    // overrides ###################################################################################
+    // overrides -----------------------------------------------------------------------------------
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,23 +30,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.main_activity, menu)
+        menuInflater.inflate(R.menu.menu_main_activity, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val id = item.itemId
-
-        if (id == R.id.action_settings) {
-//            val intent = Intent(this, SettingsActivity::class.java)
-//            startActivity(intent)
-            Toast.makeText(this, "settings clicked", Toast.LENGTH_SHORT).show()
-            return true
+        return when (item.itemId) {
+            R.id.action_settings -> {
+                val intent = Intent(this, SettingsActivity::class.java)
+                startActivity(intent)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
-        return super.onOptionsItemSelected(item)
     }
 
-    // private methods #############################################################################
+    // private methods -----------------------------------------------------------------------------
 
     private fun findViews() {
         toolbar = findViewById(R.id.toolbar)
