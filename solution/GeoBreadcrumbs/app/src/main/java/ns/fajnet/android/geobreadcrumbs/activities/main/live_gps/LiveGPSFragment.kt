@@ -18,6 +18,7 @@ import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.common.CoordinateDisplayTransformation
 import ns.fajnet.android.geobreadcrumbs.common.Orientation
 import ns.fajnet.android.geobreadcrumbs.common.Utils
+import java.text.SimpleDateFormat
 
 /**
  * A simple [Fragment] subclass.
@@ -34,7 +35,7 @@ class LiveGPSFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeLi
     private lateinit var longitudeLayout: TextInputLayout
     private lateinit var latitudeLayout: TextInputLayout
     private lateinit var altitudeLayout: TextInputLayout
-    private lateinit var elapsedRealTimeNanosLayout: TextInputLayout
+    private lateinit var locationFixTimeLayout: TextInputLayout
     private lateinit var accuracyLayout: TextInputLayout
     private lateinit var speedLayout: TextInputLayout
     private lateinit var bearingLayout: TextInputLayout
@@ -105,7 +106,7 @@ class LiveGPSFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeLi
         longitudeLayout = fragmentView.findViewById(R.id.longitude_layout)
         latitudeLayout = fragmentView.findViewById(R.id.latitude_layout)
         altitudeLayout = fragmentView.findViewById(R.id.altitude_layout)
-        elapsedRealTimeNanosLayout = fragmentView.findViewById(R.id.time_layout)
+        locationFixTimeLayout = fragmentView.findViewById(R.id.location_fix_time_layout)
         accuracyLayout = fragmentView.findViewById(R.id.accuracy_layout)
         speedLayout = fragmentView.findViewById(R.id.speed_layout)
         bearingLayout = fragmentView.findViewById(R.id.bearing_layout)
@@ -147,6 +148,7 @@ class LiveGPSFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeLi
             object : LocationCallback() {
                 override fun onLocationResult(locationResult: LocationResult) {
                     super.onLocationResult(locationResult)
+                    val simpleDateFormat = SimpleDateFormat.getTimeInstance()
 
                     for (location in locationResult.locations) {
                         longitudeLayout.editText!!.setText(
@@ -162,7 +164,11 @@ class LiveGPSFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeLi
                             )
                         )
                         altitudeLayout.editText!!.setText(location.altitude.toString())
-                        elapsedRealTimeNanosLayout.editText!!.setText(location.elapsedRealtimeNanos.toString())
+                        locationFixTimeLayout.editText!!.setText(
+                            simpleDateFormat.format(
+                                location.time
+                            )
+                        )
                         accuracyLayout.editText!!.setText(location.accuracy.toString())
                         speedLayout.editText!!.setText(location.speed.toString())
                         bearingLayout.editText!!.setText(location.bearing.toString())

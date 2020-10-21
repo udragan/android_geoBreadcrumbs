@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,8 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/default_container_margin"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -31,8 +30,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@android:color/transparent"
-                    android:enabled="false"
                     android:clickable="false"
+                    android:enabled="false"
                     android:textIsSelectable="false"
                     android:textSize="@dimen/typography_title" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -49,8 +48,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@android:color/transparent"
-                    android:enabled="false"
                     android:clickable="false"
+                    android:enabled="false"
                     android:textIsSelectable="false"
                     android:textSize="@dimen/typography_title" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -61,16 +60,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/default_component_margin"
                 android:hint="@string/live_gps_altitude_hint"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/latitude_layout">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@android:color/transparent"
-                    android:enabled="false"
                     android:clickable="false"
+                    android:enabled="false"
                     android:textIsSelectable="false"
                     android:textSize="@dimen/typography_title" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -88,17 +87,17 @@
         app:layout_constraintWidth_percent="0.45">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/time_layout"
+            android:id="@+id/location_fix_time_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/live_gps_time_hint">
+            android:hint="@string/live_gps_location_fix_time_hint">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@android:color/transparent"
-                android:enabled="false"
                 android:clickable="false"
+                android:enabled="false"
                 android:textIsSelectable="false"
                 android:textSize="@dimen/typography_title" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -108,8 +107,8 @@
         android:id="@+id/accuracy_card"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/default_container_margin"
         android:layout_marginTop="@dimen/default_component_margin"
+        android:layout_marginEnd="@dimen/default_container_margin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/coordinates_card"
         app:layout_constraintWidth_percent="0.45">
@@ -124,10 +123,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@android:color/transparent"
-                android:enabled="false"
                 android:clickable="false"
+                android:enabled="false"
                 android:textIsSelectable="false"
-                android:textSize="@dimen/typography_title"/>
+                android:textSize="@dimen/typography_title" />
         </com.google.android.material.textfield.TextInputLayout>
     </androidx.cardview.widget.CardView>
 
@@ -151,8 +150,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@android:color/transparent"
-                android:enabled="false"
                 android:clickable="false"
+                android:enabled="false"
                 android:textIsSelectable="false"
                 android:textSize="@dimen/typography_title" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -162,8 +161,8 @@
         android:id="@+id/bearing_card"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/default_container_margin"
         android:layout_marginTop="@dimen/default_component_margin"
+        android:layout_marginEnd="@dimen/default_container_margin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/accuracy_card"
         app:layout_constraintWidth_percent="0.45">
@@ -178,13 +177,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@android:color/transparent"
-                android:enabled="false"
                 android:clickable="false"
+                android:enabled="false"
                 android:textIsSelectable="false"
                 android:textSize="@dimen/typography_title" />
         </com.google.android.material.textfield.TextInputLayout>
     </androidx.cardview.widget.CardView>
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
