@@ -139,8 +139,8 @@ class LiveGPSFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeLi
     private fun setUpLocationListener() {
         val fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(this.requireContext())
-        val locationRequest = LocationRequest().setInterval(2000)
-            .setFastestInterval(2000)
+        val locationRequest = LocationRequest().setInterval(5000)
+            .setFastestInterval(5000)
             .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
 
         fusedLocationProviderClient.requestLocationUpdates(

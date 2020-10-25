@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.main.current_track.CurrentTrackFragment">
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/start_track"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="start track"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/stop_track"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="stop track"
+        app:layout_constraintTop_toBottomOf="@id/start_track" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

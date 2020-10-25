@@ -20,6 +20,10 @@
     <string name="settings_preference_coordinates_display_title">Coordinates display</string>
     <string name="settings_preference_coordinates_display_key">coordinate_display</string>
 
+    <string name="geo_track_service_description">GEO Breadcrumbs tracking service</string>
+    <string name="geo_track_service_notification_title">GEO Breadcrumbs tracking service</string>
+    <string name="geo_track_service_notification_text">Tracking in progress..</string>
+
 
     <!--    &lt;!&ndash; Preference Titles &ndash;&gt;-->
     <!--    <string name="messages_header">Messages</string>-->
