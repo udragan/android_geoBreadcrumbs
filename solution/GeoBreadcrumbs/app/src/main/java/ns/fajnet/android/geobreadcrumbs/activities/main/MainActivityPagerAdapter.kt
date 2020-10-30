@@ -14,7 +14,7 @@ private val TAB_TITLES = arrayOf(
 )
 
 class MainActivityPagerAdapter(private val context: Context, fm: FragmentManager) :
-    FragmentPagerAdapter(fm) {
+    FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     // members -------------------------------------------------------------------------------------
 

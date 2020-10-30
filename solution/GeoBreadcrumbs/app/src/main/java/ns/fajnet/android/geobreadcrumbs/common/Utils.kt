@@ -1,41 +1,69 @@
 package ns.fajnet.android.geobreadcrumbs.common
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.LocationManager
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 
 object Utils {
-    fun requestLocationPermission(activity: Activity,
-                                  requestId: Int) {
-        val permissionsToRequest = if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.Q) {
-            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
-        } else {
-            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-        }
+//    fun requestLocationPermission(
+//        activity: Activity,
+//        requestId: Int
+//    ) {
+//        val permissionsToRequest =
+//            if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.Q) {
+//                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
+//            } else {
+//                arrayOf(
+//                    Manifest.permission.ACCESS_FINE_LOCATION,
+//                    Manifest.permission.ACCESS_BACKGROUND_LOCATION
+//                )
+//            }
+//
+//        ActivityCompat.requestPermissions(
+//            activity,
+//            permissionsToRequest,
+//            requestId
+//        )
+//    }
 
-        ActivityCompat.requestPermissions(activity,
+    fun requestLocationPermission(
+        fragment: Fragment,
+        requestId: Int
+    ) {
+        val permissionsToRequest =
+            if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.Q) {
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
+            } else {
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                )
+            }
+
+        fragment.requestPermissions(
             permissionsToRequest,
             requestId
         )
     }
 
     fun isPermissionGranted(context: Context): Boolean {
-        val permissionStatus = ContextCompat.checkSelfPermission(context,
-            Manifest.permission.ACCESS_FINE_LOCATION)
+        val permissionStatus = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
 
         return permissionStatus == PackageManager.PERMISSION_GRANTED
     }
 
     fun isLocationEnabled(context: Context): Boolean {
-        val locationManager: LocationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val locationManager: LocationManager =
+            context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
-               locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
     }
 
     /**
