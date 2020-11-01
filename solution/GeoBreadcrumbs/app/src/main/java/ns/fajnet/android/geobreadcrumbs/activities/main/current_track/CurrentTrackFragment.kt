@@ -61,14 +61,14 @@ class CurrentTrackFragment : Fragment() {
     }
 
     private fun startTrackClick() {
-        Log.d(Constants.TAG_GEO_TRACK_SERVICE, "start track clicked")
+        Log.d(Constants.TAG_CURRENT_TRACK_FRAGMENT, "start track clicked")
 
         val intent = Intent(requireContext(), GeoTrackService::class.java)
         ContextCompat.startForegroundService(requireContext(), intent)
     }
 
     private fun stopTrackClick() {
-        Log.d(Constants.TAG_GEO_TRACK_SERVICE, "stop track clicked")
+        Log.d(Constants.TAG_CURRENT_TRACK_FRAGMENT, "stop track clicked")
 
         val intent = Intent(requireContext(), GeoTrackService::class.java)
         requireActivity().stopService(intent)
