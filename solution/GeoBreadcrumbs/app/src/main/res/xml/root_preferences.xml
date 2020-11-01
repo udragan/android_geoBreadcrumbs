@@ -11,11 +11,26 @@
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="@string/settings_preference_category_tracking_precision_title">
+        <ListPreference
+            app:defaultValue="2000"
+            app:entries="@array/precision_interval_entries"
+            app:entryValues="@array/precision_interval_values"
+            app:key="@string/settings_preference_tracking_precision_interval_key"
+            app:title="@string/settings_preference_tracking_precision_interval_title"
+            app:useSimpleSummaryProvider="true" />
 
+        <ListPreference
+            app:defaultValue="1"
+            app:entries="@array/precision_distance_entries"
+            app:entryValues="@array/precision_distance_values"
+            app:key="@string/settings_preference_tracking_precision_distance_key"
+            app:title="@string/settings_preference_tracking_precision_distance_title"
+            app:useSimpleSummaryProvider="true" />
 
+    </PreferenceCategory>
 
-
-<!--    <PreferenceCategory app:title="@string/messages_header">-->
+    <!--    <PreferenceCategory app:title="@string/messages_header">-->
 
     <!--        <EditTextPreference-->
     <!--            app:key="signature"-->

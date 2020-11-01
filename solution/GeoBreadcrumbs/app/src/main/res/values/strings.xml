@@ -19,6 +19,11 @@
     <string name="settings_preference_category_coordinates_title">Coordinates</string>
     <string name="settings_preference_coordinates_display_title">Coordinates display</string>
     <string name="settings_preference_coordinates_display_key">coordinate_display</string>
+    <string name="settings_preference_category_tracking_precision_title">Tracking precision</string>
+    <string name="settings_preference_tracking_precision_interval_title">Interval</string>
+    <string name="settings_preference_tracking_precision_interval_key">interval</string>
+    <string name="settings_preference_tracking_precision_distance_title">Distance</string>
+    <string name="settings_preference_tracking_precision_distance_key">distance</string>
 
     <string name="geo_track_service_description">GEO Breadcrumbs tracking service</string>
     <string name="geo_track_service_notification_title">GEO Breadcrumbs tracking service</string>

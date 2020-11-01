@@ -8,6 +8,7 @@ import android.os.IBinder
 import android.os.Looper
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.preference.PreferenceManager
 import com.google.android.gms.location.*
 import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.activities.main.MainActivity
@@ -99,13 +100,8 @@ class GeoTrackService : Service() {
 
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(this)
-        // TODO: create locationRequest form parameters set in preferences (extract method)
-        val locationRequest = LocationRequest().setInterval(5000)
-            .setFastestInterval(5000)
-            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-
         fusedLocationProviderClient.requestLocationUpdates(
-            locationRequest,
+            generateLocationRequest(),
             locationCallback,
             Looper.myLooper()
         )
@@ -118,4 +114,33 @@ class GeoTrackService : Service() {
             fusedLocationProviderClient.removeLocationUpdates(locationCallback)
         }
     }
+
+    private fun generateLocationRequest(): LocationRequest {
+        val params = retrieveLocationSubscriptionParametersFromPreferences()
+
+        return LocationRequest().setInterval(params.interval)
+            .setFastestInterval(params.interval)
+            .setSmallestDisplacement(params.distance)
+            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+    }
+
+    private fun retrieveLocationSubscriptionParametersFromPreferences(): LocationSubscriptionParameters {
+        val precisionInterval = PreferenceManager.getDefaultSharedPreferences(this).getString(
+            getString(R.string.settings_preference_tracking_precision_interval_key),
+            resources.getStringArray(R.array.precision_interval_values)[1]
+        ) ?: resources.getStringArray(R.array.precision_interval_values)[1]
+        val precisionDistance = PreferenceManager.getDefaultSharedPreferences(this).getString(
+            getString(R.string.settings_preference_tracking_precision_distance_key),
+            resources.getStringArray(R.array.precision_distance_values)[0]
+        ) ?: resources.getStringArray(R.array.precision_distance_values)[0]
+
+        return LocationSubscriptionParameters(
+            precisionInterval.toLong(),
+            precisionDistance.toFloat()
+        )
+    }
 }
+
+// #################################################################################################
+
+private class LocationSubscriptionParameters(val interval: Long, val distance: Float)
