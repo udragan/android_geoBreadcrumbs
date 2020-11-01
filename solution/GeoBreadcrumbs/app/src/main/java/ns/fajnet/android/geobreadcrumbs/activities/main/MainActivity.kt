@@ -10,6 +10,7 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.activities.settings.SettingsActivity
+import ns.fajnet.android.geobreadcrumbs.services.GeoTrackService
 
 class MainActivity : AppCompatActivity() {
 
@@ -39,6 +40,12 @@ class MainActivity : AppCompatActivity() {
             R.id.action_settings -> {
                 val intent = Intent(this, SettingsActivity::class.java)
                 startActivity(intent)
+                true
+            }
+            R.id.action_exit -> {
+                val intent = Intent(this, GeoTrackService::class.java)
+                stopService(intent)
+                finishAndRemoveTask()
                 true
             }
             else -> super.onOptionsItemSelected(item)
