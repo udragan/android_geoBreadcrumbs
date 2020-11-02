@@ -201,7 +201,6 @@ class LiveGPSFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeLi
             LocationServices.getFusedLocationProviderClient(this.requireContext())
         val locationRequest = LocationRequest().setInterval(5000)
             .setFastestInterval(5000)
-            .setSmallestDisplacement(20f)
             .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
 
         fusedLocationProviderClient.requestLocationUpdates(

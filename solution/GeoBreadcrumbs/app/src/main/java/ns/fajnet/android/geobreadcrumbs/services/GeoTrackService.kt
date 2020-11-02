@@ -10,6 +10,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.preference.PreferenceManager
 import com.google.android.gms.location.*
+import kotlinx.coroutines.*
 import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.activities.main.MainActivity
 import ns.fajnet.android.geobreadcrumbs.common.Constants
@@ -19,6 +20,8 @@ class GeoTrackService : Service() {
 
     // members -------------------------------------------------------------------------------------
 
+    private lateinit var handleLocationUpdatesJob: Job
+    private lateinit var serviceScope: CoroutineScope
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
 
@@ -64,21 +67,31 @@ class GeoTrackService : Service() {
         Log.d(Constants.TAG_GEO_TRACK_SERVICE, "onDestroy")
 
         unsubscribeFromLocationUpdates()
-
-
+        serviceScope.cancel()
     }
 
     // private methods -----------------------------------------------------------------------------
 
     private fun initialize() {
+        handleLocationUpdatesJob = Job()
+        // CHECK: is Dispatchers.Main the correct one for this CoroutineScope??
+        serviceScope = CoroutineScope(Dispatchers.Main + handleLocationUpdatesJob)
+
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
-                super.onLocationResult(locationResult)
-                Log.d(Constants.TAG_LIVE_GPS_FRAGMENT, "locationCallbackTriggered")
+                Log.d(Constants.TAG_GEO_TRACK_SERVICE, "locationCallbackTriggered")
 
-                for (location in locationResult.locations) {
-                    Log.d(Constants.TAG_GEO_TRACK_SERVICE, "location received: $location")
-                    // TODO: persist data to current track
+                serviceScope.launch {
+                    withContext(Dispatchers.IO) {
+                        super.onLocationResult(locationResult)
+
+                        for (location in locationResult.locations) {
+                            Log.d(Constants.TAG_GEO_TRACK_SERVICE, "location received: $location")
+                            // TODO: persist data to current track
+                            delay(5000)
+                            Log.d(Constants.TAG_GEO_TRACK_SERVICE, "location persisted")
+                        }
+                    }
                 }
             }
         }
