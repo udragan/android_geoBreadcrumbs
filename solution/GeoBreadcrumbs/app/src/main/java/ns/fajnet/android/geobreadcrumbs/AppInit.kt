@@ -1,9 +1,10 @@
-package ns.fajnet.android.geobreadcrumbs.common
+package ns.fajnet.android.geobreadcrumbs
 
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
+import ns.fajnet.android.geobreadcrumbs.common.Constants
 
 /**
  * Initialize global data/service channels
