@@ -1,7 +1,6 @@
 package ns.fajnet.android.geobreadcrumbs.activities.main.live_gps
 
 import android.annotation.SuppressLint
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
@@ -9,28 +8,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.preference.PreferenceManager
+import androidx.lifecycle.HasDefaultViewModelProviderFactory
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
 import com.google.android.gms.location.*
 import com.google.android.material.textfield.TextInputLayout
 import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.common.Constants
-import ns.fajnet.android.geobreadcrumbs.common.CoordinateDisplayTransformation
-import ns.fajnet.android.geobreadcrumbs.common.Orientation
 import ns.fajnet.android.geobreadcrumbs.common.Utils
-import java.text.SimpleDateFormat
 
 /**
  * A simple [Fragment] subclass.
  * Use the [LiveGPSFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class LiveGPSFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeListener {
+class LiveGPSFragment : Fragment(), HasDefaultViewModelProviderFactory {
 
     // members -------------------------------------------------------------------------------------
 
+    private lateinit var viewModel: LiveGPSFragmentViewModel
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
-    private lateinit var coordinateDisplayTransformation: CoordinateDisplayTransformation
 
     private lateinit var fragmentView: View
     private lateinit var longitudeLayout: TextInputLayout
@@ -45,8 +43,6 @@ class LiveGPSFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeLi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        readExistingPreferences()
-        registerPreferenceChangeListener()
         initialize()
     }
 
@@ -59,6 +55,12 @@ class LiveGPSFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeLi
         findViews()
 
         return fragmentView
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel = ViewModelProvider(this).get(LiveGPSFragmentViewModel::class.java)
+        bindLiveData()
     }
 
     override fun onStart() {
@@ -94,7 +96,6 @@ class LiveGPSFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeLi
     override fun onDestroy() {
         super.onDestroy()
         Log.d(Constants.TAG_LIVE_GPS_FRAGMENT, "onDestroy")
-        unregisterPreferenceChangeListener()
     }
 
     override fun onRequestPermissionsResult(
@@ -111,18 +112,10 @@ class LiveGPSFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeLi
         }
     }
 
-    // OnSharedPreferencesChangedListener ----------------------------------------------------------
+    // HasDefaultViewModelProviderFactory ----------------------------------------------------------
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-        if (key == getString(R.string.settings_preference_coordinates_display_key)) {
-            val defaultValue = resources.getStringArray(R.array.coordinates_display_values)[0]
-            val preferenceValue = sharedPreferences
-                .getString(
-                    getString(R.string.settings_preference_coordinates_display_key),
-                    defaultValue
-                )
-            coordinateDisplayTransformation.transformToDegMinSec = preferenceValue != defaultValue
-        }
+    override fun getDefaultViewModelProviderFactory(): ViewModelProvider.Factory {
+        return LiveGPSFragmentViewModel.FACTORY(requireActivity().application)
     }
 
     // private methods -----------------------------------------------------------------------------
@@ -133,56 +126,11 @@ class LiveGPSFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeLi
                 super.onLocationResult(locationResult)
                 Log.d(Constants.TAG_LIVE_GPS_FRAGMENT, "locationCallbackTriggered")
 
-                val simpleDateFormat = SimpleDateFormat.getTimeInstance()
-
                 for (location in locationResult.locations) {
-                    longitudeLayout.editText!!.setText(
-                        coordinateDisplayTransformation.transform(
-                            location.longitude,
-                            Orientation.HORIZONTAL
-                        )
-                    )
-                    latitudeLayout.editText!!.setText(
-                        coordinateDisplayTransformation.transform(
-                            location.latitude,
-                            Orientation.VERTICAL
-                        )
-                    )
-                    altitudeLayout.editText!!.setText(location.altitude.toString())
-                    locationFixTimeLayout.editText!!.setText(
-                        simpleDateFormat.format(
-                            location.time
-                        )
-                    )
-                    accuracyLayout.editText!!.setText(location.accuracy.toString())
-                    speedLayout.editText!!.setText(location.speed.toString())
-                    bearingLayout.editText!!.setText(location.bearing.toString())
+                    viewModel.setLocation(location)
                 }
             }
         }
-    }
-
-    private fun readExistingPreferences() {
-        val defaultCoordinateDisplayPreference =
-            resources.getStringArray(R.array.coordinates_display_values)[0]
-        val coordinateDisplayPreference =
-            PreferenceManager.getDefaultSharedPreferences(this.requireContext())
-                .getString(
-                    getString(R.string.settings_preference_coordinates_display_key),
-                    defaultCoordinateDisplayPreference
-                )
-        coordinateDisplayTransformation =
-            CoordinateDisplayTransformation(coordinateDisplayPreference != defaultCoordinateDisplayPreference)
-    }
-
-    private fun registerPreferenceChangeListener() {
-        PreferenceManager.getDefaultSharedPreferences(this.requireContext())
-            .registerOnSharedPreferenceChangeListener(this)
-    }
-
-    private fun unregisterPreferenceChangeListener() {
-        PreferenceManager.getDefaultSharedPreferences(this.requireContext())
-            .unregisterOnSharedPreferenceChangeListener(this)
     }
 
     private fun findViews() {
@@ -193,6 +141,30 @@ class LiveGPSFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeLi
         accuracyLayout = fragmentView.findViewById(R.id.accuracy_layout)
         speedLayout = fragmentView.findViewById(R.id.speed_layout)
         bearingLayout = fragmentView.findViewById(R.id.bearing_layout)
+    }
+
+    private fun bindLiveData() {
+        viewModel.longitude.observe(viewLifecycleOwner) { value ->
+            longitudeLayout.editText!!.setText(value)
+        }
+        viewModel.latitude.observe(viewLifecycleOwner) { value ->
+            latitudeLayout.editText!!.setText(value)
+        }
+        viewModel.altitude.observe(viewLifecycleOwner) { value ->
+            altitudeLayout.editText!!.setText(value)
+        }
+        viewModel.locationFixTime.observe(viewLifecycleOwner) { value ->
+            locationFixTimeLayout.editText!!.setText(value)
+        }
+        viewModel.accuracy.observe(viewLifecycleOwner) { value ->
+            accuracyLayout.editText!!.setText(value)
+        }
+        viewModel.speed.observe(viewLifecycleOwner) { value ->
+            speedLayout.editText!!.setText(value)
+        }
+        viewModel.bearing.observe(viewLifecycleOwner) { value ->
+            bearingLayout.editText!!.setText(value)
+        }
     }
 
     @SuppressLint("MissingPermission")
@@ -226,7 +198,6 @@ class LiveGPSFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeLi
          * @return A new instance of fragment LiveGPSFragment.
          */
         @JvmStatic
-        fun newInstance() =
-            LiveGPSFragment()
+        fun newInstance() = LiveGPSFragment()
     }
 }

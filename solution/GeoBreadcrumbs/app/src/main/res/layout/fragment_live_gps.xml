@@ -183,6 +183,4 @@
                 android:textSize="@dimen/typography_title" />
         </com.google.android.material.textfield.TextInputLayout>
     </androidx.cardview.widget.CardView>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
