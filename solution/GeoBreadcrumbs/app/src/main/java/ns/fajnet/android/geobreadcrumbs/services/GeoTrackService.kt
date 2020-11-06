@@ -35,6 +35,9 @@ class GeoTrackService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(Constants.TAG_GEO_TRACK_SERVICE, "onStartCommand")
+
+        // TODO_faja: start service only if it is not started yet
+
         val notificationIntent = Intent(this, MainActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
 
@@ -49,6 +52,7 @@ class GeoTrackService : Service() {
         startForeground(Constants.SERVICE_ID_GEO_TRACK, notification)
 
         if (checkPrerequisites()) {
+            //TODO_faja: use pointName from intent as name of starting point
             subscribeToLocationUpdates()
         } else {
             stopSelf()
@@ -151,6 +155,15 @@ class GeoTrackService : Service() {
             precisionInterval.toLong(),
             precisionDistance.toFloat()
         )
+    }
+
+    // companion -----------------------------------------------------------------------------------
+
+    companion object {
+
+        // extras ----------------------------------------------------------------------------------
+
+        const val EXTRA_START_POINT_NAME = "extra_start_point_name"
     }
 }
 
