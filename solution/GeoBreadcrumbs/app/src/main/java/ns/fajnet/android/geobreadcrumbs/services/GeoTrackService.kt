@@ -6,7 +6,6 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.os.Looper
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.preference.PreferenceManager
 import com.google.android.gms.location.*
@@ -15,6 +14,13 @@ import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.activities.main.MainActivity
 import ns.fajnet.android.geobreadcrumbs.common.Constants
 import ns.fajnet.android.geobreadcrumbs.common.Utils
+import ns.fajnet.android.geobreadcrumbs.common.logger.LogEx
+import ns.fajnet.android.geobreadcrumbs.database.GeoBreadcrumbsDatabase
+import ns.fajnet.android.geobreadcrumbs.database.Point
+import ns.fajnet.android.geobreadcrumbs.database.Track
+import java.text.SimpleDateFormat
+import java.util.*
+
 
 class GeoTrackService : Service() {
 
@@ -24,17 +30,18 @@ class GeoTrackService : Service() {
     private lateinit var serviceScope: CoroutineScope
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
+    private var recordingTrackId: Long = 0
 
     // overrides -----------------------------------------------------------------------------------
 
     override fun onCreate() {
         super.onCreate()
-        Log.d(Constants.TAG_GEO_TRACK_SERVICE, "onCreate")
+        LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "onCreate")
         initialize()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.d(Constants.TAG_GEO_TRACK_SERVICE, "onStartCommand")
+        LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "onStartCommand")
 
         // TODO_faja: start service only if it is not started yet
 
@@ -52,8 +59,7 @@ class GeoTrackService : Service() {
         startForeground(Constants.SERVICE_ID_GEO_TRACK, notification)
 
         if (checkPrerequisites()) {
-            //TODO_faja: use pointName from intent as name of starting point
-            subscribeToLocationUpdates()
+            startRecording(intent?.getStringExtra(EXTRA_START_POINT_NAME))
         } else {
             stopSelf()
         }
@@ -68,7 +74,7 @@ class GeoTrackService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d(Constants.TAG_GEO_TRACK_SERVICE, "onDestroy")
+        LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "onDestroy")
 
         unsubscribeFromLocationUpdates()
         serviceScope.cancel()
@@ -79,22 +85,33 @@ class GeoTrackService : Service() {
     private fun initialize() {
         handleLocationUpdatesJob = Job()
         // CHECK: is Dispatchers.Main the correct one for this CoroutineScope??
-        serviceScope = CoroutineScope(Dispatchers.Main + handleLocationUpdatesJob)
+        serviceScope = CoroutineScope(Dispatchers.IO + handleLocationUpdatesJob)
 
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
-                Log.d(Constants.TAG_GEO_TRACK_SERVICE, "locationCallbackTriggered")
+                LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "locationCallbackTriggered")
 
                 serviceScope.launch {
-                    withContext(Dispatchers.IO) {
-                        super.onLocationResult(locationResult)
+                    super.onLocationResult(locationResult)
 
-                        for (location in locationResult.locations) {
-                            Log.d(Constants.TAG_GEO_TRACK_SERVICE, "location received: $location")
-                            // TODO: persist data to current track
-                            delay(5000)
-                            Log.d(Constants.TAG_GEO_TRACK_SERVICE, "location persisted")
-                        }
+                    for (location in locationResult.locations) {
+                        LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "location received: $location")
+                        val newPoint = Point(
+                            trackId = recordingTrackId,
+                            longitude = location.longitude,
+                            latitude = location.latitude,
+                            altitude = location.altitude,
+                            locationFixTime = location.time,
+                            accuracy = location.accuracy,
+                            speed = location.speed,
+                            bearing = location.bearing
+                        )
+
+                        GeoBreadcrumbsDatabase.getInstance(applicationContext).pointDao.insert(
+                            newPoint
+                        )
+
+                        LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "location persisted")
                     }
                 }
             }
@@ -102,32 +119,36 @@ class GeoTrackService : Service() {
     }
 
     private fun checkPrerequisites(): Boolean {
-        Log.d(
+        LogEx.d(
             Constants.TAG_GEO_TRACK_SERVICE,
-            "hasPermission: ${Utils.isPermissionGranted(this)}, locationEnabled: ${Utils.isLocationEnabled(
-                this
-            )}"
+            "hasPermission: ${Utils.isPermissionGranted(this)}, locationEnabled: ${
+                Utils.isLocationEnabled(this)
+            }"
         )
         return Utils.isPermissionGranted(this) && Utils.isLocationEnabled(this)
     }
 
     @SuppressLint("MissingPermission")
     private fun subscribeToLocationUpdates() {
-        Log.d(Constants.TAG_GEO_TRACK_SERVICE, "subscribe to location updates")
+        LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "subscribe to location updates")
 
-        fusedLocationProviderClient =
-            LocationServices.getFusedLocationProviderClient(this)
-        fusedLocationProviderClient.requestLocationUpdates(
-            generateLocationRequest(),
-            locationCallback,
-            Looper.myLooper()
-        )
+        serviceScope.launch {
+            withContext(Dispatchers.Main) {
+                fusedLocationProviderClient =
+                    LocationServices.getFusedLocationProviderClient(applicationContext)
+                fusedLocationProviderClient.requestLocationUpdates(
+                    generateLocationRequest(),
+                    locationCallback,
+                    Looper.myLooper()
+                )
+            }
+        }
     }
 
     private fun unsubscribeFromLocationUpdates() {
 
         if (this::fusedLocationProviderClient.isInitialized) {
-            Log.d(Constants.TAG_GEO_TRACK_SERVICE, "unsubscribe from location updates")
+            LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "unsubscribe from location updates")
             fusedLocationProviderClient.removeLocationUpdates(locationCallback)
         }
     }
@@ -155,6 +176,23 @@ class GeoTrackService : Service() {
             precisionInterval.toLong(),
             precisionDistance.toFloat()
         )
+    }
+
+    private fun startRecording(startPointName: String?) {
+        serviceScope.launch {
+            LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "start recording")
+            val sdf = SimpleDateFormat.getDateTimeInstance()
+            sdf.timeZone = TimeZone.getTimeZone("UTC")
+            val utcTime: String = sdf.format(Date())
+
+            val newTrack = Track(name = utcTime)
+
+            recordingTrackId =
+                GeoBreadcrumbsDatabase.getInstance(applicationContext).trackDao.insert(newTrack)
+
+            // TODO: startPointName not empty -> insert new place also (when/if places are implemented)
+            subscribeToLocationUpdates()
+        }
     }
 
     // companion -----------------------------------------------------------------------------------
