@@ -3,7 +3,6 @@ package ns.fajnet.android.geobreadcrumbs.activities.main.live_gps
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +15,7 @@ import com.google.android.material.textfield.TextInputLayout
 import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.common.Constants
 import ns.fajnet.android.geobreadcrumbs.common.Utils
+import ns.fajnet.android.geobreadcrumbs.common.logger.LogEx
 
 /**
  * A simple [Fragment] subclass.
@@ -65,7 +65,7 @@ class LiveGPSFragment : Fragment(), HasDefaultViewModelProviderFactory {
 
     override fun onStart() {
         super.onStart()
-        Log.d(Constants.TAG_LIVE_GPS_FRAGMENT, "OnStart")
+        LogEx.d(Constants.TAG_LIVE_GPS_FRAGMENT, "OnStart")
 
         when {
             Utils.isPermissionGranted(this.requireContext()) -> {
@@ -89,13 +89,13 @@ class LiveGPSFragment : Fragment(), HasDefaultViewModelProviderFactory {
 
     override fun onStop() {
         super.onStop()
-        Log.d(Constants.TAG_LIVE_GPS_FRAGMENT, "onStop")
+        LogEx.d(Constants.TAG_LIVE_GPS_FRAGMENT, "onStop")
         unsubscribeFromLocationUpdates()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d(Constants.TAG_LIVE_GPS_FRAGMENT, "onDestroy")
+        LogEx.d(Constants.TAG_LIVE_GPS_FRAGMENT, "onDestroy")
     }
 
     override fun onRequestPermissionsResult(
@@ -124,7 +124,7 @@ class LiveGPSFragment : Fragment(), HasDefaultViewModelProviderFactory {
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 super.onLocationResult(locationResult)
-                Log.d(Constants.TAG_LIVE_GPS_FRAGMENT, "locationCallbackTriggered")
+                LogEx.d(Constants.TAG_LIVE_GPS_FRAGMENT, "locationCallbackTriggered")
 
                 for (location in locationResult.locations) {
                     viewModel.setLocation(location)

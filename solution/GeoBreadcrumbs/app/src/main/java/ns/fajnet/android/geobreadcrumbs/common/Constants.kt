@@ -18,6 +18,7 @@ internal class Constants {
         const val TAG_LIVE_GPS_FRAGMENT = "appTag_liveGPS"
         const val TAG_LIVE_GPS_FRAGMENT_VM = "appTag_liveGPSVM"
         const val TAG_CURRENT_TRACK_FRAGMENT = "appTag_currentTrack"
+        const val TAG_CURRENT_TRACK_FRAGMENT_VM = "appTag_currentTrackVM"
         const val TAG_GEO_TRACK_SERVICE = "appTag_service"
     }
 }

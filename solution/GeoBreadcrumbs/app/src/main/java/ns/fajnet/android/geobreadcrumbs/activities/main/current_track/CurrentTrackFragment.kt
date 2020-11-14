@@ -1,7 +1,6 @@
 package ns.fajnet.android.geobreadcrumbs.activities.main.current_track
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.common.Constants
 import ns.fajnet.android.geobreadcrumbs.common.dialogs.NewPointDialog
+import ns.fajnet.android.geobreadcrumbs.common.logger.LogEx
 
 class CurrentTrackFragment : Fragment() {
 
@@ -68,20 +68,20 @@ class CurrentTrackFragment : Fragment() {
     }
 
     private fun startTrackClick() {
-        Log.d(Constants.TAG_CURRENT_TRACK_FRAGMENT, "start track clicked")
+        LogEx.d(Constants.TAG_CURRENT_TRACK_FRAGMENT, "start track clicked")
         NewPointDialog(
             {
-                Log.d(Constants.TAG_CURRENT_TRACK_FRAGMENT, "dialog OK: $it")
+                LogEx.d(Constants.TAG_CURRENT_TRACK_FRAGMENT, "dialog OK: $it")
                 viewModel.startTrack(it)
             },
             {
-                Log.w(Constants.TAG_CURRENT_TRACK_FRAGMENT, "dialog Cancel")
+                LogEx.w(Constants.TAG_CURRENT_TRACK_FRAGMENT, "dialog Cancel")
             }
         ).show(childFragmentManager, "newPoint")
     }
 
     private fun stopTrackClick() {
-        Log.d(Constants.TAG_CURRENT_TRACK_FRAGMENT, "stop track clicked")
+        LogEx.d(Constants.TAG_CURRENT_TRACK_FRAGMENT, "stop track clicked")
         viewModel.stopTrack()
     }
 

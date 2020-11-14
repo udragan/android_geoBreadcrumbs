@@ -3,14 +3,21 @@ package ns.fajnet.android.geobreadcrumbs.activities.main.live_gps
 import android.app.Application
 import android.content.SharedPreferences
 import android.location.Location
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ns.fajnet.android.geobreadcrumbs.AppInit
 import ns.fajnet.android.geobreadcrumbs.R
-import ns.fajnet.android.geobreadcrumbs.common.*
+import ns.fajnet.android.geobreadcrumbs.common.Constants
+import ns.fajnet.android.geobreadcrumbs.common.CoordinateDisplayTransformation
+import ns.fajnet.android.geobreadcrumbs.common.Orientation
+import ns.fajnet.android.geobreadcrumbs.common.logger.LogEx
+import ns.fajnet.android.geobreadcrumbs.common.singleArgViewModelFactory
 import java.text.SimpleDateFormat
 
 class LiveGPSFragmentViewModel(application: Application) :
@@ -66,7 +73,7 @@ class LiveGPSFragmentViewModel(application: Application) :
     // OnSharedPreferencesChangedListener ----------------------------------------------------------
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-        Log.d(Constants.TAG_LIVE_GPS_FRAGMENT_VM, "preference changed")
+        LogEx.d(Constants.TAG_LIVE_GPS_FRAGMENT_VM, "preference changed")
 
         if (key == getApplication<AppInit>().getString(R.string.settings_preference_coordinates_display_key)) {
             val defaultValue =
@@ -82,30 +89,34 @@ class LiveGPSFragmentViewModel(application: Application) :
     // public methods ------------------------------------------------------------------------------
 
     fun setLocation(location: Location) {
-        Log.d(Constants.TAG_LIVE_GPS_FRAGMENT_VM, "location received: $location")
-        val simpleDateFormat = SimpleDateFormat.getTimeInstance()
+        viewModelScope.launch {
+            withContext(Dispatchers.Default) {
+                LogEx.d(Constants.TAG_LIVE_GPS_FRAGMENT_VM, "location received: $location")
+                val simpleDateFormat = SimpleDateFormat.getTimeInstance()
 
-        _longitude.postValue(
-            coordinateDisplayTransformation.transform(
-                location.longitude,
-                Orientation.HORIZONTAL
-            )
-        )
-        _latitude.postValue(
-            coordinateDisplayTransformation.transform(
-                location.latitude,
-                Orientation.VERTICAL
-            )
-        )
-        _altitude.postValue(location.altitude.toString())
-        _locationFixTime.postValue(
-            simpleDateFormat.format(
-                location.time
-            )
-        )
-        _accuracy.postValue(location.accuracy.toString())
-        _speed.postValue(location.speed.toString())
-        _bearing.postValue(location.bearing.toString())
+                _longitude.postValue(
+                    coordinateDisplayTransformation.transform(
+                        location.longitude,
+                        Orientation.HORIZONTAL
+                    )
+                )
+                _latitude.postValue(
+                    coordinateDisplayTransformation.transform(
+                        location.latitude,
+                        Orientation.VERTICAL
+                    )
+                )
+                _altitude.postValue(location.altitude.toString())
+                _locationFixTime.postValue(
+                    simpleDateFormat.format(
+                        location.time
+                    )
+                )
+                _accuracy.postValue(location.accuracy.toString())
+                _speed.postValue(location.speed.toString())
+                _bearing.postValue(location.bearing.toString())
+            }
+        }
     }
 
     // private methods -----------------------------------------------------------------------------
@@ -124,13 +135,13 @@ class LiveGPSFragmentViewModel(application: Application) :
     }
 
     private fun registerPreferenceChangeListener() {
-        Log.d(Constants.TAG_LIVE_GPS_FRAGMENT_VM, "register preference change listener")
+        LogEx.d(Constants.TAG_LIVE_GPS_FRAGMENT_VM, "register preference change listener")
         PreferenceManager.getDefaultSharedPreferences(getApplication<AppInit>().applicationContext)
             .registerOnSharedPreferenceChangeListener(this)
     }
 
     private fun unregisterPreferenceChangeListener() {
-        Log.d(Constants.TAG_LIVE_GPS_FRAGMENT_VM, "unregister preference change listener")
+        LogEx.d(Constants.TAG_LIVE_GPS_FRAGMENT_VM, "unregister preference change listener")
         PreferenceManager.getDefaultSharedPreferences(getApplication<AppInit>().applicationContext)
             .unregisterOnSharedPreferenceChangeListener(this)
     }
