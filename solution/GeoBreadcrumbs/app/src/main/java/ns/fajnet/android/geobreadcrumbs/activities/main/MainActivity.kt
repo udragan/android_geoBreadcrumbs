@@ -64,6 +64,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         val pagerAdapter = MainActivityPagerAdapter(this, supportFragmentManager)
         viewPager.adapter = pagerAdapter
+        viewPager.offscreenPageLimit = 2
         tabs.setupWithViewPager(viewPager)
     }
 }

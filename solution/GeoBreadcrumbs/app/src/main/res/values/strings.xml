@@ -17,6 +17,8 @@
     <string name="current_track_dialog_new_point_title">New point</string>
     <string name="current_track_dialog_new_point_hint">Name</string>
 
+    <string name="recorded_tracks_tab_text">Tracks</string>
+
     <string name="main_menu_action_settings">Settings</string>
     <string name="main_menu_action_exit">Exit</string>
 

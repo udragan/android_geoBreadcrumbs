@@ -43,6 +43,7 @@ class LiveGPSFragment : Fragment(), HasDefaultViewModelProviderFactory {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        LogEx.d(Constants.TAG_LIVE_GPS_FRAGMENT, "onCreate")
         initialize()
     }
 

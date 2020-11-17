@@ -34,7 +34,7 @@ interface TrackDao {
     }
 
     @Query("SELECT * from tracks_table ORDER BY rowid DESC")
-    fun getAll(): List<Track>
+    fun getAll(): Array<Track>
 
     @Transaction
     @Query("SELECT * from tracks_table ORDER BY rowid DESC")

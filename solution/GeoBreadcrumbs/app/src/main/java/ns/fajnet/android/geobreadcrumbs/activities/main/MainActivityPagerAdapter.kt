@@ -7,10 +7,12 @@ import androidx.fragment.app.FragmentPagerAdapter
 import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.activities.main.current_track.CurrentTrackFragment
 import ns.fajnet.android.geobreadcrumbs.activities.main.live_gps.LiveGPSFragment
+import ns.fajnet.android.geobreadcrumbs.activities.main.recorded_tracks.RecordedTracksFragment
 
 private val TAB_TITLES = arrayOf(
     R.string.live_gps_tab_text,
-    R.string.current_track_tab_text
+    R.string.current_track_tab_text,
+    R.string.recorded_tracks_tab_text
 )
 
 class MainActivityPagerAdapter(private val context: Context, fm: FragmentManager) :
@@ -25,7 +27,8 @@ class MainActivityPagerAdapter(private val context: Context, fm: FragmentManager
     init {
         val liveGpsFragment = LiveGPSFragment.newInstance()
         val currentTrackFragment = CurrentTrackFragment.newInstance()
-        fragments = arrayOf(liveGpsFragment, currentTrackFragment)
+        val recordedTracksFragment = RecordedTracksFragment.newInstance()
+        fragments = arrayOf(liveGpsFragment, currentTrackFragment, recordedTracksFragment)
     }
 
     // overrides -----------------------------------------------------------------------------------
@@ -39,6 +42,6 @@ class MainActivityPagerAdapter(private val context: Context, fm: FragmentManager
     }
 
     override fun getCount(): Int {
-        return 2
+        return 3
     }
 }
