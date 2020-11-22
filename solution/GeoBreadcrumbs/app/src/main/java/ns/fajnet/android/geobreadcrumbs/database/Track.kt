@@ -19,6 +19,9 @@ data class Track(
     @ColumnInfo(name = "end_time_millis")
     val endTimeMillis: Long = startTimeMillis,
 
+    @ColumnInfo(name = "distance")
+    val distance: Float = 0F,
+
     @ColumnInfo(name = "average_speed")
     val averageSpeed: Float = 0F,
 

@@ -26,7 +26,7 @@ class RecordedTracksAdapter(private val dataSet: Array<Track>) :
         val track = dataSet[position]
         viewHolder.name.text = track.name
         viewHolder.duration.text = (track.startTimeMillis).toString() // TODO: calculate duration
-        viewHolder.length.text = 100.toString() // TODO: calculate length based on points
+        viewHolder.distance.text = track.distance.toString()
         viewHolder.avgSpeed.text =
             track.averageSpeed.toString() // TODO: add trailing unit (when settings for measurement is added)
         viewHolder.maxSpeed.text =
@@ -43,7 +43,7 @@ class RecordedTracksAdapter(private val dataSet: Array<Track>) :
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val name: AppCompatTextView = view.name
         val duration: AppCompatTextView = view.duration
-        val length: AppCompatTextView = view.length
+        val distance: AppCompatTextView = view.distance
         val avgSpeed: AppCompatTextView = view.average_speed
         val maxSpeed: AppCompatTextView = view.max_speed
         val places: AppCompatTextView = view.places

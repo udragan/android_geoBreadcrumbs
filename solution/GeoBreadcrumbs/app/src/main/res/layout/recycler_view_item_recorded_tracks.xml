@@ -58,7 +58,7 @@
                     android:textSize="@dimen/typography_body" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/length"
+                    android:id="@+id/distance"
                     android:layout_marginStart="@dimen/default_component_margin"
                     android:layout_weight="1"
                     android:text="@string/default_text_placeholder"

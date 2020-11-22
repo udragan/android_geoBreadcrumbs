@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
+import android.location.Location
 import android.os.IBinder
 import android.os.Looper
 import androidx.core.app.NotificationCompat
@@ -31,6 +32,7 @@ class GeoTrackService : Service() {
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
     private var recordingTrackId: Long = 0
+    private var recordingActive = false
 
     // overrides -----------------------------------------------------------------------------------
 
@@ -77,7 +79,7 @@ class GeoTrackService : Service() {
         LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "onDestroy")
 
         unsubscribeFromLocationUpdates()
-        serviceScope.cancel()
+        stopRecording()
     }
 
     // private methods -----------------------------------------------------------------------------
@@ -94,24 +96,26 @@ class GeoTrackService : Service() {
                 serviceScope.launch {
                     super.onLocationResult(locationResult)
 
-                    for (location in locationResult.locations) {
-                        LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "location received: $location")
-                        val newPoint = Point(
-                            trackId = recordingTrackId,
-                            longitude = location.longitude,
-                            latitude = location.latitude,
-                            altitude = location.altitude,
-                            locationFixTime = location.time,
-                            accuracy = location.accuracy,
-                            speed = location.speed,
-                            bearing = location.bearing
-                        )
+                    if (recordingActive) {
+                        for (location in locationResult.locations) {
+                            LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "location received: $location")
+                            val newPoint = Point(
+                                trackId = recordingTrackId,
+                                longitude = location.longitude,
+                                latitude = location.latitude,
+                                altitude = location.altitude,
+                                locationFixTime = location.time,
+                                accuracy = location.accuracy,
+                                speed = location.speed,
+                                bearing = location.bearing
+                            )
 
-                        GeoBreadcrumbsDatabase.getInstance(applicationContext).pointDao.insert(
-                            newPoint
-                        )
+                            GeoBreadcrumbsDatabase.getInstance(applicationContext)
+                                .pointDao
+                                .insert(newPoint)
 
-                        LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "location persisted")
+                            LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "location persisted")
+                        }
                     }
                 }
             }
@@ -188,11 +192,115 @@ class GeoTrackService : Service() {
             val newTrack = Track(name = utcTime)
 
             recordingTrackId =
-                GeoBreadcrumbsDatabase.getInstance(applicationContext).trackDao.insert(newTrack)
-
+                GeoBreadcrumbsDatabase.getInstance(applicationContext)
+                    .trackDao
+                    .insert(newTrack)
+            recordingActive = true
             // TODO: startPointName not empty -> insert new place also (when/if places are implemented)
             subscribeToLocationUpdates()
         }
+    }
+
+    private fun stopRecording() {
+        serviceScope.launch {
+            LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "stop recording")
+            recordingActive = false
+            val trackWithPoints = GeoBreadcrumbsDatabase.getInstance(applicationContext)
+                .trackDao
+                .getWithPoints(recordingTrackId)
+
+            if (trackWithPoints == null) {
+                LogEx.w(
+                    Constants.TAG_GEO_TRACK_SERVICE,
+                    "No track with id $recordingTrackId, nothing to update!"
+                )
+            } else {
+                LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "updating track $recordingTrackId")
+                val existingTrack = trackWithPoints.track
+
+                val track = Track(
+                    existingTrack.id,
+                    existingTrack.name,
+                    existingTrack.startTimeMillis,
+                    System.currentTimeMillis(),
+                    calculateDistanceFromPoints(trackWithPoints.points),
+                    calculateAvgSpeedFromPoints(trackWithPoints.points),
+                    calculateMaxSpeedFromPoints(trackWithPoints.points),
+                    calculateOverallBearing(trackWithPoints.points),
+                    0, // TODO: places (when added to db)
+                    trackWithPoints.points.size,
+                    1 // TODO: status enum
+                )
+
+                GeoBreadcrumbsDatabase.getInstance(applicationContext)
+                    .trackDao
+                    .update(track)
+                LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "update finished")
+            }
+
+            serviceScope.cancel()
+        }
+    }
+
+    private fun calculateDistanceFromPoints(points: List<Point>): Float {
+        var result = 0F
+
+        for (i in 0..points.size - 2) {
+            val start = points[i]
+            val end = points[i + 1]
+            val results = floatArrayOf(0F)
+            Location.distanceBetween(
+                start.latitude,
+                start.longitude,
+                end.latitude,
+                end.longitude,
+                results
+            )
+
+            result += results[0]
+        }
+
+        return result
+    }
+
+    private fun calculateAvgSpeedFromPoints(points: List<Point>): Float {
+        if (points.isEmpty()) {
+            return 0F
+        }
+
+        var result = 0F
+        points.forEach { x -> result += x.speed }
+        result /= points.size
+
+        return result
+    }
+
+    private fun calculateMaxSpeedFromPoints(points: List<Point>): Float {
+        var result = 0F
+        points.forEach { x -> result = result.coerceAtLeast(x.speed) }
+
+        return result
+    }
+
+    private fun calculateOverallBearing(points: List<Point>): Float {
+        var result = 0F
+
+        if (points.size > 2) {
+            val start = points[0]
+            val end = points[points.size - 1]
+            val results = floatArrayOf(0F, 0F, 0F)
+            Location.distanceBetween(
+                start.latitude,
+                start.longitude,
+                end.latitude,
+                end.longitude,
+                results
+            )
+
+            result = results[2]
+        }
+
+        return result
     }
 
     // companion -----------------------------------------------------------------------------------

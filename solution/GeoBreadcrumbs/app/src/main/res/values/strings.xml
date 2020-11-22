@@ -4,7 +4,7 @@
     <string name="dialog_button_ok">OK</string>
     <string name="dialog_button_cancel">Cancel</string>
 
-    <string name="default_text_placeholder">text placeholder</string>
+    <string name="default_text_placeholder">placeholder</string>
 
     <string name="live_gps_tab_text">Live GPS</string>
     <string name="live_gps_longitude_hint">longitude</string>

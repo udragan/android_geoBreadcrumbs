@@ -33,6 +33,10 @@ interface TrackDao {
         return MutableLiveData(get(key))
     }
 
+    @Transaction
+    @Query("SELECT * from tracks_table WHERE rowid = :key")
+    fun getWithPoints(key: Long): TrackWithPoints?
+
     @Query("SELECT * from tracks_table ORDER BY rowid DESC")
     fun getAll(): Array<Track>
 
