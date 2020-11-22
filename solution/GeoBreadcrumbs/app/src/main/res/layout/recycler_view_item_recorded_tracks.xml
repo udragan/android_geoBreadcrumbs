@@ -6,15 +6,153 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/track_name"
-            android:layout_width="match_parent"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/name_card"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            app:cardElevation="2dp"
+            app:layout_constraintEnd_toStartOf="@+id/cardView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/default_component_margin"
+                android:text="@string/default_text_placeholder"
+                android:textSize="@dimen/typography_input" />
+        </androidx.cardview.widget.CardView>
+
+        <TableLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:stretchColumns="*"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/cardView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/name_card">
+
+            <TableRow android:layout_width="0dp">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="@string/recorded_tracks_view_holder_duration"
+                    android:textSize="@dimen/typography_body" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/duration"
+                    android:layout_marginStart="@dimen/default_component_margin"
+                    android:layout_weight="1"
+                    android:text="@string/default_text_placeholder"
+                    android:textSize="@dimen/typography_body" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="@string/recorded_tracks_view_holder_length"
+                    android:textSize="@dimen/typography_body" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/length"
+                    android:layout_marginStart="@dimen/default_component_margin"
+                    android:layout_weight="1"
+                    android:text="@string/default_text_placeholder"
+                    android:textSize="@dimen/typography_body" />
+            </TableRow>
+
+            <TableRow android:layout_width="0dp">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="@string/recorded_tracks_view_holder_avg_speed"
+                    android:textSize="@dimen/typography_body" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/average_speed"
+                    android:layout_marginStart="@dimen/default_component_margin"
+                    android:layout_weight="1"
+                    android:text="@string/default_text_placeholder"
+                    android:textSize="@dimen/typography_body" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="@string/recorded_tracks_view_holder_max_speed"
+                    android:textSize="@dimen/typography_body" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/max_speed"
+                    android:layout_marginStart="@dimen/default_component_margin"
+                    android:layout_weight="1"
+                    android:text="@string/default_text_placeholder"
+                    android:textSize="@dimen/typography_body" />
+            </TableRow>
+
+            <TableRow android:layout_width="0dp">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="@string/recorded_tracks_view_holder_places"
+                    android:textSize="@dimen/typography_body" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/places"
+                    android:layout_marginStart="@dimen/default_component_margin"
+                    android:layout_weight="1"
+                    android:text="@string/default_text_placeholder"
+                    android:textSize="@dimen/typography_body" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="@string/recorded_tracks_view_holder_points"
+                    android:textSize="@dimen/typography_body" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/points"
+                    android:layout_marginStart="@dimen/default_component_margin"
+                    android:layout_weight="1"
+                    android:text="@string/default_text_placeholder"
+                    android:textSize="@dimen/typography_body" />
+            </TableRow>
+
+            <TableRow>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="@string/recorded_tracks_view_holder_bearing"
+                    android:textSize="@dimen/typography_body" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/bearing"
+                    android:layout_marginStart="@dimen/default_component_margin"
+                    android:layout_span="3"
+                    android:layout_weight="1"
+                    android:text="@string/default_text_placeholder"
+                    android:textSize="@dimen/typography_body" />
+            </TableRow>
+        </TableLayout>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="100dp"
+            android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/holo_green_dark" />
+        </androidx.cardview.widget.CardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

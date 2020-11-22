@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.HasDefaultViewModelProviderFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_recorded_tracks.*
 import ns.fajnet.android.geobreadcrumbs.R
@@ -30,7 +31,10 @@ class RecordedTracksFragment : Fragment(), HasDefaultViewModelProviderFactory {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(RecordedTracksFragmentViewModel::class.java)
-        recycler_view.layoutManager = LinearLayoutManager(requireContext())
+        recycler_view.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+        }
 
         // TODO: Use the ViewModel
         bindLiveData()

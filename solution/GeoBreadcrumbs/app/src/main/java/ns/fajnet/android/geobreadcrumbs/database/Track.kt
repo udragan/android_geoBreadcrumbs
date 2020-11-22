@@ -19,6 +19,15 @@ data class Track(
     @ColumnInfo(name = "end_time_millis")
     val endTimeMillis: Long = startTimeMillis,
 
+    @ColumnInfo(name = "average_speed")
+    val averageSpeed: Float = 0F,
+
+    @ColumnInfo(name = "max_speed")
+    val maxSpeed: Float = 0F,
+
+    @ColumnInfo(name = "bearing")
+    val bearing: Float = 0F,
+
     @ColumnInfo(name = "no_of_places")
     val numberOfPlaces: Int = 0, // TODO: think about this, is it needed??
 

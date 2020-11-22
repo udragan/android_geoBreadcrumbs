@@ -31,8 +31,8 @@ class RecordedTracksFragmentViewModel(application: Application) : AndroidViewMod
     fun loadTracks() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                LogEx.d(Constants.TAG_RECORDED_TRACKS_FRAGMENT_VM, "load tracks")
                 if (!isDataLoaded) {
+                    LogEx.d(Constants.TAG_RECORDED_TRACKS_FRAGMENT_VM, "load tracks")
                     isDataLoaded = true
 
                     val tracks =
