@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.HasDefaultViewModelProviderFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
@@ -19,25 +20,25 @@ class RecordedTracksFragment : Fragment(), HasDefaultViewModelProviderFactory {
 
     // members -------------------------------------------------------------------------------------
 
-    private lateinit var viewModel: RecordedTracksFragmentViewModel
+    private val viewModel: RecordedTracksFragmentViewModel by viewModels()
+    private lateinit var fragmentView: View
 
     // overrides -----------------------------------------------------------------------------------
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_recorded_tracks, container, false)
+        fragmentView = inflater.inflate(R.layout.fragment_recorded_tracks, container, false)
+        bindLiveData()
+
+        return fragmentView
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(RecordedTracksFragmentViewModel::class.java)
         recycler_view.apply {
             layoutManager = LinearLayoutManager(requireContext())
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
-
-        // TODO: Use the ViewModel
-        bindLiveData()
     }
 
     override fun onResume() {

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.HasDefaultViewModelProviderFactory
 import androidx.lifecycle.ViewModelProvider
 import ns.fajnet.android.geobreadcrumbs.R
@@ -17,7 +18,7 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
 
     // members -------------------------------------------------------------------------------------
 
-    private lateinit var viewModel: CurrentTrackFragmentViewModel
+    private val viewModel: CurrentTrackFragmentViewModel by viewModels()
 
     private lateinit var fragmentView: View
     private lateinit var startTrack: AppCompatButton
@@ -32,14 +33,9 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
         fragmentView = inflater.inflate(R.layout.fragment_current_track, container, false)
         findViews()
         bind()
+        bindLiveData()
 
         return fragmentView
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(CurrentTrackFragmentViewModel::class.java)
-        bindLiveData()
     }
 
     // HasDefaultViewModelProviderFactory ----------------------------------------------------------

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.HasDefaultViewModelProviderFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
@@ -26,7 +27,7 @@ class LiveGPSFragment : Fragment(), HasDefaultViewModelProviderFactory {
 
     // members -------------------------------------------------------------------------------------
 
-    private lateinit var viewModel: LiveGPSFragmentViewModel
+    private val viewModel: LiveGPSFragmentViewModel by viewModels()
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
 
@@ -54,14 +55,9 @@ class LiveGPSFragment : Fragment(), HasDefaultViewModelProviderFactory {
     ): View? {
         fragmentView = inflater.inflate(R.layout.fragment_live_gps, container, false)
         findViews()
+        bindLiveData()
 
         return fragmentView
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(LiveGPSFragmentViewModel::class.java)
-        bindLiveData()
     }
 
     override fun onStart() {
