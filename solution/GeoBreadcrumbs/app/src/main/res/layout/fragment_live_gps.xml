@@ -7,7 +7,7 @@
     tools:context=".activities.main.live_gps.LiveGPSFragment">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/coordinates_card"
+        android:id="@+id/coordinatesCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/default_container_margin"
@@ -20,7 +20,7 @@
             android:layout_height="wrap_content">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/longitude_layout"
+                android:id="@+id/longitudeLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/live_gps_longitude_hint"
@@ -37,12 +37,12 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/latitude_layout"
+                android:id="@+id/latitudeLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/default_component_margin"
                 android:hint="@string/live_gps_latitude_hint"
-                app:layout_constraintTop_toBottomOf="@+id/longitude_layout">
+                app:layout_constraintTop_toBottomOf="@+id/longitudeLayout">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -55,14 +55,14 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/altitude_layout"
+                android:id="@+id/altitudeLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/default_component_margin"
                 android:hint="@string/live_gps_altitude_hint"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/latitude_layout">
+                app:layout_constraintTop_toBottomOf="@+id/latitudeLayout">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -77,17 +77,17 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/time_card"
+        android:id="@+id/timeCard"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/default_container_margin"
         android:layout_marginTop="@dimen/default_component_margin"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/coordinates_card"
+        app:layout_constraintTop_toBottomOf="@id/coordinatesCard"
         app:layout_constraintWidth_percent="0.45">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/location_fix_time_layout"
+            android:id="@+id/locationFixTimeLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/live_gps_location_fix_time_hint">
@@ -104,17 +104,17 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/accuracy_card"
+        android:id="@+id/accuracyCard"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/default_component_margin"
         android:layout_marginEnd="@dimen/default_container_margin"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/coordinates_card"
+        app:layout_constraintTop_toBottomOf="@id/coordinatesCard"
         app:layout_constraintWidth_percent="0.45">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/accuracy_layout"
+            android:id="@+id/accuracyLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/live_gps_accuracy_hint">
@@ -131,17 +131,17 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/speed_card"
+        android:id="@+id/speedCard"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/default_container_margin"
         android:layout_marginTop="@dimen/default_component_margin"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/time_card"
+        app:layout_constraintTop_toBottomOf="@id/timeCard"
         app:layout_constraintWidth_percent="0.45">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/speed_layout"
+            android:id="@+id/speedLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/live_gps_speed_hint">
@@ -158,17 +158,17 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/bearing_card"
+        android:id="@+id/bearingCard"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/default_component_margin"
         android:layout_marginEnd="@dimen/default_container_margin"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/accuracy_card"
+        app:layout_constraintTop_toBottomOf="@id/accuracyCard"
         app:layout_constraintWidth_percent="0.45">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/bearing_layout"
+            android:id="@+id/bearingLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/live_gps_bearing_hint">

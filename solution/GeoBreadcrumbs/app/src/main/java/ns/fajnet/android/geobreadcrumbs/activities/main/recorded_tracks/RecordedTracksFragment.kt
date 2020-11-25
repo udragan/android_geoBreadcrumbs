@@ -21,24 +21,21 @@ class RecordedTracksFragment : Fragment(), HasDefaultViewModelProviderFactory {
     // members -------------------------------------------------------------------------------------
 
     private val viewModel: RecordedTracksFragmentViewModel by viewModels()
-    private lateinit var fragmentView: View
 
     // overrides -----------------------------------------------------------------------------------
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        fragmentView = inflater.inflate(R.layout.fragment_recorded_tracks, container, false)
-        bindLiveData()
-
-        return fragmentView
+        return inflater.inflate(R.layout.fragment_recorded_tracks, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        recycler_view.apply {
+        recyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
+        bindLiveData()
     }
 
     override fun onResume() {
@@ -57,7 +54,7 @@ class RecordedTracksFragment : Fragment(), HasDefaultViewModelProviderFactory {
 
     private fun bindLiveData() {
         viewModel.recordedTracksAdapter.observe(viewLifecycleOwner) {
-            recycler_view.adapter = it
+            recyclerView.adapter = it
             LogEx.d(Constants.TAG_RECORDED_TRACKS_FRAGMENT, "recycler view set up")
         }
     }

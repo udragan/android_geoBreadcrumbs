@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.HasDefaultViewModelProviderFactory
 import androidx.lifecycle.ViewModelProvider
+import kotlinx.android.synthetic.main.fragment_current_track.*
 import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.common.Constants
 import ns.fajnet.android.geobreadcrumbs.common.dialogs.NewPointDialog
@@ -20,22 +20,19 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
 
     private val viewModel: CurrentTrackFragmentViewModel by viewModels()
 
-    private lateinit var fragmentView: View
-    private lateinit var startTrack: AppCompatButton
-    private lateinit var stopTrack: AppCompatButton
-
     // overrides -----------------------------------------------------------------------------------
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        fragmentView = inflater.inflate(R.layout.fragment_current_track, container, false)
-        findViews()
+        return inflater.inflate(R.layout.fragment_current_track, container, false)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         bind()
         bindLiveData()
-
-        return fragmentView
     }
 
     // HasDefaultViewModelProviderFactory ----------------------------------------------------------
@@ -45,11 +42,6 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
     }
 
     // private methods -----------------------------------------------------------------------------
-
-    private fun findViews() {
-        startTrack = fragmentView.findViewById(R.id.start_track)
-        stopTrack = fragmentView.findViewById(R.id.stop_track)
-    }
 
     private fun bind() {
         startTrack.setOnClickListener {

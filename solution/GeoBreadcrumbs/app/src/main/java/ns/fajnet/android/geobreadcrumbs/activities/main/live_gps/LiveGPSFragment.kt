@@ -12,7 +12,7 @@ import androidx.lifecycle.HasDefaultViewModelProviderFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
 import com.google.android.gms.location.*
-import com.google.android.material.textfield.TextInputLayout
+import kotlinx.android.synthetic.main.fragment_live_gps.*
 import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.common.Constants
 import ns.fajnet.android.geobreadcrumbs.common.Utils
@@ -31,15 +31,6 @@ class LiveGPSFragment : Fragment(), HasDefaultViewModelProviderFactory {
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
 
-    private lateinit var fragmentView: View
-    private lateinit var longitudeLayout: TextInputLayout
-    private lateinit var latitudeLayout: TextInputLayout
-    private lateinit var altitudeLayout: TextInputLayout
-    private lateinit var locationFixTimeLayout: TextInputLayout
-    private lateinit var accuracyLayout: TextInputLayout
-    private lateinit var speedLayout: TextInputLayout
-    private lateinit var bearingLayout: TextInputLayout
-
     // overrides -----------------------------------------------------------------------------------
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,11 +44,12 @@ class LiveGPSFragment : Fragment(), HasDefaultViewModelProviderFactory {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        fragmentView = inflater.inflate(R.layout.fragment_live_gps, container, false)
-        findViews()
-        bindLiveData()
+        return inflater.inflate(R.layout.fragment_live_gps, container, false)
+    }
 
-        return fragmentView
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        bindLiveData()
     }
 
     override fun onStart() {
@@ -128,16 +120,6 @@ class LiveGPSFragment : Fragment(), HasDefaultViewModelProviderFactory {
                 }
             }
         }
-    }
-
-    private fun findViews() {
-        longitudeLayout = fragmentView.findViewById(R.id.longitude_layout)
-        latitudeLayout = fragmentView.findViewById(R.id.latitude_layout)
-        altitudeLayout = fragmentView.findViewById(R.id.altitude_layout)
-        locationFixTimeLayout = fragmentView.findViewById(R.id.location_fix_time_layout)
-        accuracyLayout = fragmentView.findViewById(R.id.accuracy_layout)
-        speedLayout = fragmentView.findViewById(R.id.speed_layout)
-        bearingLayout = fragmentView.findViewById(R.id.bearing_layout)
     }
 
     private fun bindLiveData() {

@@ -44,8 +44,8 @@ class RecordedTracksAdapter(private val dataSet: Array<Track>) :
         val name: AppCompatTextView = view.name
         val duration: AppCompatTextView = view.duration
         val distance: AppCompatTextView = view.distance
-        val avgSpeed: AppCompatTextView = view.average_speed
-        val maxSpeed: AppCompatTextView = view.max_speed
+        val avgSpeed: AppCompatTextView = view.averageSpeed
+        val maxSpeed: AppCompatTextView = view.maxSpeed
         val places: AppCompatTextView = view.places
         val points: AppCompatTextView = view.points
         val bearing: AppCompatTextView = view.bearing

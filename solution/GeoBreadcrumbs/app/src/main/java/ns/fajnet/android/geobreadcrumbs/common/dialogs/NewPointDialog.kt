@@ -25,7 +25,7 @@ class NewPointDialog(private val positive: (name: String) -> Unit,
             builder.setView(contentView)
                 .setMessage(R.string.current_track_dialog_new_point_title)
                 .setPositiveButton(R.string.dialog_button_ok) { _, _ ->
-                    val name = contentView.point_name.editText?.text.toString()
+                    val name = contentView.pointName.editText?.text.toString()
                     positive.invoke(name)
                 }
                 .setNegativeButton(R.string.dialog_button_cancel) { _, _ ->

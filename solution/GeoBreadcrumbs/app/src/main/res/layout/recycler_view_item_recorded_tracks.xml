@@ -9,7 +9,7 @@
         android:layout_height="match_parent">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/name_card"
+            android:id="@+id/nameCard"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
@@ -34,7 +34,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/cardView"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/name_card">
+            app:layout_constraintTop_toBottomOf="@id/nameCard">
 
             <TableRow android:layout_width="0dp">
 
@@ -74,7 +74,7 @@
                     android:textSize="@dimen/typography_body" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/average_speed"
+                    android:id="@+id/averageSpeed"
                     android:layout_marginStart="@dimen/default_component_margin"
                     android:layout_weight="1"
                     android:text="@string/default_text_placeholder"
@@ -87,7 +87,7 @@
                     android:textSize="@dimen/typography_body" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/max_speed"
+                    android:id="@+id/maxSpeed"
                     android:layout_marginStart="@dimen/default_component_margin"
                     android:layout_weight="1"
                     android:text="@string/default_text_placeholder"
