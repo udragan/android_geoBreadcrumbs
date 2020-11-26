@@ -18,6 +18,15 @@
     <string name="current_track_tab_text">Current track</string>
     <string name="current_track_dialog_new_point_title">New point</string>
     <string name="current_track_dialog_new_point_hint">Name</string>
+    <string name="current_track_start_track">Start track</string>
+    <string name="current_track_stop_track">Stop track</string>
+    <string name="current_track_duration">Duration</string>
+    <string name="current_track_distance">Distance</string>
+    <string name="current_track_current_speed">Current speed</string>
+    <string name="current_track_current_bearing">Current bearing</string>
+    <string name="current_track_average_speed">Average speed</string>
+    <string name="current_track_overall_bearing">Overall bearing</string>
+    <string name="current_track_max_speed">Max speed</string>
 
     <string name="recorded_tracks_tab_text">Tracks</string>
     <string name="recorded_tracks_view_holder_duration">Duration:</string>
