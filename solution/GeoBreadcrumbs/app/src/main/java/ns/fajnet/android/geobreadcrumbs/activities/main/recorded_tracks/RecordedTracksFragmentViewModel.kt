@@ -41,7 +41,7 @@ class RecordedTracksFragmentViewModel(application: Application) : AndroidViewMod
                             .getAll()
 
                     // TODO: remove
-                    Thread.sleep(5000)
+                    //Thread.sleep(5000)
 
                     LogEx.d(Constants.TAG_RECORDED_TRACKS_FRAGMENT_VM, "loading finished")
                     _recordedTracksAdapter.postValue(RecordedTracksAdapter(tracks))

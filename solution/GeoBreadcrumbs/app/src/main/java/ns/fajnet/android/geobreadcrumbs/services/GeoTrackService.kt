@@ -1,13 +1,17 @@
 package ns.fajnet.android.geobreadcrumbs.services
 
 import android.annotation.SuppressLint
+import android.app.Notification
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.location.Location
+import android.os.Binder
 import android.os.IBinder
 import android.os.Looper
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
 import com.google.android.gms.location.*
 import kotlinx.coroutines.*
@@ -19,20 +23,26 @@ import ns.fajnet.android.geobreadcrumbs.common.logger.LogEx
 import ns.fajnet.android.geobreadcrumbs.database.GeoBreadcrumbsDatabase
 import ns.fajnet.android.geobreadcrumbs.database.Point
 import ns.fajnet.android.geobreadcrumbs.database.Track
+import ns.fajnet.android.geobreadcrumbs.dtos.TrackDto
 import java.text.SimpleDateFormat
 import java.util.*
-
 
 class GeoTrackService : Service() {
 
     // members -------------------------------------------------------------------------------------
 
+    private var lastPoint = Point()
+    private var trackDto = TrackDto()
+    private var recordingTrackId: Long = 0
+    private var recordingActive = false
+
+    private val _liveUpdate = MutableLiveData<TrackDto>()
+    private val mBinder: IBinder = MyBinder()
+
     private lateinit var handleLocationUpdatesJob: Job
     private lateinit var serviceScope: CoroutineScope
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
-    private var recordingTrackId: Long = 0
-    private var recordingActive = false
 
     // overrides -----------------------------------------------------------------------------------
 
@@ -45,20 +55,9 @@ class GeoTrackService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "onStartCommand")
 
-        // TODO_faja: start service only if it is not started yet
+        // TODO: start service only if it is not started yet
 
-        val notificationIntent = Intent(this, MainActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
-
-        val notification =
-            NotificationCompat.Builder(this, Constants.NOTIFICATION_CHANNEL_ID_GEO_TRACK)
-                .setContentTitle(getString(R.string.geo_track_service_notification_title))
-                .setContentText(getString(R.string.geo_track_service_notification_text))
-                .setSmallIcon(android.R.drawable.ic_menu_compass)
-                .setContentIntent(pendingIntent)
-                .build()
-
-        startForeground(Constants.SERVICE_ID_GEO_TRACK, notification)
+        startForeground(Constants.SERVICE_ID_GEO_TRACK, generateNotification())
 
         if (checkPrerequisites()) {
             startRecording(intent?.getStringExtra(EXTRA_START_POINT_NAME))
@@ -70,8 +69,7 @@ class GeoTrackService : Service() {
     }
 
     override fun onBind(intent: Intent): IBinder? {
-        // TODO("Return the communication channel to the service.")
-        return null
+        return mBinder
     }
 
     override fun onDestroy() {
@@ -80,6 +78,17 @@ class GeoTrackService : Service() {
 
         unsubscribeFromLocationUpdates()
         stopRecording()
+    }
+
+    // properties ----------------------------------------------------------------------------------
+
+    val liveUpdate: LiveData<TrackDto>
+        get() = _liveUpdate
+
+    // public methods ------------------------------------------------------------------------------
+
+    fun stopRecordingTrack() {
+        LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "stop recording")
     }
 
     // private methods -----------------------------------------------------------------------------
@@ -92,10 +101,9 @@ class GeoTrackService : Service() {
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "locationCallbackTriggered")
+                super.onLocationResult(locationResult)
 
                 serviceScope.launch {
-                    super.onLocationResult(locationResult)
-
                     if (recordingActive) {
                         for (location in locationResult.locations) {
                             LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "location received: $location")
@@ -115,11 +123,52 @@ class GeoTrackService : Service() {
                                 .insert(newPoint)
 
                             LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "location persisted")
+
+                            if (lastPoint.trackId != 0L) {
+                                val simpleDateFormat = SimpleDateFormat.getTimeInstance()
+                                val results = floatArrayOf(0F, 0F, 0F)
+                                Location.distanceBetween(
+                                    lastPoint.latitude,
+                                    lastPoint.longitude,
+                                    newPoint.latitude,
+                                    newPoint.longitude,
+                                    results
+                                )
+                                trackDto.distance += results[0]
+                                trackDto.currentSpeed = newPoint.speed
+                                // TODO: how to calculate avg speed and max speed (data model must change)
+                                trackDto.currentBearing = results[2]
+                                // TODO: how to calculate overall bearing? (there is no starting point currently known!)
+
+                                // TODO: calculate duration from track start to now
+                                trackDto.duration =
+                                    simpleDateFormat.format(newPoint.locationFixTime)
+                                trackDto.noOfPoints += 1
+                            }
+
+                            LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "dto: $trackDto")
+                            LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "newPoint: $newPoint")
+                            _liveUpdate.postValue(trackDto)
+                            lastPoint = newPoint
+
+                            LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "track update published")
                         }
                     }
                 }
             }
         }
+    }
+
+    private fun generateNotification(): Notification {
+        val notificationIntent = Intent(this, MainActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
+
+        return NotificationCompat.Builder(this, Constants.NOTIFICATION_CHANNEL_ID_GEO_TRACK)
+            .setContentTitle(getString(R.string.geo_track_service_notification_title))
+            .setContentText(getString(R.string.geo_track_service_notification_text))
+            .setSmallIcon(android.R.drawable.ic_menu_compass)
+            .setContentIntent(pendingIntent)
+            .build()
     }
 
     private fun checkPrerequisites(): Boolean {
@@ -301,6 +350,13 @@ class GeoTrackService : Service() {
         }
 
         return result
+    }
+
+    // inner classes -------------------------------------------------------------------------------
+
+    inner class MyBinder : Binder() {
+        val service: GeoTrackService
+            get() = this@GeoTrackService
     }
 
     // companion -----------------------------------------------------------------------------------

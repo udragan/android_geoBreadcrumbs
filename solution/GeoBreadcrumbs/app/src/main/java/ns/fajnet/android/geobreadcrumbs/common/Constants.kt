@@ -15,6 +15,8 @@ internal class Constants {
 
         // logger tags -----------------------------------------------------------------------------
 
+        const val TAG_MAIN_ACTIVITY = "appTag_main"
+        const val TAG_MAIN_ACTIVITY_VM = "appTag_mainVM"
         const val TAG_LIVE_GPS_FRAGMENT = "appTag_liveGPS"
         const val TAG_LIVE_GPS_FRAGMENT_VM = "appTag_liveGPSVM"
         const val TAG_CURRENT_TRACK_FRAGMENT = "appTag_currentTrack"

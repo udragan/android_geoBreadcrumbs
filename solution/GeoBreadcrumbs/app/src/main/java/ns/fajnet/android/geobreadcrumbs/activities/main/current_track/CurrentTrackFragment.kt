@@ -5,11 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.HasDefaultViewModelProviderFactory
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
 import kotlinx.android.synthetic.main.fragment_current_track.*
 import ns.fajnet.android.geobreadcrumbs.R
+import ns.fajnet.android.geobreadcrumbs.activities.main.MainActivityViewModel
 import ns.fajnet.android.geobreadcrumbs.common.Constants
 import ns.fajnet.android.geobreadcrumbs.common.dialogs.NewPointDialog
 import ns.fajnet.android.geobreadcrumbs.common.logger.LogEx
@@ -18,6 +21,7 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
 
     // members -------------------------------------------------------------------------------------
 
+    private val activityViewModel: MainActivityViewModel by activityViewModels()
     private val viewModel: CurrentTrackFragmentViewModel by viewModels()
 
     // overrides -----------------------------------------------------------------------------------
@@ -53,20 +57,33 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
     }
 
     private fun bindLiveData() {
-        //TODO("Not yet implemented")
+        activityViewModel.geoTrackServiceReference.observe(viewLifecycleOwner) { value ->
+            value.liveUpdate.observe(viewLifecycleOwner) { dto ->
+                LogEx.d(Constants.TAG_CURRENT_TRACK_FRAGMENT, "liveUpdate received")
+                // TODO: use transformations for all displayed data
+                durationLayout.editText?.setText(dto.duration)
+                distanceLayout.editText?.setText(dto.distance.toString())
+                currentSpeedLayout.editText?.setText(dto.currentSpeed.toString())
+                averageSpeedLayout.editText?.setText(dto.averageSpeed.toString())
+                maxSpeedLayout.editText?.setText(dto.maxSpeed.toString())
+                currentBearingLayout.editText?.setText(dto.currentBearing.toString())
+                overallBearingLayout.editText?.setText(dto.overallBearing.toString())
+            }
+        }
     }
 
     private fun startTrackClick() {
         LogEx.d(Constants.TAG_CURRENT_TRACK_FRAGMENT, "start track clicked")
-        NewPointDialog(
-            {
-                LogEx.d(Constants.TAG_CURRENT_TRACK_FRAGMENT, "dialog OK: $it")
-                viewModel.startTrack(it)
-            },
-            {
-                LogEx.w(Constants.TAG_CURRENT_TRACK_FRAGMENT, "dialog Cancel")
-            }
-        ).show(childFragmentManager, "newPoint")
+        viewModel.startTrack("TODO")
+//        NewPointDialog(
+//            {
+//                LogEx.d(Constants.TAG_CURRENT_TRACK_FRAGMENT, "dialog OK: $it")
+//                viewModel.startTrack(it)
+//            },
+//            {
+//                LogEx.w(Constants.TAG_CURRENT_TRACK_FRAGMENT, "dialog Cancel")
+//            }
+//        ).show(childFragmentManager, "newPoint")
     }
 
     private fun stopTrackClick() {
