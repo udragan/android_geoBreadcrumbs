@@ -14,7 +14,6 @@ import kotlinx.android.synthetic.main.fragment_current_track.*
 import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.activities.main.MainActivityViewModel
 import ns.fajnet.android.geobreadcrumbs.common.Constants
-import ns.fajnet.android.geobreadcrumbs.common.dialogs.NewPointDialog
 import ns.fajnet.android.geobreadcrumbs.common.logger.LogEx
 
 class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
@@ -58,7 +57,8 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
 
     private fun bindLiveData() {
         activityViewModel.geoTrackServiceReference.observe(viewLifecycleOwner) { value ->
-            value.liveUpdate.observe(viewLifecycleOwner) { dto ->
+            LogEx.d(Constants.TAG_CURRENT_TRACK_FRAGMENT, "serviceReference updated")
+            value?.liveUpdate.observe(viewLifecycleOwner) { dto ->
                 LogEx.d(Constants.TAG_CURRENT_TRACK_FRAGMENT, "liveUpdate received")
                 // TODO: use transformations for all displayed data
                 durationLayout.editText?.setText(dto.duration)
@@ -70,6 +70,13 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
                 overallBearingLayout.editText?.setText(dto.overallBearing.toString())
             }
         }
+    }
+
+    private fun unbindLiveData() {
+        activityViewModel.geoTrackServiceReference.removeObservers(viewLifecycleOwner)
+        activityViewModel.geoTrackServiceReference.value?.liveUpdate?.removeObservers(
+            viewLifecycleOwner
+        )
     }
 
     private fun startTrackClick() {
@@ -84,11 +91,15 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
 //                LogEx.w(Constants.TAG_CURRENT_TRACK_FRAGMENT, "dialog Cancel")
 //            }
 //        ).show(childFragmentManager, "newPoint")
+
+        unbindLiveData()
+        bindLiveData()
     }
 
     private fun stopTrackClick() {
         LogEx.d(Constants.TAG_CURRENT_TRACK_FRAGMENT, "stop track clicked")
-        viewModel.stopTrack()
+        unbindLiveData()
+        viewModel.stopTrack(activityViewModel.geoTrackServiceReference)
     }
 
     // companion -----------------------------------------------------------------------------------

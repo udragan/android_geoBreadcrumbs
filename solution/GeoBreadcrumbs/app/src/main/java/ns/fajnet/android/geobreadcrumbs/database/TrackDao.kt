@@ -10,6 +10,13 @@ interface TrackDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(track: Track): Long
 
+    @Transaction
+    fun insertAndRetrieve(track: Track): Track {
+        val id = insert(track)
+        return get(id)
+            ?: throw Exception("failed to insert track!") // TODO: think about this, should never happen
+    }
+
     @Update
     fun update(track: Track)
 

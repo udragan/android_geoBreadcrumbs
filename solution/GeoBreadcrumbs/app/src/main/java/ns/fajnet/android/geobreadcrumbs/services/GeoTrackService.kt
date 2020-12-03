@@ -23,7 +23,9 @@ import ns.fajnet.android.geobreadcrumbs.common.logger.LogEx
 import ns.fajnet.android.geobreadcrumbs.database.GeoBreadcrumbsDatabase
 import ns.fajnet.android.geobreadcrumbs.database.Point
 import ns.fajnet.android.geobreadcrumbs.database.Track
+import ns.fajnet.android.geobreadcrumbs.dtos.PointDto
 import ns.fajnet.android.geobreadcrumbs.dtos.TrackDto
+import ns.fajnet.android.geobreadcrumbs.dtos.TrackExtendedDto
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -31,9 +33,7 @@ class GeoTrackService : Service() {
 
     // members -------------------------------------------------------------------------------------
 
-    private var lastPoint = Point()
-    private var trackDto = TrackDto()
-    private var recordingTrackId: Long = 0
+    private var recordingTrack: TrackExtendedDto = TrackExtendedDto(TrackDto(), mutableListOf())
     private var recordingActive = false
 
     private val _liveUpdate = MutableLiveData<TrackDto>()
@@ -75,9 +75,6 @@ class GeoTrackService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "onDestroy")
-
-        unsubscribeFromLocationUpdates()
-        stopRecording()
     }
 
     // properties ----------------------------------------------------------------------------------
@@ -89,15 +86,13 @@ class GeoTrackService : Service() {
 
     fun stopRecordingTrack() {
         LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "stop recording")
+        unsubscribeFromLocationUpdates()
+        stopRecording()
     }
 
     // private methods -----------------------------------------------------------------------------
 
     private fun initialize() {
-        handleLocationUpdatesJob = Job()
-        // CHECK: is Dispatchers.Main the correct one for this CoroutineScope??
-        serviceScope = CoroutineScope(Dispatchers.IO + handleLocationUpdatesJob)
-
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "locationCallbackTriggered")
@@ -108,7 +103,7 @@ class GeoTrackService : Service() {
                         for (location in locationResult.locations) {
                             LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "location received: $location")
                             val newPoint = Point(
-                                trackId = recordingTrackId,
+                                trackId = recordingTrack.track.id,
                                 longitude = location.longitude,
                                 latitude = location.latitude,
                                 altitude = location.altitude,
@@ -124,32 +119,31 @@ class GeoTrackService : Service() {
 
                             LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "location persisted")
 
-                            if (lastPoint.trackId != 0L) {
+                            recordingTrack.points.add(PointDto.fromPoint(newPoint))
+
+                            if (recordingTrack.points.size > 1) {
                                 val simpleDateFormat = SimpleDateFormat.getTimeInstance()
                                 val results = floatArrayOf(0F, 0F, 0F)
                                 Location.distanceBetween(
-                                    lastPoint.latitude,
-                                    lastPoint.longitude,
+                                    recordingTrack.points[recordingTrack.points.size - 2].latitude,
+                                    recordingTrack.points[recordingTrack.points.size - 2].longitude,
                                     newPoint.latitude,
                                     newPoint.longitude,
                                     results
                                 )
-                                trackDto.distance += results[0]
-                                trackDto.currentSpeed = newPoint.speed
+                                recordingTrack.track.distance += results[0]
+                                recordingTrack.track.currentSpeed = newPoint.speed
                                 // TODO: how to calculate avg speed and max speed (data model must change)
-                                trackDto.currentBearing = results[2]
+                                recordingTrack.track.currentBearing = results[2]
                                 // TODO: how to calculate overall bearing? (there is no starting point currently known!)
 
                                 // TODO: calculate duration from track start to now
-                                trackDto.duration =
+                                recordingTrack.track.duration =
                                     simpleDateFormat.format(newPoint.locationFixTime)
-                                trackDto.noOfPoints += 1
+                                recordingTrack.track.noOfPoints = recordingTrack.points.size
                             }
 
-                            LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "dto: $trackDto")
-                            LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "newPoint: $newPoint")
-                            _liveUpdate.postValue(trackDto)
-                            lastPoint = newPoint
+                            _liveUpdate.postValue(recordingTrack.track)
 
                             LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "track update published")
                         }
@@ -157,6 +151,12 @@ class GeoTrackService : Service() {
                 }
             }
         }
+    }
+
+    private fun initializeServiceScope() {
+        handleLocationUpdatesJob = Job()
+        // CHECK: is Dispatchers.Main the correct one for this CoroutineScope??
+        serviceScope = CoroutineScope(Dispatchers.IO + handleLocationUpdatesJob)
     }
 
     private fun generateNotification(): Notification {
@@ -232,6 +232,7 @@ class GeoTrackService : Service() {
     }
 
     private fun startRecording(startPointName: String?) {
+        initializeServiceScope()
         serviceScope.launch {
             LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "start recording")
             val sdf = SimpleDateFormat.getDateTimeInstance()
@@ -240,10 +241,10 @@ class GeoTrackService : Service() {
 
             val newTrack = Track(name = utcTime)
 
-            recordingTrackId =
-                GeoBreadcrumbsDatabase.getInstance(applicationContext)
-                    .trackDao
-                    .insert(newTrack)
+            val insertedTrack = GeoBreadcrumbsDatabase.getInstance(applicationContext)
+                .trackDao
+                .insertAndRetrieve(newTrack)
+            recordingTrack.track = TrackDto.fromTrack(insertedTrack)
             recordingActive = true
             // TODO: startPointName not empty -> insert new place also (when/if places are implemented)
             subscribeToLocationUpdates()
@@ -251,43 +252,49 @@ class GeoTrackService : Service() {
     }
 
     private fun stopRecording() {
-        serviceScope.launch {
-            LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "stop recording")
-            recordingActive = false
-            val trackWithPoints = GeoBreadcrumbsDatabase.getInstance(applicationContext)
-                .trackDao
-                .getWithPoints(recordingTrackId)
-
-            if (trackWithPoints == null) {
-                LogEx.w(
-                    Constants.TAG_GEO_TRACK_SERVICE,
-                    "No track with id $recordingTrackId, nothing to update!"
-                )
-            } else {
-                LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "updating track $recordingTrackId")
-                val existingTrack = trackWithPoints.track
-
-                val track = Track(
-                    existingTrack.id,
-                    existingTrack.name,
-                    existingTrack.startTimeMillis,
-                    System.currentTimeMillis(),
-                    calculateDistanceFromPoints(trackWithPoints.points),
-                    calculateAvgSpeedFromPoints(trackWithPoints.points),
-                    calculateMaxSpeedFromPoints(trackWithPoints.points),
-                    calculateOverallBearing(trackWithPoints.points),
-                    0, // TODO: places (when added to db)
-                    trackWithPoints.points.size,
-                    1 // TODO: status enum
-                )
-
-                GeoBreadcrumbsDatabase.getInstance(applicationContext)
+        if (recordingActive) {
+            serviceScope.launch {
+                LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "stop recording")
+                recordingActive = false
+                val trackWithPointsFromDb = GeoBreadcrumbsDatabase.getInstance(applicationContext)
                     .trackDao
-                    .update(track)
-                LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "update finished")
-            }
+                    .getWithPoints(recordingTrack.track.id)
 
-            serviceScope.cancel()
+                if (trackWithPointsFromDb == null) {
+                    LogEx.w(
+                        Constants.TAG_GEO_TRACK_SERVICE,
+                        "No track with id ${recordingTrack.track.id}, nothing to update!"
+                    )
+                } else {
+                    LogEx.d(
+                        Constants.TAG_GEO_TRACK_SERVICE,
+                        "updating track ${recordingTrack.track.id}"
+                    )
+                    val existingTrack = trackWithPointsFromDb.track
+
+                    val track = Track(
+                        existingTrack.id,
+                        existingTrack.name,
+                        existingTrack.startTimeMillis,
+                        System.currentTimeMillis(),
+                        calculateDistanceFromPoints(trackWithPointsFromDb.points),
+                        calculateAvgSpeedFromPoints(trackWithPointsFromDb.points),
+                        calculateMaxSpeedFromPoints(trackWithPointsFromDb.points),
+                        calculateOverallBearing(trackWithPointsFromDb.points),
+                        0, // TODO: places (when added to db)
+                        trackWithPointsFromDb.points.size,
+                        1 // TODO: status enum
+                    )
+
+                    GeoBreadcrumbsDatabase.getInstance(applicationContext)
+                        .trackDao
+                        .update(track)
+                    LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "update finished")
+                }
+
+                serviceScope.cancel()
+                stopForeground(true)
+            }
         }
     }
 

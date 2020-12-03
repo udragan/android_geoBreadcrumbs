@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity(), ServiceConnection {
     override fun onResume() {
         super.onResume()
         val intent = Intent(this, GeoTrackService::class.java)
-        bindService(intent, this, Context.BIND_ABOVE_CLIENT)
+        bindService(intent, this, Context.BIND_AUTO_CREATE)
     }
 
     override fun onPause() {
