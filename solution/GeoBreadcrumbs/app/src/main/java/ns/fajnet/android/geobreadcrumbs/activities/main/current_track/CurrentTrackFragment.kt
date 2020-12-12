@@ -58,6 +58,18 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
     private fun bindLiveData() {
         activityViewModel.geoTrackServiceReference.observe(viewLifecycleOwner) { value ->
             LogEx.d(Constants.TAG_CURRENT_TRACK_FRAGMENT, "serviceReference updated")
+            value?.recordingActive.observe(viewLifecycleOwner) { x ->
+                if (x) {
+                    startTrack.visibility = View.GONE
+                    stopTrack.visibility = View.VISIBLE
+                    currentTrackData.visibility = View.VISIBLE
+                }
+                else {
+                    startTrack.visibility = View.VISIBLE
+                    stopTrack.visibility = View.GONE
+                    currentTrackData.visibility = View.GONE
+                }
+            }
             value?.liveUpdate.observe(viewLifecycleOwner) { dto ->
                 LogEx.d(Constants.TAG_CURRENT_TRACK_FRAGMENT, "liveUpdate received")
                 // TODO: use transformations for all displayed data

@@ -25,7 +25,8 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/default_component_margin"
                 android:text="@string/current_track_start_track"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/stopTrack"
@@ -34,11 +35,12 @@
                 android:layout_margin="@dimen/default_component_margin"
                 android:text="@string/current_track_stop_track"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/startTrack" />
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/currentTrackData"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/default_container_margin"
