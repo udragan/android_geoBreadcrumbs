@@ -42,7 +42,9 @@
 
     <string name="settings_activity_title">Settings</string>
 
-    <string name="settings_preference_category_coordinates_title">Coordinates</string>
+    <string name="settings_preference_category_units_title">Units</string>
+    <string name="settings_preference_measurement_unit_title">Measurements</string>
+    <string name="settings_preference_measurement_unit_key">measurements</string>
     <string name="settings_preference_coordinates_display_title">Coordinates display</string>
     <string name="settings_preference_coordinates_display_key">coordinate_display</string>
     <string name="settings_preference_category_tracking_precision_title">Tracking precision</string>

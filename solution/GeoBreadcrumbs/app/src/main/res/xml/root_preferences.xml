@@ -1,6 +1,14 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory app:title="@string/settings_preference_category_coordinates_title">
+    <PreferenceCategory app:title="@string/settings_preference_category_units_title">
+
+        <ListPreference
+            app:defaultValue="metric"
+            app:entries="@array/measurement_unit_entries"
+            app:entryValues="@array/measurement_unit_values"
+            app:key="@string/settings_preference_measurement_unit_key"
+            app:title="@string/settings_preference_measurement_unit_title"
+            app:useSimpleSummaryProvider="true" />
 
         <ListPreference
             app:defaultValue="decimal"

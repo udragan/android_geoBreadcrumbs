@@ -1,5 +1,16 @@
 <resources>
     <!-- Preferences -->
+    <!-- Measurement units -->
+    <string-array name="measurement_unit_entries">
+        <item>Metric</item>
+        <item>Imperial</item>
+    </string-array>
+
+    <string-array name="measurement_unit_values">
+        <item>metric</item>
+        <item>imperial</item>
+    </string-array>
+
     <!-- Coordinates display -->
     <string-array name="coordinates_display_entries">
         <item>Decimal</item>
