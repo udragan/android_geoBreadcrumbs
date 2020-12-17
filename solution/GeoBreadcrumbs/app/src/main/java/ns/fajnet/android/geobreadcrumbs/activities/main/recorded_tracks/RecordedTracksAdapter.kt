@@ -1,5 +1,6 @@
 package ns.fajnet.android.geobreadcrumbs.activities.main.recorded_tracks
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,11 +8,14 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.recycler_view_item_recorded_tracks.view.*
 import ns.fajnet.android.geobreadcrumbs.R
+import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.DistanceTransformation
 import ns.fajnet.android.geobreadcrumbs.database.Track
 
 // TODO: think about introducing a TrackModel instead of raw Track (to do calculations only once!)
-class RecordedTracksAdapter(private val dataSet: Array<Track>) :
+class RecordedTracksAdapter(context: Context, private val dataSet: Array<Track>) :
     RecyclerView.Adapter<RecordedTracksAdapter.ViewHolder>() {
+
+    private var distanceTransformation: DistanceTransformation = DistanceTransformation(context)
 
     // overrides -----------------------------------------------------------------------------------
 
@@ -26,7 +30,7 @@ class RecordedTracksAdapter(private val dataSet: Array<Track>) :
         val track = dataSet[position]
         viewHolder.name.text = track.name
         viewHolder.duration.text = (track.startTimeMillis).toString() // TODO: calculate duration
-        viewHolder.distance.text = track.distance.toString()
+        viewHolder.distance.text = distanceTransformation.transform(track.distance)
         viewHolder.avgSpeed.text =
             track.averageSpeed.toString() // TODO: add trailing unit (when settings for measurement is added)
         viewHolder.maxSpeed.text =

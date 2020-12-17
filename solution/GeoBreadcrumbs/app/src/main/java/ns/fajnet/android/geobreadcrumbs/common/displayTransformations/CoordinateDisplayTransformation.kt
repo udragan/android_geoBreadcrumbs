@@ -1,4 +1,4 @@
-package ns.fajnet.android.geobreadcrumbs.common
+package ns.fajnet.android.geobreadcrumbs.common.displayTransformations
 
 import android.location.Location
 import kotlin.math.abs

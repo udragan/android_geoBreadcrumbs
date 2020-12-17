@@ -14,6 +14,7 @@ import kotlinx.android.synthetic.main.fragment_current_track.*
 import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.activities.main.MainActivityViewModel
 import ns.fajnet.android.geobreadcrumbs.common.Constants
+import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.DistanceTransformation
 import ns.fajnet.android.geobreadcrumbs.common.logger.LogEx
 
 class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
@@ -22,6 +23,8 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
 
     private val activityViewModel: MainActivityViewModel by activityViewModels()
     private val viewModel: CurrentTrackFragmentViewModel by viewModels()
+
+    private lateinit var distanceTransformation: DistanceTransformation
 
     // overrides -----------------------------------------------------------------------------------
 
@@ -53,6 +56,8 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
         stopTrack.setOnClickListener {
             stopTrackClick()
         }
+
+        distanceTransformation = DistanceTransformation(requireContext())
     }
 
     private fun bindLiveData() {
@@ -63,8 +68,7 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
                     startTrack.visibility = View.GONE
                     stopTrack.visibility = View.VISIBLE
                     currentTrackData.visibility = View.VISIBLE
-                }
-                else {
+                } else {
                     startTrack.visibility = View.VISIBLE
                     stopTrack.visibility = View.GONE
                     currentTrackData.visibility = View.GONE
@@ -74,7 +78,7 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
                 LogEx.d(Constants.TAG_CURRENT_TRACK_FRAGMENT, "liveUpdate received")
                 // TODO: use transformations for all displayed data
                 durationLayout.editText?.setText(dto.duration)
-                distanceLayout.editText?.setText(dto.distance.toString())
+                distanceLayout.editText?.setText(distanceTransformation.transform(dto.distance))
                 currentSpeedLayout.editText?.setText(dto.currentSpeed.toString())
                 averageSpeedLayout.editText?.setText(dto.averageSpeed.toString())
                 maxSpeedLayout.editText?.setText(dto.maxSpeed.toString())

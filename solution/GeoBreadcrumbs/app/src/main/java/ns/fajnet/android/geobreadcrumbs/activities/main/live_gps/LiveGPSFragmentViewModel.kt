@@ -14,8 +14,8 @@ import kotlinx.coroutines.withContext
 import ns.fajnet.android.geobreadcrumbs.AppInit
 import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.common.Constants
-import ns.fajnet.android.geobreadcrumbs.common.CoordinateDisplayTransformation
-import ns.fajnet.android.geobreadcrumbs.common.Orientation
+import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.CoordinateDisplayTransformation
+import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.Orientation
 import ns.fajnet.android.geobreadcrumbs.common.logger.LogEx
 import ns.fajnet.android.geobreadcrumbs.common.singleArgViewModelFactory
 import java.text.SimpleDateFormat
@@ -86,6 +86,7 @@ class LiveGPSFragmentViewModel(application: Application) :
             coordinateDisplayTransformation.transformToDegMinSec = preferenceValue != defaultValue
         }
     }
+
     // public methods ------------------------------------------------------------------------------
 
     fun setLocation(location: Location) {
