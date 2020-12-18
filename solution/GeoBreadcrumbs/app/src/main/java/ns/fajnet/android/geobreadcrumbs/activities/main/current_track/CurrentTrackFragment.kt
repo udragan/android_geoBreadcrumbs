@@ -15,6 +15,7 @@ import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.activities.main.MainActivityViewModel
 import ns.fajnet.android.geobreadcrumbs.common.Constants
 import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.DistanceTransformation
+import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.SpeedTransformation
 import ns.fajnet.android.geobreadcrumbs.common.logger.LogEx
 
 class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
@@ -25,6 +26,7 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
     private val viewModel: CurrentTrackFragmentViewModel by viewModels()
 
     private lateinit var distanceTransformation: DistanceTransformation
+    private lateinit var speedTransformation: SpeedTransformation
 
     // overrides -----------------------------------------------------------------------------------
 
@@ -58,6 +60,7 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
         }
 
         distanceTransformation = DistanceTransformation(requireContext())
+        speedTransformation = SpeedTransformation(requireContext())
     }
 
     private fun bindLiveData() {
@@ -79,9 +82,9 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
                 // TODO: use transformations for all displayed data
                 durationLayout.editText?.setText(dto.duration)
                 distanceLayout.editText?.setText(distanceTransformation.transform(dto.distance))
-                currentSpeedLayout.editText?.setText(dto.currentSpeed.toString())
-                averageSpeedLayout.editText?.setText(dto.averageSpeed.toString())
-                maxSpeedLayout.editText?.setText(dto.maxSpeed.toString())
+                currentSpeedLayout.editText?.setText(speedTransformation.transform(dto.currentSpeed))
+                averageSpeedLayout.editText?.setText(speedTransformation.transform(dto.averageSpeed))
+                maxSpeedLayout.editText?.setText(speedTransformation.transform(dto.maxSpeed))
                 currentBearingLayout.editText?.setText(dto.currentBearing.toString())
                 overallBearingLayout.editText?.setText(dto.overallBearing.toString())
             }

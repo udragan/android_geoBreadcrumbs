@@ -10,7 +10,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class DistanceTransformationTests {
+class SpeedTransformationTests {
 
     private val context = ApplicationProvider.getApplicationContext<Context>()
     private val prefEditor = PreferenceManager.getDefaultSharedPreferences(context).edit()
@@ -18,11 +18,11 @@ class DistanceTransformationTests {
     // tests ---------------------------------------------------------------------------------------
 
     @Test
-    fun should_transformDistanceToMeters() {
+    fun should_transformSpeedToMetersPerSecond() {
         // arrange
-        ensureSelectedUnit("metric")
-        val transformation = DistanceTransformation(context)
-        val expected = "123 m"
+        ensureSelectedUnit("ms")
+        val transformation = SpeedTransformation(context)
+        val expected = "123 m/s"
         // act
         val result = transformation.transform(123F)
         // assert
@@ -30,37 +30,25 @@ class DistanceTransformationTests {
     }
 
     @Test
-    fun should_transformDistanceToKilometers() {
+    fun should_transformSpeedToKilometersPerHour() {
         // arrange
-        ensureSelectedUnit("metric")
-        val transformation = DistanceTransformation(context)
-        val expected = "1.2 km"
+        ensureSelectedUnit("kmh")
+        val transformation = SpeedTransformation(context)
+        val expected = "36 km/h"
         // act
-        val result = transformation.transform(1200F)
+        val result = transformation.transform(10F)
         // assert
         Assert.assertEquals(expected, result)
     }
 
     @Test
-    fun should_transformDistanceToFeet() {
+    fun should_transformSpeedToMilesPerHour() {
         // arrange
-        ensureSelectedUnit("imperial")
-        val transformation = DistanceTransformation(context)
-        val expected = "328.08 ft"
+        ensureSelectedUnit("mph")
+        val transformation = SpeedTransformation(context)
+        val expected = "22.3 mph"
         // act
-        val result = transformation.transform(100F)
-        // assert
-        Assert.assertEquals(expected, result)
-    }
-
-    @Test
-    fun should_transformDistanceToMiles() {
-        // arrange
-        ensureSelectedUnit("imperial")
-        val transformation = DistanceTransformation(context)
-        val expected = "1.24 miles"
-        // act
-        val result = transformation.transform(2000F)
+        val result = transformation.transform(10F)
         // assert
         Assert.assertEquals(expected, result)
     }
@@ -69,7 +57,7 @@ class DistanceTransformationTests {
     fun shouldNot_TransformAndReturnErrorMessage() {
         // arrange
         ensureSelectedUnit("notSupported")
-        val transformation = DistanceTransformation(context)
+        val transformation = SpeedTransformation(context)
         val expected = "Unit not supported: notSupported"
         // act
         val result = transformation.transform(100F)
@@ -81,7 +69,7 @@ class DistanceTransformationTests {
 
     private fun ensureSelectedUnit(unit: String) {
         prefEditor.putString(
-            context.getString(R.string.settings_preference_measurement_unit_key),
+            context.getString(R.string.settings_preference_speed_unit_key),
             unit
         )
         prefEditor.commit()

@@ -9,17 +9,20 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.recycler_view_item_recorded_tracks.view.*
 import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.DistanceTransformation
+import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.SpeedTransformation
 import ns.fajnet.android.geobreadcrumbs.database.Track
 
 // TODO: think about introducing a TrackModel instead of raw Track (to do calculations only once!)
 class RecordedTracksAdapter(context: Context, private val dataSet: Array<Track>) :
     RecyclerView.Adapter<RecordedTracksAdapter.ViewHolder>() {
 
-    private var distanceTransformation: DistanceTransformation = DistanceTransformation(context)
+    private val distanceTransformation = DistanceTransformation(context)
+    private val speedTransformation = SpeedTransformation(context)
 
     // overrides -----------------------------------------------------------------------------------
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
+        // TODO: transformations are not applied when settings are changed!!
         val view = LayoutInflater.from(viewGroup.context)
             .inflate(R.layout.recycler_view_item_recorded_tracks, viewGroup, false)
 
@@ -32,9 +35,9 @@ class RecordedTracksAdapter(context: Context, private val dataSet: Array<Track>)
         viewHolder.duration.text = (track.startTimeMillis).toString() // TODO: calculate duration
         viewHolder.distance.text = distanceTransformation.transform(track.distance)
         viewHolder.avgSpeed.text =
-            track.averageSpeed.toString() // TODO: add trailing unit (when settings for measurement is added)
+            speedTransformation.transform(track.averageSpeed)
         viewHolder.maxSpeed.text =
-            track.maxSpeed.toString() // TODO: add trailing unit (when settings for measurement is added)
+            speedTransformation.transform(track.maxSpeed)
         viewHolder.places.text = track.numberOfPlaces.toString()
         viewHolder.points.text = track.numberOfPoints.toString()
         viewHolder.bearing.text = track.bearing.toString() // TODO: convert to direction

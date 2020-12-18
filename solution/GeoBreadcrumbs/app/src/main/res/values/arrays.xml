@@ -11,6 +11,19 @@
         <item>imperial</item>
     </string-array>
 
+    <!-- Speed units -->
+    <string-array name="speed_unit_entries">
+        <item>Meters / second</item>
+        <item>Kilometers / hour</item>
+        <item>Miles / hour</item>
+    </string-array>
+
+    <string-array name="speed_unit_values">
+        <item>ms</item>
+        <item>kmh</item>
+        <item>mph</item>
+    </string-array>
+
     <!-- Coordinates display -->
     <string-array name="coordinates_display_entries">
         <item>Decimal</item>
