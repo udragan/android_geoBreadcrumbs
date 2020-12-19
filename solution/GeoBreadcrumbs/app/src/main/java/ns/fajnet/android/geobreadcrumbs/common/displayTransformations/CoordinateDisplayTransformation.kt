@@ -35,13 +35,3 @@ class CoordinateDisplayTransformation(var transformToDegMinSec: Boolean) {
         }
     }
 }
-
-// #################################################################################################
-
-enum class Orientation {
-    HORIZONTAL, VERTICAL
-}
-
-enum class Direction {
-    N, S, E, W
-}

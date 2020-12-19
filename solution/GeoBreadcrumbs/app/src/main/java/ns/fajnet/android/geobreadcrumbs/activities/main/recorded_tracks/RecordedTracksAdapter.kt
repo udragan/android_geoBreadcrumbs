@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.recycler_view_item_recorded_tracks.view.*
 import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.DistanceTransformation
+import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.HeadingTransformation
 import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.SpeedTransformation
 import ns.fajnet.android.geobreadcrumbs.database.Track
 
@@ -18,6 +19,7 @@ class RecordedTracksAdapter(context: Context, private val dataSet: Array<Track>)
 
     private val distanceTransformation = DistanceTransformation(context)
     private val speedTransformation = SpeedTransformation(context)
+    private val headingTransformation = HeadingTransformation()
 
     // overrides -----------------------------------------------------------------------------------
 
@@ -40,7 +42,7 @@ class RecordedTracksAdapter(context: Context, private val dataSet: Array<Track>)
             speedTransformation.transform(track.maxSpeed)
         viewHolder.places.text = track.numberOfPlaces.toString()
         viewHolder.points.text = track.numberOfPoints.toString()
-        viewHolder.bearing.text = track.bearing.toString() // TODO: convert to direction
+        viewHolder.bearing.text = headingTransformation.transform(track.bearing)
     }
 
     override fun getItemCount() = dataSet.size

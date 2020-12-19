@@ -15,6 +15,7 @@ import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.activities.main.MainActivityViewModel
 import ns.fajnet.android.geobreadcrumbs.common.Constants
 import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.DistanceTransformation
+import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.HeadingTransformation
 import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.SpeedTransformation
 import ns.fajnet.android.geobreadcrumbs.common.logger.LogEx
 
@@ -27,6 +28,7 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
 
     private lateinit var distanceTransformation: DistanceTransformation
     private lateinit var speedTransformation: SpeedTransformation
+    private lateinit var headingTransformation: HeadingTransformation
 
     // overrides -----------------------------------------------------------------------------------
 
@@ -61,6 +63,7 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
 
         distanceTransformation = DistanceTransformation(requireContext())
         speedTransformation = SpeedTransformation(requireContext())
+        headingTransformation = HeadingTransformation()
     }
 
     private fun bindLiveData() {
@@ -85,8 +88,8 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
                 currentSpeedLayout.editText?.setText(speedTransformation.transform(dto.currentSpeed))
                 averageSpeedLayout.editText?.setText(speedTransformation.transform(dto.averageSpeed))
                 maxSpeedLayout.editText?.setText(speedTransformation.transform(dto.maxSpeed))
-                currentBearingLayout.editText?.setText(dto.currentBearing.toString())
-                overallBearingLayout.editText?.setText(dto.overallBearing.toString())
+                currentBearingLayout.editText?.setText(headingTransformation.transform(dto.currentBearing))
+                overallBearingLayout.editText?.setText(headingTransformation.transform(dto.overallBearing))
             }
         }
     }
