@@ -4,26 +4,26 @@
 
         <ListPreference
             app:defaultValue="metric"
-            app:entries="@array/measurement_unit_entries"
-            app:entryValues="@array/measurement_unit_values"
-            app:key="@string/settings_preference_measurement_unit_key"
-            app:title="@string/settings_preference_measurement_unit_title"
+            app:entries="@array/unit_measurement_entries"
+            app:entryValues="@array/unit_measurement_values"
+            app:key="@string/settings_preference_unit_measurement_key"
+            app:title="@string/settings_preference_unit_measurement_title"
             app:useSimpleSummaryProvider="true" />
 
         <ListPreference
             app:defaultValue="ms"
-            app:entries="@array/speed_unit_entries"
-            app:entryValues="@array/speed_unit_values"
-            app:key="@string/settings_preference_speed_unit_key"
-            app:title="@string/settings_preference_speed_unit_title"
+            app:entries="@array/unit_speed_entries"
+            app:entryValues="@array/unit_speed_values"
+            app:key="@string/settings_preference_unit_speed_key"
+            app:title="@string/settings_preference_unit_speed_title"
             app:useSimpleSummaryProvider="true" />
 
         <ListPreference
             app:defaultValue="decimal"
-            app:entries="@array/coordinates_display_entries"
-            app:entryValues="@array/coordinates_display_values"
-            app:key="@string/settings_preference_coordinates_display_key"
-            app:title="@string/settings_preference_coordinates_display_title"
+            app:entries="@array/unit_coordinate_entries"
+            app:entryValues="@array/unit_coordinate_values"
+            app:key="@string/settings_preference_unit_coordinate_key"
+            app:title="@string/settings_preference_unit_coordinate_title"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 

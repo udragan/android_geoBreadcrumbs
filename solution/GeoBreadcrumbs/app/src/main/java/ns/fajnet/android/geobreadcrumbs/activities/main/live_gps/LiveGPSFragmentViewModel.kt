@@ -1,58 +1,37 @@
 package ns.fajnet.android.geobreadcrumbs.activities.main.live_gps
 
 import android.app.Application
-import android.content.SharedPreferences
 import android.location.Location
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import androidx.preference.PreferenceManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import ns.fajnet.android.geobreadcrumbs.AppInit
-import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.common.Constants
-import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.CoordinateDisplayTransformation
-import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.Orientation
 import ns.fajnet.android.geobreadcrumbs.common.logger.LogEx
 import ns.fajnet.android.geobreadcrumbs.common.singleArgViewModelFactory
 import java.text.SimpleDateFormat
 
-class LiveGPSFragmentViewModel(application: Application) :
-    AndroidViewModel(application), SharedPreferences.OnSharedPreferenceChangeListener {
-
-    init {
-        readExistingPreferences()
-        registerPreferenceChangeListener()
-    }
+class LiveGPSFragmentViewModel(application: Application) : AndroidViewModel(application) {
 
     // members -------------------------------------------------------------------------------------
 
-    private lateinit var coordinateDisplayTransformation: CoordinateDisplayTransformation
-
-    private val _longitude = MutableLiveData<String>()
-    private val _latitude = MutableLiveData<String>()
+    private val _longitude = MutableLiveData<Double>()
+    private val _latitude = MutableLiveData<Double>()
     private val _altitude = MutableLiveData<String>()
     private val _locationFixTime = MutableLiveData<String>()
     private val _accuracy = MutableLiveData<String>()
     private val _speed = MutableLiveData<String>()
     private val _bearing = MutableLiveData<String>()
 
-    // overrides -----------------------------------------------------------------------------------
-
-    override fun onCleared() {
-        super.onCleared()
-        unregisterPreferenceChangeListener()
-    }
-
     // properties ----------------------------------------------------------------------------------
 
-    val longitude: LiveData<String>
+    val longitude: LiveData<Double>
         get() = _longitude
 
-    val latitude: LiveData<String>
+    val latitude: LiveData<Double>
         get() = _latitude
 
     val altitude: LiveData<String>
@@ -70,23 +49,6 @@ class LiveGPSFragmentViewModel(application: Application) :
     val bearing: LiveData<String>
         get() = _bearing
 
-    // OnSharedPreferencesChangedListener ----------------------------------------------------------
-
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-        LogEx.d(Constants.TAG_LIVE_GPS_FRAGMENT_VM, "preference changed")
-
-        if (key == getApplication<AppInit>().getString(R.string.settings_preference_coordinates_display_key)) {
-            val defaultValue =
-                getApplication<AppInit>().resources.getStringArray(R.array.coordinates_display_values)[0]
-            val preferenceValue = sharedPreferences
-                .getString(
-                    getApplication<AppInit>().getString(R.string.settings_preference_coordinates_display_key),
-                    defaultValue
-                )
-            coordinateDisplayTransformation.transformToDegMinSec = preferenceValue != defaultValue
-        }
-    }
-
     // public methods ------------------------------------------------------------------------------
 
     fun setLocation(location: Location) {
@@ -95,18 +57,8 @@ class LiveGPSFragmentViewModel(application: Application) :
                 LogEx.d(Constants.TAG_LIVE_GPS_FRAGMENT_VM, "location received: $location")
                 val simpleDateFormat = SimpleDateFormat.getTimeInstance()
 
-                _longitude.postValue(
-                    coordinateDisplayTransformation.transform(
-                        location.longitude,
-                        Orientation.HORIZONTAL
-                    )
-                )
-                _latitude.postValue(
-                    coordinateDisplayTransformation.transform(
-                        location.latitude,
-                        Orientation.VERTICAL
-                    )
-                )
+                _longitude.postValue(location.longitude)
+                _latitude.postValue(location.latitude)
                 _altitude.postValue(location.altitude.toString())
                 _locationFixTime.postValue(
                     simpleDateFormat.format(
@@ -118,33 +70,6 @@ class LiveGPSFragmentViewModel(application: Application) :
                 _bearing.postValue(location.bearing.toString())
             }
         }
-    }
-
-    // private methods -----------------------------------------------------------------------------
-
-    private fun readExistingPreferences() {
-        val defaultCoordinateDisplayPreference =
-            getApplication<AppInit>().resources.getStringArray(R.array.coordinates_display_values)[0]
-        val coordinateDisplayPreference =
-            PreferenceManager.getDefaultSharedPreferences(getApplication<AppInit>().applicationContext)
-                .getString(
-                    getApplication<AppInit>().getString(R.string.settings_preference_coordinates_display_key),
-                    defaultCoordinateDisplayPreference
-                )
-        coordinateDisplayTransformation =
-            CoordinateDisplayTransformation(coordinateDisplayPreference != defaultCoordinateDisplayPreference)
-    }
-
-    private fun registerPreferenceChangeListener() {
-        LogEx.d(Constants.TAG_LIVE_GPS_FRAGMENT_VM, "register preference change listener")
-        PreferenceManager.getDefaultSharedPreferences(getApplication<AppInit>().applicationContext)
-            .registerOnSharedPreferenceChangeListener(this)
-    }
-
-    private fun unregisterPreferenceChangeListener() {
-        LogEx.d(Constants.TAG_LIVE_GPS_FRAGMENT_VM, "unregister preference change listener")
-        PreferenceManager.getDefaultSharedPreferences(getApplication<AppInit>().applicationContext)
-            .unregisterOnSharedPreferenceChangeListener(this)
     }
 
     // companion -----------------------------------------------------------------------------------

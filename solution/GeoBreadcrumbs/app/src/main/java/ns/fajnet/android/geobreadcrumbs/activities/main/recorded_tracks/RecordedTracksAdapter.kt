@@ -17,6 +17,8 @@ import ns.fajnet.android.geobreadcrumbs.database.Track
 class RecordedTracksAdapter(context: Context, private val dataSet: Array<Track>) :
     RecyclerView.Adapter<RecordedTracksAdapter.ViewHolder>() {
 
+    // members -------------------------------------------------------------------------------------
+    
     private val distanceTransformation = DistanceTransformation(context)
     private val speedTransformation = SpeedTransformation(context)
     private val headingTransformation = HeadingTransformation()

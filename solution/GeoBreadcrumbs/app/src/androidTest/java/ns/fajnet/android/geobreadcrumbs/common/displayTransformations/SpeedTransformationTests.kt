@@ -69,7 +69,7 @@ class SpeedTransformationTests {
 
     private fun ensureSelectedUnit(unit: String) {
         prefEditor.putString(
-            context.getString(R.string.settings_preference_speed_unit_key),
+            context.getString(R.string.settings_preference_unit_speed_key),
             unit
         )
         prefEditor.commit()

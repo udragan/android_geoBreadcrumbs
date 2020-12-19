@@ -81,7 +81,7 @@ class DistanceTransformationTests {
 
     private fun ensureSelectedUnit(unit: String) {
         prefEditor.putString(
-            context.getString(R.string.settings_preference_measurement_unit_key),
+            context.getString(R.string.settings_preference_unit_measurement_key),
             unit
         )
         prefEditor.commit()

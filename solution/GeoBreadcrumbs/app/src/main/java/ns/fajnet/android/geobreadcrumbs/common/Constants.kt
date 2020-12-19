@@ -2,6 +2,9 @@ package ns.fajnet.android.geobreadcrumbs.common
 
 internal class Constants {
     companion object {
+
+        // request codes ---------------------------------------------------------------------------
+
         const val REQUEST_CODE_REQUEST_LOCATION_PERMISSION = 1000
 
         // notification channels -------------------------------------------------------------------
@@ -26,6 +29,7 @@ internal class Constants {
 
         const val TAG_GEO_TRACK_SERVICE = "appTag_service"
 
+        const val TAG_TRANSFORMATION_COORDINATE = "appTag_transformation_coordinate"
         const val TAG_TRANSFORMATION_DISTANCE = "appTag_transformation_distance"
         const val TAG_TRANSFORMATION_SPEED = "appTag_transformation_speed"
     }

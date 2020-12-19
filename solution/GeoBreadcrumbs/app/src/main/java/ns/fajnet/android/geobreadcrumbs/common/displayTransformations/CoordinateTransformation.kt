@@ -2,23 +2,19 @@ package ns.fajnet.android.geobreadcrumbs.common.displayTransformations
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.location.Location
 import androidx.preference.PreferenceManager
 import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.common.Constants
 import ns.fajnet.android.geobreadcrumbs.common.logger.LogEx
-import java.math.RoundingMode
-import java.text.DecimalFormat
+import kotlin.math.abs
 
-class DistanceTransformation(val context: Context) :
+class CoordinateTransformation(val context: Context) :
     SharedPreferences.OnSharedPreferenceChangeListener {
 
     // members -------------------------------------------------------------------------------------
 
     private var unit = ""
-    private val decimalFormat =
-        DecimalFormat("#,###.##").apply { roundingMode = RoundingMode.FLOOR }
-    private val feetInMeter = 3.2808
-    private val feetInMile = 5280
 
     // init ----------------------------------------------------------------------------------------
 
@@ -30,38 +26,30 @@ class DistanceTransformation(val context: Context) :
     // OnSharedPreferencesChangedListener ----------------------------------------------------------
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-        if (key == context.getString(R.string.settings_preference_unit_measurement_key)) {
-            LogEx.d(Constants.TAG_TRANSFORMATION_DISTANCE, "preference changed")
-            val defaultValue = context.resources.getStringArray(R.array.unit_measurement_values)[0]
-            unit = sharedPreferences
-                .getString(
-                    context.getString(R.string.settings_preference_unit_measurement_key),
-                    defaultValue
-                )!!
-        }
+        LogEx.d(Constants.TAG_TRANSFORMATION_COORDINATE, "preference changed")
+        val defaultValue = context.resources.getStringArray(R.array.unit_coordinate_values)[0]
+        unit = sharedPreferences
+            .getString(
+                context.getString(R.string.settings_preference_unit_coordinate_key),
+                defaultValue
+            )!!
     }
 
     // public methods ------------------------------------------------------------------------------
 
-    fun transform(distance: Float): String {
-        val unitSystem = context.resources.getStringArray(R.array.unit_measurement_values)
+    fun transform(coordinate: Double, orientation: Orientation): String {
+        val unitSystem = context.resources.getStringArray(R.array.unit_coordinate_values)
 
         return when (unit) {
             unitSystem[0] -> {
-                if (distance > 1000) {
-                    return "${decimalFormat.format(distance / 1000)} km"
-                }
-
-                "${decimalFormat.format(distance)} m"
+                "${coordinate}º"
             }
             unitSystem[1] -> {
-                val distanceInFeet = distance * feetInMeter
+                val direction = getDirection(coordinate, orientation)
+                val splitCoordinates =
+                    arrayOf(Location.convert(abs(coordinate), Location.FORMAT_SECONDS).split(':'))
 
-                if (distanceInFeet > feetInMile) {
-                    return "${decimalFormat.format(distanceInFeet / feetInMile)} miles"
-                }
-
-                "${decimalFormat.format(distanceInFeet)} ft"
+                "${splitCoordinates[0][0]}º ${splitCoordinates[0][1]}\" ${splitCoordinates[0][2]}' $direction"
             }
             else -> {
                 "Unit not supported: $unit"
@@ -73,24 +61,38 @@ class DistanceTransformation(val context: Context) :
 
     private fun readExistingPreference() {
         val defaultValue =
-            context.resources.getStringArray(R.array.unit_measurement_values)[0]
+            context.resources.getStringArray(R.array.unit_speed_values)[0]
         unit = PreferenceManager.getDefaultSharedPreferences(context)
             .getString(
-                context.getString(R.string.settings_preference_unit_measurement_key),
+                context.getString(R.string.settings_preference_unit_coordinate_key),
                 defaultValue
             )!!
     }
 
     private fun registerPreferenceChangeListener() {
-        LogEx.d(Constants.TAG_TRANSFORMATION_DISTANCE, "register preference change listener")
+        LogEx.d(Constants.TAG_TRANSFORMATION_COORDINATE, "register preference change listener")
         PreferenceManager.getDefaultSharedPreferences(context)
             .registerOnSharedPreferenceChangeListener(this)
     }
 
     // CHECK: should it be unregistered? if so then how?
     private fun unregisterPreferenceChangeListener() {
-        LogEx.d(Constants.TAG_TRANSFORMATION_DISTANCE, "unregister preference change listener")
+        LogEx.d(Constants.TAG_TRANSFORMATION_COORDINATE, "unregister preference change listener")
         PreferenceManager.getDefaultSharedPreferences(context)
             .unregisterOnSharedPreferenceChangeListener(this)
+    }
+
+    private fun getDirection(coordinate: Double, orientation: Orientation): String {
+        return if (orientation == Orientation.HORIZONTAL) {
+            if (coordinate < 0) {
+                Direction.W.name
+            } else {
+                Direction.E.name
+            }
+        } else if (coordinate < 0) {
+            Direction.S.name
+        } else {
+            Direction.N.name
+        }
     }
 }

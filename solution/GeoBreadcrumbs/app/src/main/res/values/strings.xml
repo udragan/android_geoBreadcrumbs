@@ -43,12 +43,12 @@
     <string name="settings_activity_title">Settings</string>
 
     <string name="settings_preference_category_units_title">Units</string>
-    <string name="settings_preference_measurement_unit_title">Measurements</string>
-    <string name="settings_preference_measurement_unit_key">measurements</string>
-    <string name="settings_preference_speed_unit_title">Speed</string>
-    <string name="settings_preference_speed_unit_key">speed</string>
-    <string name="settings_preference_coordinates_display_title">Coordinates display</string>
-    <string name="settings_preference_coordinates_display_key">coordinate_display</string>
+    <string name="settings_preference_unit_measurement_title">Measurements</string>
+    <string name="settings_preference_unit_measurement_key">measurements</string>
+    <string name="settings_preference_unit_speed_title">Speed</string>
+    <string name="settings_preference_unit_speed_key">speed</string>
+    <string name="settings_preference_unit_coordinate_title">Coordinates</string>
+    <string name="settings_preference_unit_coordinate_key">coordinate</string>
     <string name="settings_preference_category_tracking_precision_title">Tracking precision</string>
     <string name="settings_preference_tracking_precision_interval_title">Interval</string>
     <string name="settings_preference_tracking_precision_interval_key">interval</string>

@@ -16,6 +16,8 @@ import kotlinx.android.synthetic.main.fragment_live_gps.*
 import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.common.Constants
 import ns.fajnet.android.geobreadcrumbs.common.Utils
+import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.CoordinateTransformation
+import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.Orientation
 import ns.fajnet.android.geobreadcrumbs.common.logger.LogEx
 
 /**
@@ -30,6 +32,7 @@ class LiveGPSFragment : Fragment(), HasDefaultViewModelProviderFactory {
     private val viewModel: LiveGPSFragmentViewModel by viewModels()
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
+    private lateinit var coordinateTransformation: CoordinateTransformation
 
     // overrides -----------------------------------------------------------------------------------
 
@@ -49,6 +52,7 @@ class LiveGPSFragment : Fragment(), HasDefaultViewModelProviderFactory {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        bind()
         bindLiveData()
     }
 
@@ -122,12 +126,16 @@ class LiveGPSFragment : Fragment(), HasDefaultViewModelProviderFactory {
         }
     }
 
+    private fun bind() {
+        coordinateTransformation = CoordinateTransformation(requireContext())
+    }
+
     private fun bindLiveData() {
         viewModel.longitude.observe(viewLifecycleOwner) { value ->
-            longitudeLayout.editText!!.setText(value)
+            longitudeLayout.editText!!.setText(coordinateTransformation.transform(value, Orientation.HORIZONTAL))
         }
         viewModel.latitude.observe(viewLifecycleOwner) { value ->
-            latitudeLayout.editText!!.setText(value)
+            latitudeLayout.editText!!.setText(coordinateTransformation.transform(value, Orientation.VERTICAL))
         }
         viewModel.altitude.observe(viewLifecycleOwner) { value ->
             altitudeLayout.editText!!.setText(value)

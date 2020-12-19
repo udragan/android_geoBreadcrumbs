@@ -30,12 +30,12 @@ class SpeedTransformation(val context: Context) :
     // OnSharedPreferencesChangedListener ----------------------------------------------------------
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-        if (key == context.getString(R.string.settings_preference_speed_unit_key)) {
+        if (key == context.getString(R.string.settings_preference_unit_speed_key)) {
             LogEx.d(Constants.TAG_TRANSFORMATION_SPEED, "preference changed")
-            val defaultValue = context.resources.getStringArray(R.array.speed_unit_values)[0]
+            val defaultValue = context.resources.getStringArray(R.array.unit_speed_values)[0]
             unit = sharedPreferences
                 .getString(
-                    context.getString(R.string.settings_preference_speed_unit_key),
+                    context.getString(R.string.settings_preference_unit_speed_key),
                     defaultValue
                 )!!
         }
@@ -44,7 +44,7 @@ class SpeedTransformation(val context: Context) :
     // public methods ------------------------------------------------------------------------------
 
     fun transform(speed: Float): String {
-        val unitSystem = context.resources.getStringArray(R.array.speed_unit_values)
+        val unitSystem = context.resources.getStringArray(R.array.unit_speed_values)
 
         return when (unit) {
             unitSystem[0] -> {
@@ -66,10 +66,10 @@ class SpeedTransformation(val context: Context) :
 
     private fun readExistingPreference() {
         val defaultValue =
-            context.resources.getStringArray(R.array.speed_unit_values)[0]
+            context.resources.getStringArray(R.array.unit_speed_values)[0]
         unit = PreferenceManager.getDefaultSharedPreferences(context)
             .getString(
-                context.getString(R.string.settings_preference_speed_unit_key),
+                context.getString(R.string.settings_preference_unit_speed_key),
                 defaultValue
             )!!
     }
