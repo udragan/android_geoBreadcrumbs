@@ -16,8 +16,10 @@ import kotlinx.android.synthetic.main.fragment_live_gps.*
 import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.common.Constants
 import ns.fajnet.android.geobreadcrumbs.common.Utils
+import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.BearingTransformation
 import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.CoordinateTransformation
 import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.Orientation
+import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.SpeedTransformation
 import ns.fajnet.android.geobreadcrumbs.common.logger.LogEx
 
 /**
@@ -33,6 +35,8 @@ class LiveGPSFragment : Fragment(), HasDefaultViewModelProviderFactory {
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
     private lateinit var coordinateTransformation: CoordinateTransformation
+    private lateinit var speedTransformation: SpeedTransformation
+    private lateinit var bearingTransformation: BearingTransformation
 
     // overrides -----------------------------------------------------------------------------------
 
@@ -128,14 +132,27 @@ class LiveGPSFragment : Fragment(), HasDefaultViewModelProviderFactory {
 
     private fun bind() {
         coordinateTransformation = CoordinateTransformation(requireContext())
+        speedTransformation = SpeedTransformation(requireContext())
+        bearingTransformation = BearingTransformation()
     }
 
     private fun bindLiveData() {
+        // TODO: use transformations on all displayed values
         viewModel.longitude.observe(viewLifecycleOwner) { value ->
-            longitudeLayout.editText!!.setText(coordinateTransformation.transform(value, Orientation.HORIZONTAL))
+            longitudeLayout.editText!!.setText(
+                coordinateTransformation.transform(
+                    value,
+                    Orientation.HORIZONTAL
+                )
+            )
         }
         viewModel.latitude.observe(viewLifecycleOwner) { value ->
-            latitudeLayout.editText!!.setText(coordinateTransformation.transform(value, Orientation.VERTICAL))
+            latitudeLayout.editText!!.setText(
+                coordinateTransformation.transform(
+                    value,
+                    Orientation.VERTICAL
+                )
+            )
         }
         viewModel.altitude.observe(viewLifecycleOwner) { value ->
             altitudeLayout.editText!!.setText(value)
@@ -147,10 +164,10 @@ class LiveGPSFragment : Fragment(), HasDefaultViewModelProviderFactory {
             accuracyLayout.editText!!.setText(value)
         }
         viewModel.speed.observe(viewLifecycleOwner) { value ->
-            speedLayout.editText!!.setText(value)
+            speedLayout.editText!!.setText(speedTransformation.transform(value))
         }
         viewModel.bearing.observe(viewLifecycleOwner) { value ->
-            bearingLayout.editText!!.setText(value)
+            bearingLayout.editText!!.setText(bearingTransformation.transform(value))
         }
     }
 
