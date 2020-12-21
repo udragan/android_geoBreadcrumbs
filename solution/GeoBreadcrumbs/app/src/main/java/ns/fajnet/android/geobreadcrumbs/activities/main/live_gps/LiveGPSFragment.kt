@@ -16,10 +16,7 @@ import kotlinx.android.synthetic.main.fragment_live_gps.*
 import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.common.Constants
 import ns.fajnet.android.geobreadcrumbs.common.Utils
-import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.BearingTransformation
-import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.CoordinateTransformation
-import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.Orientation
-import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.SpeedTransformation
+import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.*
 import ns.fajnet.android.geobreadcrumbs.common.logger.LogEx
 
 /**
@@ -35,6 +32,7 @@ class LiveGPSFragment : Fragment(), HasDefaultViewModelProviderFactory {
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
     private lateinit var coordinateTransformation: CoordinateTransformation
+    private lateinit var accuracyTransformation: AccuracyTransformation
     private lateinit var speedTransformation: SpeedTransformation
     private lateinit var bearingTransformation: BearingTransformation
 
@@ -132,6 +130,7 @@ class LiveGPSFragment : Fragment(), HasDefaultViewModelProviderFactory {
 
     private fun bind() {
         coordinateTransformation = CoordinateTransformation(requireContext())
+        accuracyTransformation = AccuracyTransformation()
         speedTransformation = SpeedTransformation(requireContext())
         bearingTransformation = BearingTransformation()
     }
@@ -161,7 +160,7 @@ class LiveGPSFragment : Fragment(), HasDefaultViewModelProviderFactory {
             locationFixTimeLayout.editText!!.setText(value)
         }
         viewModel.accuracy.observe(viewLifecycleOwner) { value ->
-            accuracyLayout.editText!!.setText(value)
+            accuracyLayout.editText!!.setText(accuracyTransformation.transform(value))
         }
         viewModel.speed.observe(viewLifecycleOwner) { value ->
             speedLayout.editText!!.setText(speedTransformation.transform(value))

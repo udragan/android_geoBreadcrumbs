@@ -22,7 +22,7 @@ class LiveGPSFragmentViewModel(application: Application) : AndroidViewModel(appl
     private val _latitude = MutableLiveData<Double>()
     private val _altitude = MutableLiveData<String>()
     private val _locationFixTime = MutableLiveData<String>()
-    private val _accuracy = MutableLiveData<String>()
+    private val _accuracy = MutableLiveData<Float>()
     private val _speed = MutableLiveData<Float>()
     private val _bearing = MutableLiveData<Float>()
 
@@ -40,7 +40,7 @@ class LiveGPSFragmentViewModel(application: Application) : AndroidViewModel(appl
     val locationFixTime: LiveData<String>
         get() = _locationFixTime
 
-    val accuracy: LiveData<String>
+    val accuracy: LiveData<Float>
         get() = _accuracy
 
     val speed: LiveData<Float>
@@ -65,7 +65,7 @@ class LiveGPSFragmentViewModel(application: Application) : AndroidViewModel(appl
                         location.time
                     )
                 )
-                _accuracy.postValue(location.accuracy.toString())
+                _accuracy.postValue(location.accuracy)
                 _speed.postValue(location.speed)
                 _bearing.postValue(location.bearing)
             }
