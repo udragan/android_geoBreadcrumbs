@@ -10,7 +10,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class SpeedTransformationTests {
+class AltitudeTransformationTests {
 
     private val context = ApplicationProvider.getApplicationContext<Context>()
     private val prefEditor = PreferenceManager.getDefaultSharedPreferences(context).edit()
@@ -18,37 +18,25 @@ class SpeedTransformationTests {
     // tests ---------------------------------------------------------------------------------------
 
     @Test
-    fun should_transformSpeedToMetersPerSecond() {
+    fun should_transformAltitudeToMeters() {
         // arrange
-        ensureSelectedUnit("ms")
-        val transformation = SpeedTransformation(context)
-        val expected = "123 m/s"
+        ensureSelectedUnit("metric")
+        val transformation = AltitudeTransformation(context)
+        val expected = "42 m"
         // act
-        val result = transformation.transform(123F)
+        val result = transformation.transform(42.0)
         // assert
         Assert.assertEquals(expected, result)
     }
 
     @Test
-    fun should_transformSpeedToKilometersPerHour() {
+    fun should_transformAltitudeToFeet() {
         // arrange
-        ensureSelectedUnit("kmh")
-        val transformation = SpeedTransformation(context)
-        val expected = "36 km/h"
+        ensureSelectedUnit("imperial")
+        val transformation = AltitudeTransformation(context)
+        val expected = "138 ft"
         // act
-        val result = transformation.transform(10F)
-        // assert
-        Assert.assertEquals(expected, result)
-    }
-
-    @Test
-    fun should_transformSpeedToMilesPerHour() {
-        // arrange
-        ensureSelectedUnit("mph")
-        val transformation = SpeedTransformation(context)
-        val expected = "22.4 mph"
-        // act
-        val result = transformation.transform(10F)
+        val result = transformation.transform(42.0)
         // assert
         Assert.assertEquals(expected, result)
     }
@@ -57,10 +45,10 @@ class SpeedTransformationTests {
     fun shouldNot_TransformAndReturnErrorMessage() {
         // arrange
         ensureSelectedUnit("notSupported")
-        val transformation = SpeedTransformation(context)
+        val transformation = AltitudeTransformation(context)
         val expected = "Unit not supported: notSupported"
         // act
-        val result = transformation.transform(100F)
+        val result = transformation.transform(100.0)
         // assert
         Assert.assertEquals(expected, result)
     }
@@ -69,7 +57,7 @@ class SpeedTransformationTests {
 
     private fun ensureSelectedUnit(unit: String) {
         prefEditor.putString(
-            context.getString(R.string.settings_preference_unit_speed_key),
+            context.getString(R.string.settings_preference_unit_measurement_key),
             unit
         )
         prefEditor.commit()

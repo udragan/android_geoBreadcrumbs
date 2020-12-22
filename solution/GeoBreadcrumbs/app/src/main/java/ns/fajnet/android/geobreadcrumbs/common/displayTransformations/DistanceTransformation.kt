@@ -16,7 +16,7 @@ class DistanceTransformation(val context: Context) :
 
     private var unit = ""
     private val decimalFormat =
-        DecimalFormat("#,###.##").apply { roundingMode = RoundingMode.FLOOR }
+        DecimalFormat("#,###.##").apply { roundingMode = RoundingMode.HALF_EVEN }
     private val feetInMeter = 3.2808
     private val feetInMile = 5280
 

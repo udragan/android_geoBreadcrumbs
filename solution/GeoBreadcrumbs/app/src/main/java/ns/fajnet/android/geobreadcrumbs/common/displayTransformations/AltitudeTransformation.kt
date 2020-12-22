@@ -9,7 +9,7 @@ import ns.fajnet.android.geobreadcrumbs.common.logger.LogEx
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
-class AccuracyTransformation(val context: Context) :
+class AltitudeTransformation(val context: Context) :
     SharedPreferences.OnSharedPreferenceChangeListener {
 
     // members -------------------------------------------------------------------------------------
@@ -42,23 +42,20 @@ class AccuracyTransformation(val context: Context) :
 
     // public methods ------------------------------------------------------------------------------
 
-    fun transform(accuracy: Float): String {
-        if (accuracy >= 0) {
-            val unitSystem = context.resources.getStringArray(R.array.unit_measurement_values)
-            return when (unit) {
-                unitSystem[0] -> {
-                    "${decimalFormat.format(accuracy)} m"
-                }
-                unitSystem[1] -> {
-                    val distanceInFeet = accuracy * feetInMeter
-                    "${decimalFormat.format(distanceInFeet)} ft"
-                }
-                else -> {
-                    "Unit not supported: $unit"
-                }
+    fun transform(altitude: Double): String {
+        val unitSystem = context.resources.getStringArray(R.array.unit_measurement_values)
+
+        return when (unit) {
+            unitSystem[0] -> {
+                "${decimalFormat.format(altitude)} m"
             }
-        } else {
-            return "invalid accuracy: $accuracy"
+            unitSystem[1] -> {
+                val distanceInFeet = altitude * feetInMeter
+                "${decimalFormat.format(distanceInFeet)} ft"
+            }
+            else -> {
+                "Unit not supported: $unit"
+            }
         }
     }
 

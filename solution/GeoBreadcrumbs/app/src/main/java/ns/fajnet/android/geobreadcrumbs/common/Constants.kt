@@ -30,6 +30,7 @@ internal class Constants {
         const val TAG_GEO_TRACK_SERVICE = "appTag_service"
 
         const val TAG_TRANSFORMATION_COORDINATE = "appTag_transformation_coordinate"
+        const val TAG_TRANSFORMATION_ALTITUDE = "appTag_transformation_altitude"
         const val TAG_TRANSFORMATION_DISTANCE = "appTag_transformation_distance"
         const val TAG_TRANSFORMATION_SPEED = "appTag_transformation_speed"
     }

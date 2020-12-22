@@ -16,7 +16,7 @@ class SpeedTransformation(val context: Context) :
 
     private var unit = ""
     private val decimalFormat =
-        DecimalFormat("#,###.#").apply { roundingMode = RoundingMode.FLOOR }
+        DecimalFormat("#,###.#").apply { roundingMode = RoundingMode.HALF_EVEN }
     private val msToKmh = 3.6
     private val msToMph = 2.23693629
 

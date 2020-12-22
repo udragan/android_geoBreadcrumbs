@@ -32,6 +32,7 @@ class LiveGPSFragment : Fragment(), HasDefaultViewModelProviderFactory {
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
     private lateinit var coordinateTransformation: CoordinateTransformation
+    private lateinit var altitudeTransformation: AltitudeTransformation
     private lateinit var accuracyTransformation: AccuracyTransformation
     private lateinit var speedTransformation: SpeedTransformation
     private lateinit var bearingTransformation: BearingTransformation
@@ -130,7 +131,8 @@ class LiveGPSFragment : Fragment(), HasDefaultViewModelProviderFactory {
 
     private fun bind() {
         coordinateTransformation = CoordinateTransformation(requireContext())
-        accuracyTransformation = AccuracyTransformation()
+        altitudeTransformation = AltitudeTransformation(requireContext())
+        accuracyTransformation = AccuracyTransformation(requireContext())
         speedTransformation = SpeedTransformation(requireContext())
         bearingTransformation = BearingTransformation()
     }
@@ -154,7 +156,7 @@ class LiveGPSFragment : Fragment(), HasDefaultViewModelProviderFactory {
             )
         }
         viewModel.altitude.observe(viewLifecycleOwner) { value ->
-            altitudeLayout.editText!!.setText(value)
+            altitudeLayout.editText!!.setText(altitudeTransformation.transform(value))
         }
         viewModel.locationFixTime.observe(viewLifecycleOwner) { value ->
             locationFixTimeLayout.editText!!.setText(value)
