@@ -94,6 +94,23 @@
                     android:textSize="@dimen/typography_body" />
             </TableRow>
 
+            <TableRow>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="@string/recorded_tracks_view_holder_bearing"
+                    android:textSize="@dimen/typography_body" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/bearing"
+                    android:layout_marginStart="@dimen/default_component_margin"
+                    android:layout_span="3"
+                    android:layout_weight="1"
+                    android:text="@string/default_text_placeholder"
+                    android:textSize="@dimen/typography_body" />
+            </TableRow>
+
             <TableRow android:layout_width="0dp">
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -118,23 +135,6 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/points"
                     android:layout_marginStart="@dimen/default_component_margin"
-                    android:layout_weight="1"
-                    android:text="@string/default_text_placeholder"
-                    android:textSize="@dimen/typography_body" />
-            </TableRow>
-
-            <TableRow>
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_weight="1"
-                    android:gravity="end"
-                    android:text="@string/recorded_tracks_view_holder_bearing"
-                    android:textSize="@dimen/typography_body" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/bearing"
-                    android:layout_marginStart="@dimen/default_component_margin"
-                    android:layout_span="3"
                     android:layout_weight="1"
                     android:text="@string/default_text_placeholder"
                     android:textSize="@dimen/typography_body" />

@@ -2,7 +2,7 @@ package ns.fajnet.android.geobreadcrumbs.common.displayTransformations
 
 class HeadingTransformation {
 
-    // public methods -------------------------------------------------------------------------------
+    // public methods ------------------------------------------------------------------------------
 
     fun transform(heading: Float): String {
         return when (heading) {

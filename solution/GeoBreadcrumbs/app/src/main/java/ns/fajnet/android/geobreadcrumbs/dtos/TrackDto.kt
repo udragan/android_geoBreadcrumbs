@@ -4,7 +4,7 @@ import ns.fajnet.android.geobreadcrumbs.database.Track
 
 data class TrackDto(
     var id: Long = 0L,
-    var duration: String = "",
+    var duration: Long = 0L,
     var distance: Float = 0F,
     var currentSpeed: Float = 0F,
     var averageSpeed: Float = 0F,
@@ -21,7 +21,7 @@ data class TrackDto(
         fun fromTrack(track: Track): TrackDto {
             return TrackDto(
                 track.id,
-                "0",
+                track.endTimeMillis - track.startTimeMillis,
                 track.distance,
                 0F,
                 track.averageSpeed,

@@ -129,9 +129,6 @@ class GeoTrackService : Service() {
                         recordingTrack.points.add(PointDto.fromPoint(newPoint))
 
                         if (recordingTrack.points.size > 1) {
-                            val simpleDateFormat = SimpleDateFormat("H:mm:ss", Locale.US).apply {
-                                timeZone = TimeZone.getTimeZone("UTC")
-                            }
                             val results = floatArrayOf(0F, 0F, 0F)
                             Location.distanceBetween(
                                 recordingTrack.points[recordingTrack.points.size - 2].latitude,
@@ -141,7 +138,7 @@ class GeoTrackService : Service() {
                                 results
                             )
                             recordingTrack.track.duration =
-                                simpleDateFormat.format(System.currentTimeMillis() - recordingTrack.points[0].locationFixTime)
+                                System.currentTimeMillis() - recordingTrack.points[0].locationFixTime
                             recordingTrack.track.distance += results[0]
                             recordingTrack.track.currentSpeed = newPoint.speed
                             recordingTrack.track.averageSpeed =
@@ -248,7 +245,7 @@ class GeoTrackService : Service() {
         serviceScope.launch {
             LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "start recording")
             val sdf = SimpleDateFormat.getDateTimeInstance()
-            sdf.timeZone = TimeZone.getTimeZone("UTC")
+                .apply { timeZone = TimeZone.getTimeZone("UTC") }
             val utcTime: String = sdf.format(Date())
 
             val newTrack = Track(name = utcTime)

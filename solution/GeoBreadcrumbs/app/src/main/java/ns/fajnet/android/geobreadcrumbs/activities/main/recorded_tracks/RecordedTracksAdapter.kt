@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.recycler_view_item_recorded_tracks.view.*
 import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.DistanceTransformation
+import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.DurationTransformation
 import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.HeadingTransformation
 import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.SpeedTransformation
 import ns.fajnet.android.geobreadcrumbs.database.Track
@@ -18,7 +19,8 @@ class RecordedTracksAdapter(context: Context, private val dataSet: Array<Track>)
     RecyclerView.Adapter<RecordedTracksAdapter.ViewHolder>() {
 
     // members -------------------------------------------------------------------------------------
-    
+
+    private val durationTransformation = DurationTransformation()
     private val distanceTransformation = DistanceTransformation(context)
     private val speedTransformation = SpeedTransformation(context)
     private val headingTransformation = HeadingTransformation()
@@ -36,15 +38,16 @@ class RecordedTracksAdapter(context: Context, private val dataSet: Array<Track>)
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val track = dataSet[position]
         viewHolder.name.text = track.name
-        viewHolder.duration.text = (track.startTimeMillis).toString() // TODO: calculate duration
+        viewHolder.duration.text =
+            durationTransformation.transform(track.endTimeMillis - track.startTimeMillis)
         viewHolder.distance.text = distanceTransformation.transform(track.distance)
         viewHolder.avgSpeed.text =
             speedTransformation.transform(track.averageSpeed)
         viewHolder.maxSpeed.text =
             speedTransformation.transform(track.maxSpeed)
+        viewHolder.bearing.text = headingTransformation.transform(track.bearing)
         viewHolder.places.text = track.numberOfPlaces.toString()
         viewHolder.points.text = track.numberOfPoints.toString()
-        viewHolder.bearing.text = headingTransformation.transform(track.bearing)
     }
 
     override fun getItemCount() = dataSet.size
@@ -57,8 +60,8 @@ class RecordedTracksAdapter(context: Context, private val dataSet: Array<Track>)
         val distance: AppCompatTextView = view.distance
         val avgSpeed: AppCompatTextView = view.averageSpeed
         val maxSpeed: AppCompatTextView = view.maxSpeed
+        val bearing: AppCompatTextView = view.bearing
         val places: AppCompatTextView = view.places
         val points: AppCompatTextView = view.points
-        val bearing: AppCompatTextView = view.bearing
     }
 }
