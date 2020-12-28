@@ -1,4 +1,4 @@
-package ns.fajnet.android.geobreadcrumbs.common.logger
+package ns.fajnet.android.geobreadcrumbs.common
 
 import android.util.Log
 

@@ -18,8 +18,8 @@ import kotlinx.coroutines.*
 import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.activities.main.MainActivity
 import ns.fajnet.android.geobreadcrumbs.common.Constants
+import ns.fajnet.android.geobreadcrumbs.common.LogEx
 import ns.fajnet.android.geobreadcrumbs.common.Utils
-import ns.fajnet.android.geobreadcrumbs.common.logger.LogEx
 import ns.fajnet.android.geobreadcrumbs.database.GeoBreadcrumbsDatabase
 import ns.fajnet.android.geobreadcrumbs.database.Point
 import ns.fajnet.android.geobreadcrumbs.database.Track

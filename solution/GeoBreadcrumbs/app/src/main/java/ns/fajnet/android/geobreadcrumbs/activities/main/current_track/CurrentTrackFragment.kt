@@ -14,10 +14,10 @@ import kotlinx.android.synthetic.main.fragment_current_track.*
 import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.activities.main.MainActivityViewModel
 import ns.fajnet.android.geobreadcrumbs.common.Constants
+import ns.fajnet.android.geobreadcrumbs.common.LogEx
 import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.DistanceTransformation
 import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.HeadingTransformation
 import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.SpeedTransformation
-import ns.fajnet.android.geobreadcrumbs.common.logger.LogEx
 
 class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
 

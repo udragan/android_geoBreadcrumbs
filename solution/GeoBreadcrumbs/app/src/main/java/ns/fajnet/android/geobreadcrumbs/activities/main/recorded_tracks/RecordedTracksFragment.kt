@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_recorded_tracks.*
 import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.common.Constants
-import ns.fajnet.android.geobreadcrumbs.common.logger.LogEx
+import ns.fajnet.android.geobreadcrumbs.common.LogEx
 
 class RecordedTracksFragment : Fragment(), HasDefaultViewModelProviderFactory {
 

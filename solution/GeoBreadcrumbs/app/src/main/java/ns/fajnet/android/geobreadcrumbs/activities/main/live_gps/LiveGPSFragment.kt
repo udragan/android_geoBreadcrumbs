@@ -17,7 +17,7 @@ import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.common.Constants
 import ns.fajnet.android.geobreadcrumbs.common.Utils
 import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.*
-import ns.fajnet.android.geobreadcrumbs.common.logger.LogEx
+import ns.fajnet.android.geobreadcrumbs.common.LogEx
 
 /**
  * A simple [Fragment] subclass.

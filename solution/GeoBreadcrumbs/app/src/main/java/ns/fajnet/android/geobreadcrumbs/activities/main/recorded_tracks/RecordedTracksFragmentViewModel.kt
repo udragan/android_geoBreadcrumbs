@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ns.fajnet.android.geobreadcrumbs.AppInit
 import ns.fajnet.android.geobreadcrumbs.common.Constants
-import ns.fajnet.android.geobreadcrumbs.common.logger.LogEx
+import ns.fajnet.android.geobreadcrumbs.common.LogEx
 import ns.fajnet.android.geobreadcrumbs.common.singleArgViewModelFactory
 import ns.fajnet.android.geobreadcrumbs.database.GeoBreadcrumbsDatabase
 

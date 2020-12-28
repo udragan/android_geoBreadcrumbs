@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.activities.settings.SettingsActivity
 import ns.fajnet.android.geobreadcrumbs.common.Constants
-import ns.fajnet.android.geobreadcrumbs.common.logger.LogEx
+import ns.fajnet.android.geobreadcrumbs.common.LogEx
 import ns.fajnet.android.geobreadcrumbs.services.GeoTrackService
 
 class MainActivity : AppCompatActivity(), ServiceConnection {
