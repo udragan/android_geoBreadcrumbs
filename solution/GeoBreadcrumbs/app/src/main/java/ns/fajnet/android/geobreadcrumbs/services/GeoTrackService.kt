@@ -129,7 +129,9 @@ class GeoTrackService : Service() {
                         recordingTrack.points.add(PointDto.fromPoint(newPoint))
 
                         if (recordingTrack.points.size > 1) {
-                            val simpleDateFormat = SimpleDateFormat.getTimeInstance()
+                            val simpleDateFormat = SimpleDateFormat("H:mm:ss", Locale.US).apply {
+                                timeZone = TimeZone.getTimeZone("UTC")
+                            }
                             val results = floatArrayOf(0F, 0F, 0F)
                             Location.distanceBetween(
                                 recordingTrack.points[recordingTrack.points.size - 2].latitude,
@@ -138,16 +140,20 @@ class GeoTrackService : Service() {
                                 newPoint.longitude,
                                 results
                             )
+                            recordingTrack.track.duration =
+                                simpleDateFormat.format(System.currentTimeMillis() - recordingTrack.points[0].locationFixTime)
                             recordingTrack.track.distance += results[0]
                             recordingTrack.track.currentSpeed = newPoint.speed
-                            // TODO: how to calculate avg speed and max speed (data model must change)
+                            recordingTrack.track.averageSpeed =
+                                calculateAvgSpeedFromPointDtos(recordingTrack.points)
+                            recordingTrack.track.maxSpeed =
+                                calculateMaxSpeedFromPointDtos(recordingTrack.points)
                             recordingTrack.track.currentBearing = results[2]
-                            // TODO: how to calculate overall bearing? (there is no starting point currently known!)
-
-                            // TODO: calculate duration from track start to now
-                            recordingTrack.track.duration =
-                                simpleDateFormat.format(newPoint.locationFixTime)
+                            recordingTrack.track.overallBearing =
+                                calculateOverallBearingFromPointDtos(recordingTrack.points)
                             recordingTrack.track.noOfPoints = recordingTrack.points.size
+                            // TODO: update noofPlaces when added to db
+                            //recordingTrack.track.noOfPlaces = recordingTrack.places.size
                         }
 
                         _liveUpdate.postValue(recordingTrack.track)
@@ -289,7 +295,7 @@ class GeoTrackService : Service() {
                     calculateDistanceFromPoints(trackWithPointsFromDb.points),
                     calculateAvgSpeedFromPoints(trackWithPointsFromDb.points),
                     calculateMaxSpeedFromPoints(trackWithPointsFromDb.points),
-                    calculateOverallBearing(trackWithPointsFromDb.points),
+                    calculateOverallBearingFromPoints(trackWithPointsFromDb.points),
                     0, // TODO: places (when added to db)
                     trackWithPointsFromDb.points.size,
                     1 // TODO: status enum
@@ -327,6 +333,19 @@ class GeoTrackService : Service() {
         return result
     }
 
+    private fun calculateAvgSpeedFromPointDtos(points: List<PointDto>): Float {
+        if (points.isEmpty()) {
+            return 0F
+        }
+
+        var result = 0F
+        points.forEach { x -> result += x.speed }
+        result /= points.size
+
+        return result
+    }
+
+    // TODO: think of a way to unite there two methods!!
     private fun calculateAvgSpeedFromPoints(points: List<Point>): Float {
         if (points.isEmpty()) {
             return 0F
@@ -339,6 +358,14 @@ class GeoTrackService : Service() {
         return result
     }
 
+    private fun calculateMaxSpeedFromPointDtos(points: List<PointDto>): Float {
+        var result = 0F
+        points.forEach { x -> result = result.coerceAtLeast(x.speed) }
+
+        return result
+    }
+
+    // TODO: think of a way to unite there two methods!!
     private fun calculateMaxSpeedFromPoints(points: List<Point>): Float {
         var result = 0F
         points.forEach { x -> result = result.coerceAtLeast(x.speed) }
@@ -346,7 +373,29 @@ class GeoTrackService : Service() {
         return result
     }
 
-    private fun calculateOverallBearing(points: List<Point>): Float {
+    private fun calculateOverallBearingFromPointDtos(points: List<PointDto>): Float {
+        var result = 0F
+
+        if (points.size > 2) {
+            val start = points[0]
+            val end = points[points.size - 1]
+            val results = floatArrayOf(0F, 0F, 0F)
+            Location.distanceBetween(
+                start.latitude,
+                start.longitude,
+                end.latitude,
+                end.longitude,
+                results
+            )
+
+            result = results[2]
+        }
+
+        return result
+    }
+
+    // TODO: think of a way to unite there two methods!!
+    private fun calculateOverallBearingFromPoints(points: List<Point>): Float {
         var result = 0F
 
         if (points.size > 2) {
