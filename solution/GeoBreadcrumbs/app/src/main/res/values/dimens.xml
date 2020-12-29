@@ -18,5 +18,7 @@
     <dimen name="typography_buttons_tabs_add_bold_style">14sp</dimen>
     <dimen name="typography_input">16sp</dimen>
     <dimen name="typography_input_error">12sp</dimen>
+    <!-- custom -->
+    <dimen name="typography_recorded_tracks_grid">12sp</dimen>
 
 </resources>

@@ -42,27 +42,27 @@
                     android:layout_weight="1"
                     android:gravity="end"
                     android:text="@string/recorded_tracks_view_holder_duration"
-                    android:textSize="@dimen/typography_body" />
+                    android:textSize="@dimen/typography_recorded_tracks_grid" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/duration"
                     android:layout_marginStart="@dimen/default_component_margin"
                     android:layout_weight="1"
                     android:text="@string/default_text_placeholder"
-                    android:textSize="@dimen/typography_body" />
+                    android:textSize="@dimen/typography_recorded_tracks_grid" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_weight="1"
                     android:gravity="end"
                     android:text="@string/recorded_tracks_view_holder_length"
-                    android:textSize="@dimen/typography_body" />
+                    android:textSize="@dimen/typography_recorded_tracks_grid" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/distance"
                     android:layout_marginStart="@dimen/default_component_margin"
                     android:layout_weight="1"
                     android:text="@string/default_text_placeholder"
-                    android:textSize="@dimen/typography_body" />
+                    android:textSize="@dimen/typography_recorded_tracks_grid" />
             </TableRow>
 
             <TableRow android:layout_width="0dp">
@@ -71,27 +71,27 @@
                     android:layout_weight="1"
                     android:gravity="end"
                     android:text="@string/recorded_tracks_view_holder_avg_speed"
-                    android:textSize="@dimen/typography_body" />
+                    android:textSize="@dimen/typography_recorded_tracks_grid" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/averageSpeed"
                     android:layout_marginStart="@dimen/default_component_margin"
                     android:layout_weight="1"
                     android:text="@string/default_text_placeholder"
-                    android:textSize="@dimen/typography_body" />
+                    android:textSize="@dimen/typography_recorded_tracks_grid" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_weight="1"
                     android:gravity="end"
                     android:text="@string/recorded_tracks_view_holder_max_speed"
-                    android:textSize="@dimen/typography_body" />
+                    android:textSize="@dimen/typography_recorded_tracks_grid" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/maxSpeed"
                     android:layout_marginStart="@dimen/default_component_margin"
                     android:layout_weight="1"
                     android:text="@string/default_text_placeholder"
-                    android:textSize="@dimen/typography_body" />
+                    android:textSize="@dimen/typography_recorded_tracks_grid" />
             </TableRow>
 
             <TableRow>
@@ -100,7 +100,7 @@
                     android:layout_weight="1"
                     android:gravity="end"
                     android:text="@string/recorded_tracks_view_holder_bearing"
-                    android:textSize="@dimen/typography_body" />
+                    android:textSize="@dimen/typography_recorded_tracks_grid" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/bearing"
@@ -108,7 +108,7 @@
                     android:layout_span="3"
                     android:layout_weight="1"
                     android:text="@string/default_text_placeholder"
-                    android:textSize="@dimen/typography_body" />
+                    android:textSize="@dimen/typography_recorded_tracks_grid" />
             </TableRow>
 
             <TableRow android:layout_width="0dp">
@@ -117,33 +117,33 @@
                     android:layout_weight="1"
                     android:gravity="end"
                     android:text="@string/recorded_tracks_view_holder_places"
-                    android:textSize="@dimen/typography_body" />
+                    android:textSize="@dimen/typography_recorded_tracks_grid" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/places"
                     android:layout_marginStart="@dimen/default_component_margin"
                     android:layout_weight="1"
                     android:text="@string/default_text_placeholder"
-                    android:textSize="@dimen/typography_body" />
+                    android:textSize="@dimen/typography_recorded_tracks_grid" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_weight="1"
                     android:gravity="end"
                     android:text="@string/recorded_tracks_view_holder_points"
-                    android:textSize="@dimen/typography_body" />
+                    android:textSize="@dimen/typography_recorded_tracks_grid" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/points"
                     android:layout_marginStart="@dimen/default_component_margin"
                     android:layout_weight="1"
                     android:text="@string/default_text_placeholder"
-                    android:textSize="@dimen/typography_body" />
+                    android:textSize="@dimen/typography_recorded_tracks_grid" />
             </TableRow>
         </TableLayout>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView"
-            android:layout_width="100dp"
+            android:layout_width="90dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
