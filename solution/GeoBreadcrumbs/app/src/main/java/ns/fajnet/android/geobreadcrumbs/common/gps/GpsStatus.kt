@@ -19,6 +19,7 @@ class GpsStatus(private val app: Application) {
     // members -------------------------------------------------------------------------------------
 
     private lateinit var _gnssStatusCallback: GnssStatusCallback
+    private lateinit var _gpsStatusListener: GpsStatusListener
     private lateinit var _noOfSatellitesObserver: Observer<Int>
 
     private val _noOfSatellites = MutableLiveData<Int>()
@@ -31,12 +32,10 @@ class GpsStatus(private val app: Application) {
     // public methods ------------------------------------------------------------------------------
 
     fun initialize() {
+        LogEx.i(Constants.TAG_GPS_STATUS, "OS build version is: ${Build.VERSION.SDK_INT}")
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            // use new GnssStatus
-            LogEx.i(
-                Constants.TAG_GPS_STATUS,
-                "OS build version is: ${Build.VERSION.SDK_INT}, using GnssStatus as gps status provider"
-            )
+            LogEx.i(Constants.TAG_GPS_STATUS, "Using GnssStatus as gps status provider")
 
             if (ActivityCompat.checkSelfPermission(
                     app,
@@ -61,7 +60,17 @@ class GpsStatus(private val app: Application) {
                 )
             }
         } else {
-            // use old GpsStatus
+            LogEx.i(Constants.TAG_GPS_STATUS, "Using GpsStatus as gps status provider")
+            val locationManager =
+                app.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            _noOfSatellitesObserver = Observer { value ->
+                _noOfSatellites.postValue(value)
+            }
+            _gpsStatusListener = GpsStatusListener(app).apply {
+                noOfSatellites.observeForever(_noOfSatellitesObserver)
+            }
+
+            locationManager.addGpsStatusListener(_gpsStatusListener)
         }
     }
 
@@ -75,7 +84,11 @@ class GpsStatus(private val app: Application) {
                 LogEx.i(Constants.TAG_GPS_STATUS, "Unregistering GnssStatusCallback")
             }
         } else {
-
+            val locationManager =
+                app.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            _gpsStatusListener.noOfSatellites.removeObserver(_noOfSatellitesObserver)
+            locationManager.removeGpsStatusListener(_gpsStatusListener)
+            LogEx.i(Constants.TAG_GPS_STATUS, "Unregistering GpsStatusListener")
         }
     }
 }

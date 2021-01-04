@@ -35,6 +35,7 @@ internal class Constants {
         const val TAG_TRANSFORMATION_SPEED = "appTag_transformation_speed"
 
         const val TAG_GPS_STATUS = "appTag_gps_status"
+        const val TAG_GPS_STATUS_LISTENER = "appTag_gps_status_listener"
         const val TAG_GNSS_STATUS_CALLBACK = "appTag_gps_gnss_status_callback"
     }
 }
