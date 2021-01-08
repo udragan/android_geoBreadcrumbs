@@ -15,9 +15,10 @@ import com.google.android.gms.location.*
 import kotlinx.android.synthetic.main.fragment_live_gps.*
 import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.common.Constants
+import ns.fajnet.android.geobreadcrumbs.common.LogEx
 import ns.fajnet.android.geobreadcrumbs.common.Utils
 import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.*
-import ns.fajnet.android.geobreadcrumbs.common.LogEx
+
 
 /**
  * A simple [Fragment] subclass.
@@ -67,7 +68,8 @@ class LiveGPSFragment : Fragment(), HasDefaultViewModelProviderFactory {
             Utils.isPermissionGranted(this.requireContext()) -> {
                 when {
                     Utils.isLocationEnabled(this.requireContext()) -> {
-                        subscribeToLocationUpdates()
+                        // TODO: uncomment
+                        requestGpsUpdates()
                     }
                     else -> {
                         //Utils.showGPSNotEnabledDialog(this)
@@ -102,7 +104,7 @@ class LiveGPSFragment : Fragment(), HasDefaultViewModelProviderFactory {
         when (requestCode) {
             Constants.REQUEST_CODE_REQUEST_LOCATION_PERMISSION -> {
                 if (grantResults[0] == 0) {
-                    subscribeToLocationUpdates()
+                    requestGpsUpdates()
                 }
             }
         }
@@ -170,10 +172,18 @@ class LiveGPSFragment : Fragment(), HasDefaultViewModelProviderFactory {
         viewModel.bearing.observe(viewLifecycleOwner) { value ->
             bearingLayout.editText!!.setText(bearingTransformation.transform(value))
         }
+        viewModel.noOfSatellites.observe(viewLifecycleOwner) { value ->
+            satellitesLayout.editText!!.setText(value.toString())
+        }
+    }
+
+    private fun requestGpsUpdates() {
+        requestLocationUpdates()
+        requestGpsStatus()
     }
 
     @SuppressLint("MissingPermission")
-    private fun subscribeToLocationUpdates() {
+    private fun requestLocationUpdates() {
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(this.requireContext())
         val locationRequest = LocationRequest().setInterval(5000)
@@ -187,6 +197,12 @@ class LiveGPSFragment : Fragment(), HasDefaultViewModelProviderFactory {
         )
     }
 
+    @SuppressLint("MissingPermission")
+    private fun requestGpsStatus() {
+        viewModel.requestGpsStatus()
+    }
+
+    @SuppressLint("MissingPermission")
     private fun unsubscribeFromLocationUpdates() {
         if (this::fusedLocationProviderClient.isInitialized) {
             fusedLocationProviderClient.removeLocationUpdates(locationCallback)

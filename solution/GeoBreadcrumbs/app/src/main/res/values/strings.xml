@@ -10,6 +10,7 @@
     <string name="live_gps_longitude_hint">longitude</string>
     <string name="live_gps_latitude_hint">latitude</string>
     <string name="live_gps_altitude_hint">altitude</string>
+    <string name="live_gps_satellites_hint">satellites</string>
     <string name="live_gps_location_fix_time_hint">Location Fix Time</string>
     <string name="live_gps_accuracy_hint">Accuracy</string>
     <string name="live_gps_speed_hint">Speed</string>

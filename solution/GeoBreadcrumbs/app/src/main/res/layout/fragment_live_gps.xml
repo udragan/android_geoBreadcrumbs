@@ -32,6 +32,7 @@
                     android:backgroundTint="@android:color/transparent"
                     android:clickable="false"
                     android:enabled="false"
+                    android:textAlignment="center"
                     android:textIsSelectable="false"
                     android:textSize="@dimen/typography_title" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -50,6 +51,7 @@
                     android:backgroundTint="@android:color/transparent"
                     android:clickable="false"
                     android:enabled="false"
+                    android:textAlignment="center"
                     android:textIsSelectable="false"
                     android:textSize="@dimen/typography_title" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -60,8 +62,30 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/default_component_margin"
                 android:hint="@string/live_gps_altitude_hint"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/satellitesLayout"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/latitudeLayout">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/default_component_margin"
+                    android:backgroundTint="@android:color/transparent"
+                    android:clickable="false"
+                    android:enabled="false"
+                    android:textIsSelectable="false"
+                    android:textSize="@dimen/typography_title" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/satellitesLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/default_component_margin"
+                android:layout_marginTop="@dimen/default_component_margin"
+                android:hint="@string/live_gps_satellites_hint"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/altitudeLayout"
                 app:layout_constraintTop_toBottomOf="@+id/latitudeLayout">
 
                 <com.google.android.material.textfield.TextInputEditText

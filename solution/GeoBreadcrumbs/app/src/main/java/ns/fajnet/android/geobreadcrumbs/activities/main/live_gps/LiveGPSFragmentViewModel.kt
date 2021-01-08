@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ns.fajnet.android.geobreadcrumbs.common.Constants
 import ns.fajnet.android.geobreadcrumbs.common.LogEx
+import ns.fajnet.android.geobreadcrumbs.common.gps.GpsStatus
 import ns.fajnet.android.geobreadcrumbs.common.singleArgViewModelFactory
 import java.text.SimpleDateFormat
 
@@ -25,6 +26,15 @@ class LiveGPSFragmentViewModel(application: Application) : AndroidViewModel(appl
     private val _accuracy = MutableLiveData<Float>()
     private val _speed = MutableLiveData<Float>()
     private val _bearing = MutableLiveData<Float>()
+
+    private val _gpsStatus = GpsStatus(getApplication())
+
+    // overrides -----------------------------------------------------------------------------------
+
+    override fun onCleared() {
+        super.onCleared()
+        _gpsStatus.dispose()
+    }
 
     // properties ----------------------------------------------------------------------------------
 
@@ -49,7 +59,14 @@ class LiveGPSFragmentViewModel(application: Application) : AndroidViewModel(appl
     val bearing: LiveData<Float>
         get() = _bearing
 
+    val noOfSatellites: LiveData<Int>
+        get() = _gpsStatus.noOfSatellites
+
     // public methods ------------------------------------------------------------------------------
+
+    fun requestGpsStatus() {
+        _gpsStatus.initialize()
+    }
 
     fun setLocation(location: Location) {
         viewModelScope.launch {
