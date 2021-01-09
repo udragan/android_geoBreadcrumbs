@@ -84,11 +84,13 @@ class GpsStatus(private val app: Application) {
                 LogEx.i(Constants.TAG_GPS_STATUS, "Unregistering GnssStatusCallback")
             }
         } else {
-            val locationManager =
-                app.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-            _gpsStatusListener.noOfSatellites.removeObserver(_noOfSatellitesObserver)
-            locationManager.removeGpsStatusListener(_gpsStatusListener)
-            LogEx.i(Constants.TAG_GPS_STATUS, "Unregistering GpsStatusListener")
+            if (this::_gpsStatusListener.isInitialized) {
+                val locationManager =
+                    app.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+                _gpsStatusListener.noOfSatellites.removeObserver(_noOfSatellitesObserver)
+                locationManager.removeGpsStatusListener(_gpsStatusListener)
+                LogEx.i(Constants.TAG_GPS_STATUS, "Unregistering GpsStatusListener")
+            }
         }
     }
 }

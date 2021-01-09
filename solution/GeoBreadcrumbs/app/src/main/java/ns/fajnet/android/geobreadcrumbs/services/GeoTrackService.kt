@@ -34,6 +34,7 @@ class GeoTrackService : Service() {
     // members -------------------------------------------------------------------------------------
 
     private var recordingTrack: TrackExtendedDto = TrackExtendedDto(TrackDto(), mutableListOf())
+    private var receivedLocations: Int = 0
 
     private val _recordingActive = MutableLiveData<Boolean>(false)
     private val _liveUpdate = MutableLiveData<TrackDto>()
@@ -102,13 +103,29 @@ class GeoTrackService : Service() {
                 super.onLocationResult(locationResult)
 
                 if (_recordingActive.value == false) {
-                    LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "recording not active, skipping..")
+                    LogEx.i(Constants.TAG_GEO_TRACK_SERVICE, "recording not active, skipping..")
                     return
                 }
 
                 serviceScope.launch {
                     for (location in locationResult.locations) {
                         LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "location received: $location")
+
+                        // TODO: check if satellites are returned on a real device!!
+                        val satellitesUsed = location.extras["satellites"]
+                        LogEx.d(
+                            Constants.TAG_GEO_TRACK_SERVICE,
+                            "satellites used for fix: $satellitesUsed"
+                        )
+
+                        if (receivedLocations++ < NO_OF_STARTING_POINTS_TO_SKIP) {
+                            LogEx.d(
+                                Constants.TAG_GEO_TRACK_SERVICE,
+                                "number of received locations is less than receivedLocationsBuffer ($receivedLocations < $NO_OF_STARTING_POINTS_TO_SKIP), skipping"
+                            )
+                            return@launch
+                        }
+
                         val newPoint = Point(
                             trackId = recordingTrack.track.id,
                             longitude = location.longitude,
@@ -126,21 +143,22 @@ class GeoTrackService : Service() {
 
                         LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "location persisted")
 
-                        recordingTrack.points.add(PointDto.fromPoint(newPoint))
+                        val newPointDto = PointDto.fromPoint(newPoint)
+                        recordingTrack.points.add(newPointDto)
 
                         if (recordingTrack.points.size > 1) {
                             val results = floatArrayOf(0F, 0F, 0F)
                             Location.distanceBetween(
                                 recordingTrack.points[recordingTrack.points.size - 2].latitude,
                                 recordingTrack.points[recordingTrack.points.size - 2].longitude,
-                                newPoint.latitude,
-                                newPoint.longitude,
+                                newPointDto.latitude,
+                                newPointDto.longitude,
                                 results
                             )
                             recordingTrack.track.duration =
                                 System.currentTimeMillis() - recordingTrack.points[0].locationFixTime
                             recordingTrack.track.distance += results[0]
-                            recordingTrack.track.currentSpeed = newPoint.speed
+                            recordingTrack.track.currentSpeed = newPointDto.speed
                             recordingTrack.track.averageSpeed =
                                 calculateAvgSpeedFromPointDtos(recordingTrack.points)
                             recordingTrack.track.maxSpeed =
@@ -423,6 +441,10 @@ class GeoTrackService : Service() {
     // companion -----------------------------------------------------------------------------------
 
     companion object {
+
+        // constants -------------------------------------------------------------------------------
+
+        const val NO_OF_STARTING_POINTS_TO_SKIP = 3 // used for better initial precision
 
         // extras ----------------------------------------------------------------------------------
 

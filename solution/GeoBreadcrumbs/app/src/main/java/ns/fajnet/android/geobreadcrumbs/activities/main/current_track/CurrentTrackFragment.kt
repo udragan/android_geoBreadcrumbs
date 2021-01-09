@@ -26,7 +26,6 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
 
     private val activityViewModel: MainActivityViewModel by activityViewModels()
     private val viewModel: CurrentTrackFragmentViewModel by viewModels()
-
     private lateinit var durationTransformation: DurationTransformation
     private lateinit var distanceTransformation: DistanceTransformation
     private lateinit var speedTransformation: SpeedTransformation
@@ -72,8 +71,8 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
     private fun bindLiveData() {
         activityViewModel.geoTrackServiceReference.observe(viewLifecycleOwner) { value ->
             LogEx.d(Constants.TAG_CURRENT_TRACK_FRAGMENT, "serviceReference updated")
-            value?.recordingActive.observe(viewLifecycleOwner) { x ->
-                if (x) {
+            value?.recordingActive.observe(viewLifecycleOwner) {
+                if (it) {
                     startTrack.visibility = View.GONE
                     stopTrack.visibility = View.VISIBLE
                     currentTrackData.visibility = View.VISIBLE
@@ -83,16 +82,19 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
                     currentTrackData.visibility = View.GONE
                 }
             }
-            value?.liveUpdate.observe(viewLifecycleOwner) { dto ->
+            value?.liveUpdate.observe(viewLifecycleOwner) {
                 LogEx.d(Constants.TAG_CURRENT_TRACK_FRAGMENT, "liveUpdate received")
-                durationLayout.editText?.setText(durationTransformation.transform(dto.duration))
-                distanceLayout.editText?.setText(distanceTransformation.transform(dto.distance))
-                currentSpeedLayout.editText?.setText(speedTransformation.transform(dto.currentSpeed))
-                averageSpeedLayout.editText?.setText(speedTransformation.transform(dto.averageSpeed))
-                maxSpeedLayout.editText?.setText(speedTransformation.transform(dto.maxSpeed))
-                currentBearingLayout.editText?.setText(headingTransformation.transform(dto.currentBearing))
-                overallBearingLayout.editText?.setText(headingTransformation.transform(dto.overallBearing))
+                durationLayout.editText?.setText(durationTransformation.transform(it.duration))
+                distanceLayout.editText?.setText(distanceTransformation.transform(it.distance))
+                currentSpeedLayout.editText?.setText(speedTransformation.transform(it.currentSpeed))
+                averageSpeedLayout.editText?.setText(speedTransformation.transform(it.averageSpeed))
+                maxSpeedLayout.editText?.setText(speedTransformation.transform(it.maxSpeed))
+                currentBearingLayout.editText?.setText(headingTransformation.transform(it.currentBearing))
+                overallBearingLayout.editText?.setText(headingTransformation.transform(it.overallBearing))
             }
+        }
+        viewModel.noOfSatellites.observe(viewLifecycleOwner) {
+            satellitesLayout.editText?.setText(it.toString())
         }
     }
 
@@ -104,7 +106,7 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
     }
 
     private fun startTrackClick() {
-        LogEx.d(Constants.TAG_CURRENT_TRACK_FRAGMENT, "start track clicked")
+        LogEx.i(Constants.TAG_CURRENT_TRACK_FRAGMENT, "tracking started")
         viewModel.startTrack("TODO")
 //        NewPointDialog(
 //            {
@@ -121,7 +123,7 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
     }
 
     private fun stopTrackClick() {
-        LogEx.d(Constants.TAG_CURRENT_TRACK_FRAGMENT, "stop track clicked")
+        LogEx.i(Constants.TAG_CURRENT_TRACK_FRAGMENT, "tracking stopped")
         unbindLiveData()
         viewModel.stopTrack(activityViewModel.geoTrackServiceReference)
     }

@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData
 import ns.fajnet.android.geobreadcrumbs.AppInit
 import ns.fajnet.android.geobreadcrumbs.common.Constants
 import ns.fajnet.android.geobreadcrumbs.common.LogEx
+import ns.fajnet.android.geobreadcrumbs.common.gps.GpsStatus
 import ns.fajnet.android.geobreadcrumbs.common.singleArgViewModelFactory
 import ns.fajnet.android.geobreadcrumbs.services.GeoTrackService
 
@@ -17,6 +18,19 @@ class CurrentTrackFragmentViewModel(application: Application) : AndroidViewModel
     // members -------------------------------------------------------------------------------------
 
     private val context: Context = getApplication<AppInit>().applicationContext
+    private val _gpsStatus = GpsStatus(getApplication())
+
+    // overrides -----------------------------------------------------------------------------------
+
+    override fun onCleared() {
+        super.onCleared()
+        _gpsStatus.dispose()
+    }
+
+    // properties ----------------------------------------------------------------------------------
+
+    val noOfSatellites: LiveData<Int>
+        get() = _gpsStatus.noOfSatellites
 
     // public methods ------------------------------------------------------------------------------
 
@@ -25,11 +39,13 @@ class CurrentTrackFragmentViewModel(application: Application) : AndroidViewModel
         val intent = Intent(context, GeoTrackService::class.java)
         intent.putExtra(GeoTrackService.EXTRA_START_POINT_NAME, startPointName)
         ContextCompat.startForegroundService(context, intent)
+        _gpsStatus.initialize()
     }
 
     fun stopTrack(service: LiveData<GeoTrackService>) {
         LogEx.i(Constants.TAG_CURRENT_TRACK_FRAGMENT_VM, "stop track")
         service.value?.stopRecordingTrack()
+        _gpsStatus.dispose()
     }
 
     // companion -----------------------------------------------------------------------------------

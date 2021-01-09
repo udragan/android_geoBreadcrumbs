@@ -176,10 +176,10 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/emptyBearingLayout"
+                    android:id="@+id/satellitesLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/default_text_placeholder">
+                    android:hint="@string/current_track_satellites">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
