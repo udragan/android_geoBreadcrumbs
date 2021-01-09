@@ -33,7 +33,7 @@ class GeoTrackService : Service() {
 
     // members -------------------------------------------------------------------------------------
 
-    private var recordingTrack: TrackExtendedDto = TrackExtendedDto(TrackDto(), mutableListOf())
+    private var recordingTrack: TrackExtendedDto = TrackExtendedDto.default()
     private var receivedLocations: Int = 0
 
     private val _recordingActive = MutableLiveData<Boolean>(false)
@@ -118,11 +118,12 @@ class GeoTrackService : Service() {
                             "satellites used for fix: $satellitesUsed"
                         )
 
-                        if (receivedLocations++ < NO_OF_STARTING_POINTS_TO_SKIP) {
+                        if (receivedLocations < NO_OF_STARTING_POINTS_TO_SKIP) {
                             LogEx.d(
                                 Constants.TAG_GEO_TRACK_SERVICE,
                                 "number of received locations is less than receivedLocationsBuffer ($receivedLocations < $NO_OF_STARTING_POINTS_TO_SKIP), skipping"
                             )
+                            receivedLocations++
                             return@launch
                         }
 
@@ -321,6 +322,10 @@ class GeoTrackService : Service() {
                     .update(track)
                 LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "update finished")
             }
+
+            receivedLocations = 0
+            recordingTrack = TrackExtendedDto.default()
+            _liveUpdate.postValue(recordingTrack.track)
 
             serviceScope.cancel()
             stopForeground(true)
