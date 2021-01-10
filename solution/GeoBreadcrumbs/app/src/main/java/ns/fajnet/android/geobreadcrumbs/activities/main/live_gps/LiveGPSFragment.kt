@@ -10,9 +10,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.HasDefaultViewModelProviderFactory
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.observe
 import com.google.android.gms.location.*
 import kotlinx.android.synthetic.main.fragment_live_gps.*
+import kotlinx.coroutines.launch
 import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.common.Constants
 import ns.fajnet.android.geobreadcrumbs.common.LogEx
@@ -37,6 +39,7 @@ class LiveGPSFragment : Fragment(), HasDefaultViewModelProviderFactory {
     private lateinit var accuracyTransformation: AccuracyTransformation
     private lateinit var speedTransformation: SpeedTransformation
     private lateinit var bearingTransformation: BearingTransformation
+    private lateinit var signalQualityTransformation: SignalQualityTransformation
 
     // overrides -----------------------------------------------------------------------------------
 
@@ -132,48 +135,52 @@ class LiveGPSFragment : Fragment(), HasDefaultViewModelProviderFactory {
     }
 
     private fun bind() {
-        coordinateTransformation = CoordinateTransformation(requireContext())
-        altitudeTransformation = AltitudeTransformation(requireContext())
-        accuracyTransformation = AccuracyTransformation(requireContext())
-        speedTransformation = SpeedTransformation(requireContext())
-        bearingTransformation = BearingTransformation()
+        lifecycleScope.launch {
+            coordinateTransformation = CoordinateTransformation(requireContext())
+            altitudeTransformation = AltitudeTransformation(requireContext())
+            accuracyTransformation = AccuracyTransformation(requireContext())
+            speedTransformation = SpeedTransformation(requireContext())
+            bearingTransformation = BearingTransformation()
+            signalQualityTransformation = SignalQualityTransformation(requireContext())
+        }
     }
 
     private fun bindLiveData() {
         // TODO: use transformations on all displayed values
-        viewModel.longitude.observe(viewLifecycleOwner) { value ->
+        viewModel.longitude.observe(viewLifecycleOwner) {
             longitudeLayout.editText!!.setText(
                 coordinateTransformation.transform(
-                    value,
+                    it,
                     Orientation.HORIZONTAL
                 )
             )
         }
-        viewModel.latitude.observe(viewLifecycleOwner) { value ->
+        viewModel.latitude.observe(viewLifecycleOwner) {
             latitudeLayout.editText!!.setText(
                 coordinateTransformation.transform(
-                    value,
+                    it,
                     Orientation.VERTICAL
                 )
             )
         }
-        viewModel.altitude.observe(viewLifecycleOwner) { value ->
-            altitudeLayout.editText!!.setText(altitudeTransformation.transform(value))
+        viewModel.altitude.observe(viewLifecycleOwner) {
+            altitudeLayout.editText!!.setText(altitudeTransformation.transform(it))
         }
-        viewModel.locationFixTime.observe(viewLifecycleOwner) { value ->
-            locationFixTimeLayout.editText!!.setText(value)
+        viewModel.locationFixTime.observe(viewLifecycleOwner) {
+            locationFixTimeLayout.editText!!.setText(it)
         }
-        viewModel.accuracy.observe(viewLifecycleOwner) { value ->
-            accuracyLayout.editText!!.setText(accuracyTransformation.transform(value))
+        viewModel.accuracy.observe(viewLifecycleOwner) {
+            accuracyLayout.editText!!.setText(accuracyTransformation.transform(it))
         }
-        viewModel.speed.observe(viewLifecycleOwner) { value ->
-            speedLayout.editText!!.setText(speedTransformation.transform(value))
+        viewModel.speed.observe(viewLifecycleOwner) {
+            speedLayout.editText!!.setText(speedTransformation.transform(it))
         }
-        viewModel.bearing.observe(viewLifecycleOwner) { value ->
-            bearingLayout.editText!!.setText(bearingTransformation.transform(value))
+        viewModel.bearing.observe(viewLifecycleOwner) {
+            bearingLayout.editText!!.setText(bearingTransformation.transform(it))
         }
-        viewModel.noOfSatellites.observe(viewLifecycleOwner) { value ->
-            satellitesLayout.editText!!.setText(value.toString())
+        viewModel.noOfSatellites.observe(viewLifecycleOwner) {
+            satellitesLayout.editText!!.setText(it.toString())
+            satellitesLayout.editText!!.setTextColor(signalQualityTransformation.transform(it))
         }
     }
 

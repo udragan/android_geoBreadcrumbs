@@ -30,7 +30,7 @@ class AccuracyTransformation(val context: Context) :
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         if (key == context.getString(R.string.settings_preference_unit_measurement_key)) {
-            LogEx.d(Constants.TAG_TRANSFORMATION_ALTITUDE, "preference changed")
+            LogEx.d(Constants.TAG_TRANSFORMATION_ACCURACY, "preference changed")
             val defaultValue = context.resources.getStringArray(R.array.unit_measurement_values)[0]
             unit = sharedPreferences
                 .getString(
@@ -75,14 +75,14 @@ class AccuracyTransformation(val context: Context) :
     }
 
     private fun registerPreferenceChangeListener() {
-        LogEx.d(Constants.TAG_TRANSFORMATION_ALTITUDE, "register preference change listener")
+        LogEx.d(Constants.TAG_TRANSFORMATION_ACCURACY, "register preference change listener")
         PreferenceManager.getDefaultSharedPreferences(context)
             .registerOnSharedPreferenceChangeListener(this)
     }
 
     // CHECK: should it be unregistered? if so then how?
     private fun unregisterPreferenceChangeListener() {
-        LogEx.d(Constants.TAG_TRANSFORMATION_ALTITUDE, "unregister preference change listener")
+        LogEx.d(Constants.TAG_TRANSFORMATION_ACCURACY, "unregister preference change listener")
         PreferenceManager.getDefaultSharedPreferences(context)
             .unregisterOnSharedPreferenceChangeListener(this)
     }
