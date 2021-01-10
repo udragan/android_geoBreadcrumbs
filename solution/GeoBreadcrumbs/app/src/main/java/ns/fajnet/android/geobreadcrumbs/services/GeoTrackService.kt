@@ -289,7 +289,7 @@ class GeoTrackService : Service() {
             _recordingActive.postValue(false)
             val trackWithPointsFromDb = GeoBreadcrumbsDatabase.getInstance(applicationContext)
                 .trackDao
-                .getWithPoints(recordingTrack.track.id)
+                .getExtended(recordingTrack.track.id)
 
             if (trackWithPointsFromDb == null) {
                 LogEx.w(

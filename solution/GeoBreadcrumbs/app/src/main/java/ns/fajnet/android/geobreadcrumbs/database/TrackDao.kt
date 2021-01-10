@@ -42,12 +42,12 @@ interface TrackDao {
 
     @Transaction
     @Query("SELECT * from tracks_table WHERE rowid = :key")
-    fun getWithPoints(key: Long): TrackWithPoints?
+    fun getExtended(key: Long): TrackExtended?
 
     @Query("SELECT * from tracks_table ORDER BY rowid DESC")
     fun getAll(): Array<Track>
 
     @Transaction
     @Query("SELECT * from tracks_table ORDER BY rowid DESC")
-    fun getAllWithPoints(): List<TrackWithPoints>
+    fun getAllExtended(): List<TrackExtended>
 }

@@ -5,12 +5,13 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [Track::class, Point::class], version = 1, exportSchema = false)
+@Database(entities = [Track::class, Place::class, Point::class], version = 1, exportSchema = false)
 abstract class GeoBreadcrumbsDatabase : RoomDatabase() {
 
     // Dao declarations ----------------------------------------------------------------------------
 
     abstract val trackDao: TrackDao
+    abstract val placeDao: PlaceDao
     abstract val pointDao: PointDao
 
     // companion -----------------------------------------------------------------------------------

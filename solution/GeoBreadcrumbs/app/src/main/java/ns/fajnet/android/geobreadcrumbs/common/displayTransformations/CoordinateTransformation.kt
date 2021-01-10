@@ -61,7 +61,7 @@ class CoordinateTransformation(val context: Context) :
 
     private fun readExistingPreference() {
         val defaultValue =
-            context.resources.getStringArray(R.array.unit_speed_values)[0]
+            context.resources.getStringArray(R.array.unit_coordinate_values)[0]
         unit = PreferenceManager.getDefaultSharedPreferences(context)
             .getString(
                 context.getString(R.string.settings_preference_unit_coordinate_key),
