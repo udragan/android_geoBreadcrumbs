@@ -36,16 +36,22 @@ class CurrentTrackFragmentViewModel(application: Application) : AndroidViewModel
 
     fun startTrack(startPointName: String) {
         LogEx.i(Constants.TAG_CURRENT_TRACK_FRAGMENT_VM, "start track")
+        _gpsStatus.initialize()
         val intent = Intent(context, GeoTrackService::class.java)
         intent.putExtra(GeoTrackService.EXTRA_START_POINT_NAME, startPointName)
         ContextCompat.startForegroundService(context, intent)
-        _gpsStatus.initialize()
     }
 
     fun stopTrack(service: LiveData<GeoTrackService>) {
         LogEx.i(Constants.TAG_CURRENT_TRACK_FRAGMENT_VM, "stop track")
         service.value?.stopRecordingTrack()
         _gpsStatus.dispose()
+    }
+
+    fun addPlace(service: LiveData<GeoTrackService>) {
+        LogEx.i(Constants.TAG_CURRENT_TRACK_FRAGMENT_VM, "add place")
+        //service.value?.addPlace()
+
     }
 
     // companion -----------------------------------------------------------------------------------

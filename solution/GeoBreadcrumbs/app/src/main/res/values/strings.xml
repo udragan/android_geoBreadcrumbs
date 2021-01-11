@@ -29,6 +29,8 @@
     <string name="current_track_overall_bearing">Overall bearing</string>
     <string name="current_track_max_speed">Max speed</string>
     <string name="current_track_satellites">Satellites</string>
+    <string name="current_track_number_of_places">Places</string>
+    <string name="current_track_number_of_points">Points</string>
 
     <string name="recorded_tracks_tab_text">Tracks</string>
     <string name="recorded_tracks_view_holder_duration">Duration:</string>

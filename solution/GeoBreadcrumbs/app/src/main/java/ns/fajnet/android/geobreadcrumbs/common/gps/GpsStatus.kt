@@ -70,6 +70,7 @@ class GpsStatus(private val app: Application) {
                 noOfSatellites.observeForever(_noOfSatellitesObserver)
             }
 
+            @Suppress("DEPRECATION", "Intentional for appropriate android version.")
             locationManager.addGpsStatusListener(_gpsStatusListener)
         }
     }
@@ -88,6 +89,7 @@ class GpsStatus(private val app: Application) {
                 val locationManager =
                     app.getSystemService(Context.LOCATION_SERVICE) as LocationManager
                 _gpsStatusListener.noOfSatellites.removeObserver(_noOfSatellitesObserver)
+                @Suppress("DEPRECATION", "Intentional for appropriate android version.")
                 locationManager.removeGpsStatusListener(_gpsStatusListener)
                 LogEx.i(Constants.TAG_GPS_STATUS, "Unregistering GpsStatusListener")
             }

@@ -25,8 +25,8 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/default_component_margin"
                 android:text="@string/current_track_start_track"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/stopTrack"
@@ -46,151 +46,202 @@
         android:layout_margin="@dimen/default_container_margin"
         app:layout_constraintTop_toBottomOf="@id/actionsCard">
 
-        <TableLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/default_component_margin"
-            android:stretchColumns="*">
+            android:layout_height="wrap_content">
 
-            <TableRow>
+            <TableLayout
+                android:id="@+id/tableLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/default_component_margin"
+                android:stretchColumns="*"
+                app:layout_constraintTop_toTopOf="parent">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/durationLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/current_track_duration">
+                <TableRow>
 
-                    <com.google.android.material.textfield.TextInputEditText
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/durationLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:backgroundTint="@android:color/transparent"
-                        android:clickable="false"
-                        android:enabled="false"
-                        android:textIsSelectable="false"
-                        android:textSize="@dimen/typography_title" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:hint="@string/current_track_duration">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/distanceLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/current_track_distance">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@android:color/transparent"
+                            android:clickable="false"
+                            android:enabled="false"
+                            android:textIsSelectable="false"
+                            android:textSize="@dimen/typography_title" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/distanceLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:backgroundTint="@android:color/transparent"
-                        android:clickable="false"
-                        android:enabled="false"
-                        android:textIsSelectable="false"
-                        android:textSize="@dimen/typography_title" />
-                </com.google.android.material.textfield.TextInputLayout>
-            </TableRow>
+                        android:hint="@string/current_track_distance">
 
-            <TableRow>
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@android:color/transparent"
+                            android:clickable="false"
+                            android:enabled="false"
+                            android:textIsSelectable="false"
+                            android:textSize="@dimen/typography_title" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </TableRow>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/currentSpeedLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/current_track_current_speed">
+                <TableRow>
 
-                    <com.google.android.material.textfield.TextInputEditText
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/currentSpeedLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:backgroundTint="@android:color/transparent"
-                        android:clickable="false"
-                        android:enabled="false"
-                        android:textIsSelectable="false"
-                        android:textSize="@dimen/typography_title" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:hint="@string/current_track_current_speed">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/currentBearingLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/current_track_current_bearing">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@android:color/transparent"
+                            android:clickable="false"
+                            android:enabled="false"
+                            android:textIsSelectable="false"
+                            android:textSize="@dimen/typography_title" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/currentBearingLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:backgroundTint="@android:color/transparent"
-                        android:clickable="false"
-                        android:enabled="false"
-                        android:textIsSelectable="false"
-                        android:textSize="@dimen/typography_title" />
-                </com.google.android.material.textfield.TextInputLayout>
-            </TableRow>
+                        android:hint="@string/current_track_current_bearing">
 
-            <TableRow>
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@android:color/transparent"
+                            android:clickable="false"
+                            android:enabled="false"
+                            android:textIsSelectable="false"
+                            android:textSize="@dimen/typography_title" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </TableRow>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/averageSpeedLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/current_track_average_speed">
+                <TableRow>
 
-                    <com.google.android.material.textfield.TextInputEditText
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/averageSpeedLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:backgroundTint="@android:color/transparent"
-                        android:clickable="false"
-                        android:enabled="false"
-                        android:textIsSelectable="false"
-                        android:textSize="@dimen/typography_title" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:hint="@string/current_track_average_speed">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/overallBearingLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/current_track_overall_bearing">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@android:color/transparent"
+                            android:clickable="false"
+                            android:enabled="false"
+                            android:textIsSelectable="false"
+                            android:textSize="@dimen/typography_title" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/overallBearingLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:backgroundTint="@android:color/transparent"
-                        android:clickable="false"
-                        android:enabled="false"
-                        android:textIsSelectable="false"
-                        android:textSize="@dimen/typography_title" />
-                </com.google.android.material.textfield.TextInputLayout>
-            </TableRow>
+                        android:hint="@string/current_track_overall_bearing">
 
-            <TableRow>
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@android:color/transparent"
+                            android:clickable="false"
+                            android:enabled="false"
+                            android:textIsSelectable="false"
+                            android:textSize="@dimen/typography_title" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </TableRow>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/maxSpeedLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/current_track_max_speed">
+                <TableRow>
 
-                    <com.google.android.material.textfield.TextInputEditText
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/maxSpeedLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:backgroundTint="@android:color/transparent"
-                        android:clickable="false"
-                        android:enabled="false"
-                        android:textIsSelectable="false"
-                        android:textSize="@dimen/typography_title" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:hint="@string/current_track_max_speed">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/satellitesLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/current_track_satellites">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@android:color/transparent"
+                            android:clickable="false"
+                            android:enabled="false"
+                            android:textIsSelectable="false"
+                            android:textSize="@dimen/typography_title" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/satellitesLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:backgroundTint="@android:color/transparent"
-                        android:clickable="false"
-                        android:enabled="false"
-                        android:textIsSelectable="false"
-                        android:textSize="@dimen/typography_title" />
-                </com.google.android.material.textfield.TextInputLayout>
-            </TableRow>
-        </TableLayout>
+                        android:hint="@string/current_track_satellites">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@android:color/transparent"
+                            android:clickable="false"
+                            android:enabled="false"
+                            android:textIsSelectable="false"
+                            android:textSize="@dimen/typography_title" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </TableRow>
+
+                <TableRow>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/noOfPlacesLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/current_track_number_of_places">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@android:color/transparent"
+                            android:clickable="false"
+                            android:enabled="false"
+                            android:textIsSelectable="false"
+                            android:textSize="@dimen/typography_title" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/noOfPointsLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/current_track_number_of_points">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@android:color/transparent"
+                            android:clickable="false"
+                            android:enabled="false"
+                            android:textIsSelectable="false"
+                            android:textSize="@dimen/typography_title" />
+                    </com.google.android.material.textfield.TextInputLayout>
+                </TableRow>
+            </TableLayout>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/addPlace"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/default_component_margin"
+                android:text="Add Place"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

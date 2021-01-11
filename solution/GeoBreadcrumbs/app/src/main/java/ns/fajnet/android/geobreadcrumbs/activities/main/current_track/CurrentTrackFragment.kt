@@ -15,6 +15,7 @@ import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.activities.main.MainActivityViewModel
 import ns.fajnet.android.geobreadcrumbs.common.Constants
 import ns.fajnet.android.geobreadcrumbs.common.LogEx
+import ns.fajnet.android.geobreadcrumbs.common.dialogs.NewPointDialog
 import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.*
 
 class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
@@ -59,6 +60,9 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
         stopTrack.setOnClickListener {
             stopTrackClick()
         }
+        addPlace.setOnClickListener {
+            addPlaceClick()
+        }
 
         durationTransformation = DurationTransformation()
         distanceTransformation = DistanceTransformation(requireContext())
@@ -70,7 +74,7 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
     private fun bindLiveData() {
         activityViewModel.geoTrackServiceReference.observe(viewLifecycleOwner) { value ->
             LogEx.d(Constants.TAG_CURRENT_TRACK_FRAGMENT, "serviceReference updated")
-            value?.recordingActive.observe(viewLifecycleOwner) {
+            value.recordingActive.observe(viewLifecycleOwner) {
                 if (it) {
                     startTrack.visibility = View.GONE
                     stopTrack.visibility = View.VISIBLE
@@ -81,7 +85,7 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
                     currentTrackData.visibility = View.GONE
                 }
             }
-            value?.liveUpdate.observe(viewLifecycleOwner) {
+            value.liveUpdate.observe(viewLifecycleOwner) {
                 LogEx.d(Constants.TAG_CURRENT_TRACK_FRAGMENT, "liveUpdate received")
                 durationLayout.editText?.setText(durationTransformation.transform(it.duration))
                 distanceLayout.editText?.setText(distanceTransformation.transform(it.distance))
@@ -90,6 +94,8 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
                 maxSpeedLayout.editText?.setText(speedTransformation.transform(it.maxSpeed))
                 currentBearingLayout.editText?.setText(headingTransformation.transform(it.currentBearing))
                 overallBearingLayout.editText?.setText(headingTransformation.transform(it.overallBearing))
+                noOfPlacesLayout.editText?.setText(it.noOfPlaces.toString())
+                noOfPointsLayout.editText?.setText(it.noOfPoints.toString())
             }
         }
         viewModel.noOfSatellites.observe(viewLifecycleOwner) {
@@ -107,17 +113,15 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
 
     private fun startTrackClick() {
         LogEx.i(Constants.TAG_CURRENT_TRACK_FRAGMENT, "tracking started")
-        viewModel.startTrack("TODO")
-//        NewPointDialog(
-//            {
-//                LogEx.d(Constants.TAG_CURRENT_TRACK_FRAGMENT, "dialog OK: $it")
-//                viewModel.startTrack(it)
-//            },
-//            {
-//                LogEx.w(Constants.TAG_CURRENT_TRACK_FRAGMENT, "dialog Cancel")
-//            }
-//        ).show(childFragmentManager, "newPoint")
-
+        NewPointDialog(
+            {
+                LogEx.d(Constants.TAG_CURRENT_TRACK_FRAGMENT, "dialog OK: $it")
+                viewModel.startTrack(it)
+            },
+            {
+                LogEx.w(Constants.TAG_CURRENT_TRACK_FRAGMENT, "dialog Cancel")
+            }
+        ).show(childFragmentManager, "newPoint")
         unbindLiveData()
         bindLiveData()
     }
@@ -126,6 +130,11 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
         LogEx.i(Constants.TAG_CURRENT_TRACK_FRAGMENT, "tracking stopped")
         unbindLiveData()
         viewModel.stopTrack(activityViewModel.geoTrackServiceReference)
+    }
+
+    private fun addPlaceClick() {
+        LogEx.i(Constants.TAG_CURRENT_TRACK_FRAGMENT, "add place to current track")
+        viewModel.addPlace(activityViewModel.geoTrackServiceReference)
     }
 
     // companion -----------------------------------------------------------------------------------

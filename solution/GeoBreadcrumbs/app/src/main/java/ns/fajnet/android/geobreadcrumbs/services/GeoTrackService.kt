@@ -21,8 +21,10 @@ import ns.fajnet.android.geobreadcrumbs.common.Constants
 import ns.fajnet.android.geobreadcrumbs.common.LogEx
 import ns.fajnet.android.geobreadcrumbs.common.Utils
 import ns.fajnet.android.geobreadcrumbs.database.GeoBreadcrumbsDatabase
+import ns.fajnet.android.geobreadcrumbs.database.Place
 import ns.fajnet.android.geobreadcrumbs.database.Point
 import ns.fajnet.android.geobreadcrumbs.database.Track
+import ns.fajnet.android.geobreadcrumbs.dtos.PlaceDto
 import ns.fajnet.android.geobreadcrumbs.dtos.PointDto
 import ns.fajnet.android.geobreadcrumbs.dtos.TrackDto
 import ns.fajnet.android.geobreadcrumbs.dtos.TrackExtendedDto
@@ -168,8 +170,7 @@ class GeoTrackService : Service() {
                             recordingTrack.track.overallBearing =
                                 calculateOverallBearingFromPointDtos(recordingTrack.points)
                             recordingTrack.track.noOfPoints = recordingTrack.points.size
-                            // TODO: update noofPlaces when added to db
-                            //recordingTrack.track.noOfPlaces = recordingTrack.places.size
+                            recordingTrack.track.noOfPlaces = recordingTrack.places.size
                         }
 
                         _liveUpdate.postValue(recordingTrack.track)
@@ -259,7 +260,7 @@ class GeoTrackService : Service() {
         )
     }
 
-    private fun startRecording(startPointName: String?) {
+    private fun startRecording(startPlaceName: String?) {
         initializeServiceScope()
         serviceScope.launch {
             LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "start recording")
@@ -273,8 +274,15 @@ class GeoTrackService : Service() {
                 .trackDao
                 .insertAndRetrieve(newTrack)
             recordingTrack.track = TrackDto.fromTrack(insertedTrack)
-            _recordingActive.postValue(true)
             // TODO: startPointName not empty -> insert new place also (when/if places are implemented)
+            if (!startPlaceName.isNullOrBlank()) {
+                val startPlace = Place(trackId = insertedTrack.id, name = startPlaceName)
+                GeoBreadcrumbsDatabase.getInstance(applicationContext)
+                    .placeDao
+                    .insert(startPlace)
+                recordingTrack.places.add(PlaceDto.fromPlace(startPlace))
+            }
+            _recordingActive.postValue(true)
             subscribeToLocationUpdates()
         }
     }
@@ -287,11 +295,11 @@ class GeoTrackService : Service() {
         serviceScope.launch {
             LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "stop recording")
             _recordingActive.postValue(false)
-            val trackWithPointsFromDb = GeoBreadcrumbsDatabase.getInstance(applicationContext)
+            val trackExtended = GeoBreadcrumbsDatabase.getInstance(applicationContext)
                 .trackDao
                 .getExtended(recordingTrack.track.id)
 
-            if (trackWithPointsFromDb == null) {
+            if (trackExtended == null) {
                 LogEx.w(
                     Constants.TAG_GEO_TRACK_SERVICE,
                     "No track with id ${recordingTrack.track.id}, nothing to update!"
@@ -301,19 +309,19 @@ class GeoTrackService : Service() {
                     Constants.TAG_GEO_TRACK_SERVICE,
                     "updating track ${recordingTrack.track.id}"
                 )
-                val existingTrack = trackWithPointsFromDb.track
+                val existingTrack = trackExtended.track
 
                 val track = Track(
                     existingTrack.id,
                     existingTrack.name,
                     existingTrack.startTimeMillis,
                     System.currentTimeMillis(),
-                    calculateDistanceFromPoints(trackWithPointsFromDb.points),
-                    calculateAvgSpeedFromPoints(trackWithPointsFromDb.points),
-                    calculateMaxSpeedFromPoints(trackWithPointsFromDb.points),
-                    calculateOverallBearingFromPoints(trackWithPointsFromDb.points),
-                    0, // TODO: places (when added to db)
-                    trackWithPointsFromDb.points.size,
+                    calculateDistanceFromPoints(trackExtended.points),
+                    calculateAvgSpeedFromPoints(trackExtended.points),
+                    calculateMaxSpeedFromPoints(trackExtended.points),
+                    calculateOverallBearingFromPoints(trackExtended.points),
+                    trackExtended.places.size,
+                    trackExtended.points.size,
                     1 // TODO: status enum
                 )
 
