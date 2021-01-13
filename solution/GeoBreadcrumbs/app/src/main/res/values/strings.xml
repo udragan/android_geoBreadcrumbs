@@ -17,8 +17,9 @@
     <string name="live_gps_bearing_hint">Bearing</string>
 
     <string name="current_track_tab_text">Current track</string>
-    <string name="current_track_dialog_new_point_title">New point</string>
-    <string name="current_track_dialog_new_point_hint">Name</string>
+    <string name="current_track_dialog_new_place_title">New place</string>
+    <string name="current_track_dialog_new_place_hint">Name</string>
+    <string name="current_track_dialog_location_stale">Last known location is stale,\nstored place might be off !</string>
     <string name="current_track_start_track">Start track</string>
     <string name="current_track_stop_track">Stop track</string>
     <string name="current_track_duration">Duration</string>

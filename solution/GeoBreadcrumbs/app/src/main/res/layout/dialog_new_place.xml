@@ -5,18 +5,28 @@
     android:orientation="vertical">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/pointName"
+        android:id="@+id/placeName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/default_component_margin"
         android:layout_marginEnd="@dimen/default_component_margin"
-        android:hint="@string/current_track_dialog_new_point_hint">
+        android:hint="@string/current_track_dialog_new_place_hint">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName">
 
             <requestFocus />
         </com.google.android.material.textfield.TextInputEditText>
     </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/location_stale"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/default_component_margin"
+        android:gravity="center"
+        android:text="@string/current_track_dialog_location_stale"
+        android:visibility="invisible" />
 </LinearLayout>

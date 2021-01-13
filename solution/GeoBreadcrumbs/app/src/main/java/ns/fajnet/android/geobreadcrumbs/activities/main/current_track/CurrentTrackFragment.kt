@@ -1,5 +1,6 @@
 package ns.fajnet.android.geobreadcrumbs.activities.main.current_track
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,12 +11,14 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.HasDefaultViewModelProviderFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
+import com.google.android.gms.location.LocationServices
 import kotlinx.android.synthetic.main.fragment_current_track.*
 import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.activities.main.MainActivityViewModel
 import ns.fajnet.android.geobreadcrumbs.common.Constants
 import ns.fajnet.android.geobreadcrumbs.common.LogEx
-import ns.fajnet.android.geobreadcrumbs.common.dialogs.NewPointDialog
+import ns.fajnet.android.geobreadcrumbs.common.Utils
+import ns.fajnet.android.geobreadcrumbs.common.dialogs.NewPlaceDialog
 import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.*
 
 class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
@@ -43,6 +46,20 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
         super.onActivityCreated(savedInstanceState)
         bind()
         bindLiveData()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
+            Constants.REQUEST_CODE_REQUEST_LOCATION_PERMISSION -> {
+                if (grantResults[0] == 0) {
+                    getLastLocationAndShowDialog()
+                }
+            }
+        }
     }
 
     // HasDefaultViewModelProviderFactory ----------------------------------------------------------
@@ -113,17 +130,50 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
 
     private fun startTrackClick() {
         LogEx.i(Constants.TAG_CURRENT_TRACK_FRAGMENT, "tracking started")
-        NewPointDialog(
-            {
-                LogEx.d(Constants.TAG_CURRENT_TRACK_FRAGMENT, "dialog OK: $it")
-                viewModel.startTrack(it)
-            },
-            {
-                LogEx.w(Constants.TAG_CURRENT_TRACK_FRAGMENT, "dialog Cancel")
+
+        when {
+            Utils.isPermissionGranted(this.requireContext()) -> {
+                when {
+                    Utils.isLocationEnabled(this.requireContext()) -> {
+                        getLastLocationAndShowDialog()
+                    }
+                    else -> {
+                        //Utils.showGPSNotEnabledDialog(this)
+                    }
+                }
             }
-        ).show(childFragmentManager, "newPoint")
-        unbindLiveData()
-        bindLiveData()
+            else -> {
+                Utils.requestLocationPermission(
+                    this,
+                    Constants.REQUEST_CODE_REQUEST_LOCATION_PERMISSION
+                )
+            }
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun getLastLocationAndShowDialog() {
+        indeterminateProgressBar.visibility = View.VISIBLE
+        LocationServices.getFusedLocationProviderClient(requireContext())
+            .lastLocation
+            .addOnSuccessListener {
+                LogEx.i(Constants.TAG_CURRENT_TRACK_FRAGMENT, "received last location: $it")
+                NewPlaceDialog(
+                    it,
+                    { placeName ->
+                        LogEx.i(Constants.TAG_CURRENT_TRACK_FRAGMENT, "dialog OK: $placeName")
+                        viewModel.startTrack(placeName)
+                    },
+                    {
+                        LogEx.i(Constants.TAG_CURRENT_TRACK_FRAGMENT, "dialog Cancel")
+                    }
+                ).show(childFragmentManager, "newPoint")
+                unbindLiveData()
+                bindLiveData()
+            }
+            .addOnCompleteListener {
+                indeterminateProgressBar.visibility = View.GONE
+            }
     }
 
     private fun stopTrackClick() {
@@ -135,6 +185,7 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
     private fun addPlaceClick() {
         LogEx.i(Constants.TAG_CURRENT_TRACK_FRAGMENT, "add place to current track")
         viewModel.addPlace(activityViewModel.geoTrackServiceReference)
+        // TODO: in viewModel
     }
 
     // companion -----------------------------------------------------------------------------------
