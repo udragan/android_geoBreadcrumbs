@@ -13,11 +13,10 @@ class DurationTransformation {
 
     // public methods ------------------------------------------------------------------------------
 
-    fun transform(durationInMilliseconds: Long): String {
-        return if (durationInMilliseconds >= 0) {
-            simpleDateFormat.format(durationInMilliseconds)
+    fun transform(durationInMilliseconds: Long) =
+        if (durationInMilliseconds >= 0) {
+            simpleDateFormat.format(durationInMilliseconds) ?: ""
         } else {
             "Negative duration: $durationInMilliseconds"
         }
-    }
 }

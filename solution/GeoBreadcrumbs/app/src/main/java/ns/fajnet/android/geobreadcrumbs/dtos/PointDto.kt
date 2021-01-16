@@ -17,8 +17,7 @@ data class PointDto(
     // companion object ----------------------------------------------------------------------------
 
     companion object {
-        fun fromDb(point: Point): PointDto {
-            return PointDto(
+        fun fromDb(point: Point) = PointDto(
                 point.id,
                 point.trackId,
                 point.longitude,
@@ -29,6 +28,5 @@ data class PointDto(
                 point.bearing,
                 point.locationFixTime
             )
-        }
     }
 }

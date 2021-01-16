@@ -33,15 +33,10 @@ class MainActivityPagerAdapter(private val context: Context, fm: FragmentManager
 
     // overrides -----------------------------------------------------------------------------------
 
-    override fun getItem(position: Int): Fragment {
-        return fragments[position]
-    }
+    override fun getItem(position: Int) = fragments[position]
 
-    override fun getPageTitle(position: Int): CharSequence? {
-        return context.resources.getString(TAB_TITLES[position])
-    }
+    override fun getPageTitle(position: Int) =
+        context.resources.getString(TAB_TITLES[position])
 
-    override fun getCount(): Int {
-        return 3
-    }
+    override fun getCount() = 3
 }

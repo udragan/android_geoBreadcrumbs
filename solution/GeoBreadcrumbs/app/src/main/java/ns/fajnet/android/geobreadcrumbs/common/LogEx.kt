@@ -32,9 +32,7 @@ class LogEx {
 
         // private methods -------------------------------------------------------------------------
 
-        private fun appendThread(msg: String): String {
-            return "${Thread.currentThread().name} - $msg"
-        }
+        private fun appendThread(msg: String) = "${Thread.currentThread().name} - $msg"
 
         private fun log(level: Int, tag: String, msg: String) {
             when (level) {

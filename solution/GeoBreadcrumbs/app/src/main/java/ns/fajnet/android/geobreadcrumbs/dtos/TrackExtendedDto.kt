@@ -11,16 +11,12 @@ data class TrackExtendedDto(
     // companion -----------------------------------------------------------------------------------
 
     companion object {
-        fun default(): TrackExtendedDto {
-            return TrackExtendedDto(TrackDto(), listOf(), listOf())
-        }
+        fun default() = TrackExtendedDto(TrackDto(), listOf(), listOf())
 
-        fun fromDb(value: TrackExtended): TrackExtendedDto {
-            return TrackExtendedDto(
+        fun fromDb(value: TrackExtended) = TrackExtendedDto(
                 TrackDto.fromDb(value.track),
                 value.places.map { PlaceDto.fromDb(it) },
                 value.points.map { PointDto.fromDb(it) }
             )
-        }
     }
 }

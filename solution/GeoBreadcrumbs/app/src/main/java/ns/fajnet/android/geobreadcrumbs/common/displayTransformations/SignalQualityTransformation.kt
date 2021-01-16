@@ -8,7 +8,7 @@ class SignalQualityTransformation(val context: Context) {
 
     // public methods ------------------------------------------------------------------------------
 
-    fun transform(satellites: Int): Int =
+    fun transform(satellites: Int) =
         if (satellites < 3) {
             getColor(context, R.color.warning)
         } else {

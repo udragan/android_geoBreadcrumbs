@@ -20,8 +20,7 @@ data class TrackDto(
     // companion object ----------------------------------------------------------------------------
 
     companion object {
-        fun fromDb(track: Track): TrackDto {
-            return TrackDto(
+        fun fromDb(track: Track) = TrackDto(
                 track.id,
                 track.name,
                 track.startTimeMillis,
@@ -35,6 +34,5 @@ data class TrackDto(
                 track.numberOfPlaces,
                 track.numberOfPoints
             )
-        }
     }
 }

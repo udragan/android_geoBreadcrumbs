@@ -222,6 +222,7 @@ class GeoTrackService : Service() {
                 Utils.isLocationEnabled(this)
             }"
         )
+
         return Utils.isPermissionGranted(this) && Utils.isLocationEnabled(this)
     }
 

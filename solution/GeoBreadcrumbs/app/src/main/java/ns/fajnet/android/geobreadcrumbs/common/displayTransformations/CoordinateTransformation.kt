@@ -82,8 +82,8 @@ class CoordinateTransformation(val context: Context) :
             .unregisterOnSharedPreferenceChangeListener(this)
     }
 
-    private fun getDirection(coordinate: Double, orientation: Orientation): String {
-        return if (orientation == Orientation.HORIZONTAL) {
+    private fun getDirection(coordinate: Double, orientation: Orientation) =
+        if (orientation == Orientation.HORIZONTAL) {
             if (coordinate < 0) {
                 Direction.W.name
             } else {
@@ -94,5 +94,4 @@ class CoordinateTransformation(val context: Context) :
         } else {
             Direction.N.name
         }
-    }
 }
