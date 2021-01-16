@@ -15,7 +15,7 @@ data class PlaceDto(
     // companion object ----------------------------------------------------------------------------
 
     companion object {
-        fun fromPlace(place: Place): PlaceDto {
+        fun fromDb(place: Place): PlaceDto {
             return PlaceDto(
                 place.id,
                 place.trackId,

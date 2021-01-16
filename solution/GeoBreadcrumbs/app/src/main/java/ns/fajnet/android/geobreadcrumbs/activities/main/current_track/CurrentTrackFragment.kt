@@ -182,10 +182,34 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
         viewModel.stopTrack(activityViewModel.geoTrackServiceReference)
     }
 
+    @SuppressLint("MissingPermission")
     private fun addPlaceClick() {
         LogEx.i(Constants.TAG_CURRENT_TRACK_FRAGMENT, "add place to current track")
-        viewModel.addPlace(activityViewModel.geoTrackServiceReference)
-        // TODO: in viewModel
+        indeterminateProgressBar.visibility = View.VISIBLE
+        LocationServices.getFusedLocationProviderClient(requireContext())
+            .lastLocation
+            .addOnSuccessListener {
+                LogEx.i(Constants.TAG_CURRENT_TRACK_FRAGMENT, "received last location: $it")
+                NewPlaceDialog(
+                    it,
+                    { placeName ->
+                        LogEx.i(Constants.TAG_CURRENT_TRACK_FRAGMENT, "dialog OK: $placeName")
+                        viewModel.addPlace(
+                            activityViewModel.geoTrackServiceReference,
+                            placeName,
+                            it
+                        )
+                    },
+                    {
+                        LogEx.i(Constants.TAG_CURRENT_TRACK_FRAGMENT, "dialog Cancel")
+                    }
+                ).show(childFragmentManager, "newPoint")
+                unbindLiveData()
+                bindLiveData()
+            }
+            .addOnCompleteListener {
+                indeterminateProgressBar.visibility = View.GONE
+            }
     }
 
     // companion -----------------------------------------------------------------------------------

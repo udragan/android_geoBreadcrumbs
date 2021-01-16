@@ -3,6 +3,7 @@ package ns.fajnet.android.geobreadcrumbs.activities.main.current_track
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.location.Location
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -48,10 +49,9 @@ class CurrentTrackFragmentViewModel(application: Application) : AndroidViewModel
         _gpsStatus.dispose()
     }
 
-    fun addPlace(service: LiveData<GeoTrackService>) {
-        LogEx.i(Constants.TAG_CURRENT_TRACK_FRAGMENT_VM, "add place")
-        //service.value?.addPlace()
-
+    fun addPlace(service: LiveData<GeoTrackService>, placeName: String, location: Location?) {
+        LogEx.i(Constants.TAG_CURRENT_TRACK_FRAGMENT_VM, "add place: $placeName, $location")
+        service.value?.addPlaceToTrack(placeName, location)
     }
 
     // companion -----------------------------------------------------------------------------------

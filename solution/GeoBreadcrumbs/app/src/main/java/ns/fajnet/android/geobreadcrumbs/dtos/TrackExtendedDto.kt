@@ -1,16 +1,26 @@
 package ns.fajnet.android.geobreadcrumbs.dtos
 
+import ns.fajnet.android.geobreadcrumbs.database.TrackExtended
+
 data class TrackExtendedDto(
-    var track: TrackDto,
-    var places: MutableList<PlaceDto>,
-    var points: MutableList<PointDto>
+    val track: TrackDto,
+    val places: List<PlaceDto>,
+    val points: List<PointDto>
 ) {
 
     // companion -----------------------------------------------------------------------------------
 
     companion object {
         fun default(): TrackExtendedDto {
-            return TrackExtendedDto(TrackDto(), mutableListOf(), mutableListOf())
+            return TrackExtendedDto(TrackDto(), listOf(), listOf())
+        }
+
+        fun fromDb(value: TrackExtended): TrackExtendedDto {
+            return TrackExtendedDto(
+                TrackDto.fromDb(value.track),
+                value.places.map { PlaceDto.fromDb(it) },
+                value.points.map { PointDto.fromDb(it) }
+            )
         }
     }
 }
