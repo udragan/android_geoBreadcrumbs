@@ -10,6 +10,7 @@
         android:id="@+id/indeterminateProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:elevation="@dimen/default_progress_bar_elevation"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -249,7 +250,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/default_component_margin"
-                android:text="Add Place"
+                android:text="@string/current_track_add_place"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
         </androidx.constraintlayout.widget.ConstraintLayout>

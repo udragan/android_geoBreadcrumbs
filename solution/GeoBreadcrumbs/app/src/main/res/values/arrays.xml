@@ -79,4 +79,27 @@
         <item>100</item>
     </string-array>
 
+    <!-- Last known location stale -->
+    <string-array name="last_known_location_entries">
+        <item>2 s</item>
+        <item>10 s</item>
+        <item>15 s</item>
+        <item>30 s</item>
+        <item>1 m</item>
+        <item>2 m</item>
+        <item>5 m</item>
+        <item>never</item>
+    </string-array>
+
+    <string-array name="last_known_location_values">
+        <item>2000000000</item>
+        <item>10000000000</item>
+        <item>15000000000</item>
+        <item>30000000000</item>
+        <item>60000000000</item>
+        <item>120000000000</item>
+        <item>300000000000</item>
+        <item>0</item>
+    </string-array>
+
 </resources>

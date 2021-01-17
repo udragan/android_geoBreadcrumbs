@@ -28,6 +28,7 @@
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/settings_preference_category_tracking_precision_title">
+
         <ListPreference
             app:defaultValue="2000"
             app:entries="@array/precision_interval_entries"
@@ -43,7 +44,17 @@
             app:key="@string/settings_preference_tracking_precision_distance_key"
             app:title="@string/settings_preference_tracking_precision_distance_title"
             app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
 
+    <PreferenceCategory app:title="@string/settings_preference_category_last_known_location_title">
+
+        <ListPreference
+            app:defaultValue="10000000000"
+            app:entries="@array/last_known_location_entries"
+            app:entryValues="@array/last_known_location_values"
+            app:key="@string/settings_preference_last_known_location_stale_key"
+            app:title="@string/settings_preference_last_known_location_stale_title"
+            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
     <!--    <PreferenceCategory app:title="@string/messages_header">-->

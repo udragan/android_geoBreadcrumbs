@@ -8,8 +8,7 @@
         android:id="@+id/placeName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/default_component_margin"
-        android:layout_marginEnd="@dimen/default_component_margin"
+        android:layout_margin="@dimen/default_container_margin"
         android:hint="@string/current_track_dialog_new_place_hint">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -25,8 +24,8 @@
         android:id="@+id/location_stale"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/default_component_margin"
+        android:layout_margin="@dimen/default_container_margin"
         android:gravity="center"
         android:text="@string/current_track_dialog_location_stale"
-        android:visibility="invisible" />
+        android:visibility="gone" />
 </LinearLayout>

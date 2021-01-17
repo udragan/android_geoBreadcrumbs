@@ -22,6 +22,7 @@
     <string name="current_track_dialog_location_stale">Last known location is stale,\nstored place might be off !</string>
     <string name="current_track_start_track">Start track</string>
     <string name="current_track_stop_track">Stop track</string>
+    <string name="current_track_add_place">Add Place</string>
     <string name="current_track_duration">Duration</string>
     <string name="current_track_distance">Distance</string>
     <string name="current_track_current_speed">Current speed</string>
@@ -46,7 +47,6 @@
     <string name="main_menu_action_exit">Exit</string>
 
     <string name="settings_activity_title">Settings</string>
-
     <string name="settings_preference_category_units_title">Units</string>
     <string name="settings_preference_unit_measurement_title">Measurements</string>
     <string name="settings_preference_unit_measurement_key">measurements</string>
@@ -59,6 +59,9 @@
     <string name="settings_preference_tracking_precision_interval_key">interval</string>
     <string name="settings_preference_tracking_precision_distance_title">Distance</string>
     <string name="settings_preference_tracking_precision_distance_key">distance</string>
+    <string name="settings_preference_category_last_known_location_title">Last known location</string>
+    <string name="settings_preference_last_known_location_stale_title">Consider stale after</string>
+    <string name="settings_preference_last_known_location_stale_key">stale</string>
 
     <string name="geo_track_service_description">GEO Breadcrumbs tracking service</string>
     <string name="geo_track_service_notification_title">GEO Breadcrumbs tracking service</string>
