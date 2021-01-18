@@ -9,7 +9,7 @@ import ns.fajnet.android.geobreadcrumbs.common.LogEx
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
-class AltitudeTransformation(val context: Context) :
+class AltitudeTransformation(val context: Context) : IDisplayTransformation,
     SharedPreferences.OnSharedPreferenceChangeListener {
 
     // members -------------------------------------------------------------------------------------
@@ -19,11 +19,20 @@ class AltitudeTransformation(val context: Context) :
         DecimalFormat("#,###").apply { roundingMode = RoundingMode.HALF_EVEN }
     private val feetInMeter = 3.2808
 
+    private val subscribers = mutableListOf<() -> Unit>()
+
     // init ----------------------------------------------------------------------------------------
 
     init {
         readExistingPreference()
         registerPreferenceChangeListener()
+    }
+
+    // overrides -----------------------------------------------------------------------------------
+
+    override fun dispose() {
+        unregisterPreferenceChangeListener()
+        unsubscribeAll()
     }
 
     // OnSharedPreferencesChangedListener ----------------------------------------------------------
@@ -37,6 +46,12 @@ class AltitudeTransformation(val context: Context) :
                     context.getString(R.string.settings_preference_unit_measurement_key),
                     defaultValue
                 )!!
+
+            LogEx.d(
+                Constants.TAG_TRANSFORMATION_ALTITUDE,
+                "triggering ${subscribers.size} subscribers"
+            )
+            subscribers.forEach { x -> x.invoke() }
         }
     }
 
@@ -59,6 +74,14 @@ class AltitudeTransformation(val context: Context) :
         }
     }
 
+    fun subscribe(action: () -> Unit) {
+        subscribers.add(action)
+    }
+
+    fun unsubscribe(action: () -> Unit) {
+        subscribers.remove { action }
+    }
+
     // private methods -----------------------------------------------------------------------------
 
     private fun readExistingPreference() {
@@ -69,6 +92,7 @@ class AltitudeTransformation(val context: Context) :
                 context.getString(R.string.settings_preference_unit_measurement_key),
                 defaultValue
             )!!
+        LogEx.d(Constants.TAG_TRANSFORMATION_ALTITUDE, "read current unit: $unit")
     }
 
     private fun registerPreferenceChangeListener() {
@@ -82,5 +106,9 @@ class AltitudeTransformation(val context: Context) :
         LogEx.d(Constants.TAG_TRANSFORMATION_ALTITUDE, "unregister preference change listener")
         PreferenceManager.getDefaultSharedPreferences(context)
             .unregisterOnSharedPreferenceChangeListener(this)
+    }
+
+    private fun unsubscribeAll() {
+        subscribers.clear()
     }
 }

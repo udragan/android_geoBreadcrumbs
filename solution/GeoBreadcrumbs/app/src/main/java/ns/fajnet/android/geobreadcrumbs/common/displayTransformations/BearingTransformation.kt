@@ -1,6 +1,6 @@
 package ns.fajnet.android.geobreadcrumbs.common.displayTransformations
 
-class BearingTransformation {
+class BearingTransformation : IDisplayTransformation {
 
     // public methods -------------------------------------------------------------------------------
 

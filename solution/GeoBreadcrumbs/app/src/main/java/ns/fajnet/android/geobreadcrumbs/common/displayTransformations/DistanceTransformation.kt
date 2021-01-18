@@ -9,7 +9,7 @@ import ns.fajnet.android.geobreadcrumbs.common.LogEx
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
-class DistanceTransformation(val context: Context) :
+class DistanceTransformation(val context: Context) : IDisplayTransformation,
     SharedPreferences.OnSharedPreferenceChangeListener {
 
     // members -------------------------------------------------------------------------------------
@@ -20,11 +20,20 @@ class DistanceTransformation(val context: Context) :
     private val feetInMeter = 3.2808
     private val feetInMile = 5280
 
+    private val subscribers = mutableListOf<() -> Unit>()
+
     // init ----------------------------------------------------------------------------------------
 
     init {
         readExistingPreference()
         registerPreferenceChangeListener()
+    }
+
+    // overrides -----------------------------------------------------------------------------------
+
+    override fun dispose() {
+        unregisterPreferenceChangeListener()
+        unsubscribeAll()
     }
 
     // OnSharedPreferencesChangedListener ----------------------------------------------------------
@@ -38,6 +47,12 @@ class DistanceTransformation(val context: Context) :
                     context.getString(R.string.settings_preference_unit_measurement_key),
                     defaultValue
                 )!!
+
+            LogEx.d(
+                Constants.TAG_TRANSFORMATION_DISTANCE,
+                "triggering ${subscribers.size} subscribers"
+            )
+            subscribers.forEach { x -> x.invoke() }
         }
     }
 
@@ -69,6 +84,14 @@ class DistanceTransformation(val context: Context) :
         }
     }
 
+    fun subscribe(action: () -> Unit) {
+        subscribers.add(action)
+    }
+
+    fun unsubscribe(action: () -> Unit) {
+        subscribers.remove { action }
+    }
+
     // private methods -----------------------------------------------------------------------------
 
     private fun readExistingPreference() {
@@ -79,6 +102,7 @@ class DistanceTransformation(val context: Context) :
                 context.getString(R.string.settings_preference_unit_measurement_key),
                 defaultValue
             )!!
+        LogEx.d(Constants.TAG_TRANSFORMATION_DISTANCE, "read current unit: $unit")
     }
 
     private fun registerPreferenceChangeListener() {
@@ -92,5 +116,9 @@ class DistanceTransformation(val context: Context) :
         LogEx.d(Constants.TAG_TRANSFORMATION_DISTANCE, "unregister preference change listener")
         PreferenceManager.getDefaultSharedPreferences(context)
             .unregisterOnSharedPreferenceChangeListener(this)
+    }
+
+    private fun unsubscribeAll() {
+        subscribers.clear()
     }
 }

@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.core.content.ContextCompat.getColor
 import ns.fajnet.android.geobreadcrumbs.R
 
-class SignalQualityTransformation(val context: Context) {
+class SignalQualityTransformation(val context: Context) : IDisplayTransformation {
 
     // public methods ------------------------------------------------------------------------------
 

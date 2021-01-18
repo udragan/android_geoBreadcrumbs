@@ -3,7 +3,7 @@ package ns.fajnet.android.geobreadcrumbs.common.displayTransformations
 import java.text.SimpleDateFormat
 import java.util.*
 
-class DurationTransformation {
+class DurationTransformation : IDisplayTransformation {
 
     // members -------------------------------------------------------------------------------------
 

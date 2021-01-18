@@ -9,7 +9,7 @@ import ns.fajnet.android.geobreadcrumbs.common.LogEx
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
-class SpeedTransformation(val context: Context) :
+class SpeedTransformation(val context: Context) : IDisplayTransformation,
     SharedPreferences.OnSharedPreferenceChangeListener {
 
     // members -------------------------------------------------------------------------------------
@@ -20,11 +20,20 @@ class SpeedTransformation(val context: Context) :
     private val msToKmh = 3.6
     private val msToMph = 2.23693629
 
+    private val subscribers = mutableListOf<() -> Unit>()
+
     // init ----------------------------------------------------------------------------------------
 
     init {
         readExistingPreference()
         registerPreferenceChangeListener()
+    }
+
+    // overrides -----------------------------------------------------------------------------------
+
+    override fun dispose() {
+        unregisterPreferenceChangeListener()
+        unsubscribeAll()
     }
 
     // OnSharedPreferencesChangedListener ----------------------------------------------------------
@@ -38,6 +47,12 @@ class SpeedTransformation(val context: Context) :
                     context.getString(R.string.settings_preference_unit_speed_key),
                     defaultValue
                 )!!
+
+            LogEx.d(
+                Constants.TAG_TRANSFORMATION_SPEED,
+                "triggering ${subscribers.size} subscribers"
+            )
+            subscribers.forEach { x -> x.invoke() }
         }
     }
 
@@ -62,6 +77,14 @@ class SpeedTransformation(val context: Context) :
         }
     }
 
+    fun subscribe(action: () -> Unit) {
+        subscribers.add(action)
+    }
+
+    fun unsubscribe(action: () -> Unit) {
+        subscribers.remove { action }
+    }
+
     // private methods -----------------------------------------------------------------------------
 
     private fun readExistingPreference() {
@@ -72,6 +95,7 @@ class SpeedTransformation(val context: Context) :
                 context.getString(R.string.settings_preference_unit_speed_key),
                 defaultValue
             )!!
+        LogEx.d(Constants.TAG_TRANSFORMATION_SPEED, "read current unit: $unit")
     }
 
     private fun registerPreferenceChangeListener() {
@@ -80,10 +104,13 @@ class SpeedTransformation(val context: Context) :
             .registerOnSharedPreferenceChangeListener(this)
     }
 
-    // CHECK: should it be unregistered? if so then how?
     private fun unregisterPreferenceChangeListener() {
         LogEx.d(Constants.TAG_TRANSFORMATION_SPEED, "unregister preference change listener")
         PreferenceManager.getDefaultSharedPreferences(context)
             .unregisterOnSharedPreferenceChangeListener(this)
+    }
+
+    private fun unsubscribeAll() {
+        subscribers.clear()
     }
 }

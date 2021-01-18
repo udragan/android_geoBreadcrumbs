@@ -9,18 +9,27 @@ import ns.fajnet.android.geobreadcrumbs.common.Constants
 import ns.fajnet.android.geobreadcrumbs.common.LogEx
 import kotlin.math.abs
 
-class CoordinateTransformation(val context: Context) :
+class CoordinateTransformation(val context: Context) : IDisplayTransformation,
     SharedPreferences.OnSharedPreferenceChangeListener {
 
     // members -------------------------------------------------------------------------------------
 
     private var unit = ""
 
+    private val subscribers = mutableListOf<() -> Unit>()
+
     // init ----------------------------------------------------------------------------------------
 
     init {
         readExistingPreference()
         registerPreferenceChangeListener()
+    }
+
+    // overrides -----------------------------------------------------------------------------------
+
+    override fun dispose() {
+        unregisterPreferenceChangeListener()
+        unsubscribeAll()
     }
 
     // OnSharedPreferencesChangedListener ----------------------------------------------------------
@@ -33,6 +42,12 @@ class CoordinateTransformation(val context: Context) :
                 context.getString(R.string.settings_preference_unit_coordinate_key),
                 defaultValue
             )!!
+
+        LogEx.d(
+            Constants.TAG_TRANSFORMATION_COORDINATE,
+            "triggering ${subscribers.size} subscribers"
+        )
+        subscribers.forEach { x -> x.invoke() }
     }
 
     // public methods ------------------------------------------------------------------------------
@@ -57,6 +72,14 @@ class CoordinateTransformation(val context: Context) :
         }
     }
 
+    fun subscribe(action: () -> Unit) {
+        subscribers.add(action)
+    }
+
+    fun unsubscribe(action: () -> Unit) {
+        subscribers.remove { action }
+    }
+
     // private methods -----------------------------------------------------------------------------
 
     private fun readExistingPreference() {
@@ -67,6 +90,7 @@ class CoordinateTransformation(val context: Context) :
                 context.getString(R.string.settings_preference_unit_coordinate_key),
                 defaultValue
             )!!
+        LogEx.d(Constants.TAG_TRANSFORMATION_COORDINATE, "read current unit: $unit")
     }
 
     private fun registerPreferenceChangeListener() {
@@ -94,4 +118,8 @@ class CoordinateTransformation(val context: Context) :
         } else {
             Direction.N.name
         }
+
+    private fun unsubscribeAll() {
+        subscribers.clear()
+    }
 }

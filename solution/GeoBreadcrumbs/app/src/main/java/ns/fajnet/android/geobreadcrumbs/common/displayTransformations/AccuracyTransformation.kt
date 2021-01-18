@@ -9,7 +9,7 @@ import ns.fajnet.android.geobreadcrumbs.common.LogEx
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
-class AccuracyTransformation(val context: Context) :
+class AccuracyTransformation(val context: Context) : IDisplayTransformation,
     SharedPreferences.OnSharedPreferenceChangeListener {
 
     // members -------------------------------------------------------------------------------------
@@ -19,11 +19,20 @@ class AccuracyTransformation(val context: Context) :
         DecimalFormat("#,###").apply { roundingMode = RoundingMode.HALF_EVEN }
     private val feetInMeter = 3.2808
 
+    private val subscribers = mutableListOf<() -> Unit>()
+
     // init ----------------------------------------------------------------------------------------
 
     init {
         readExistingPreference()
         registerPreferenceChangeListener()
+    }
+
+    // overrides -----------------------------------------------------------------------------------
+
+    override fun dispose() {
+        unregisterPreferenceChangeListener()
+        unsubscribeAll()
     }
 
     // OnSharedPreferencesChangedListener ----------------------------------------------------------
@@ -37,6 +46,12 @@ class AccuracyTransformation(val context: Context) :
                     context.getString(R.string.settings_preference_unit_measurement_key),
                     defaultValue
                 )!!
+
+            LogEx.d(
+                Constants.TAG_TRANSFORMATION_ACCURACY,
+                "triggering ${subscribers.size} subscribers"
+            )
+            subscribers.forEach { x -> x.invoke() }
         }
     }
 
@@ -62,6 +77,14 @@ class AccuracyTransformation(val context: Context) :
         }
     }
 
+    fun subscribe(action: () -> Unit) {
+        subscribers.add(action)
+    }
+
+    fun unsubscribe(action: () -> Unit) {
+        subscribers.remove { action }
+    }
+
     // private methods -----------------------------------------------------------------------------
 
     private fun readExistingPreference() {
@@ -72,6 +95,7 @@ class AccuracyTransformation(val context: Context) :
                 context.getString(R.string.settings_preference_unit_measurement_key),
                 defaultValue
             )!!
+        LogEx.d(Constants.TAG_TRANSFORMATION_ACCURACY, "read current unit: $unit")
     }
 
     private fun registerPreferenceChangeListener() {
@@ -85,5 +109,9 @@ class AccuracyTransformation(val context: Context) :
         LogEx.d(Constants.TAG_TRANSFORMATION_ACCURACY, "unregister preference change listener")
         PreferenceManager.getDefaultSharedPreferences(context)
             .unregisterOnSharedPreferenceChangeListener(this)
+    }
+
+    private fun unsubscribeAll() {
+        subscribers.clear()
     }
 }
