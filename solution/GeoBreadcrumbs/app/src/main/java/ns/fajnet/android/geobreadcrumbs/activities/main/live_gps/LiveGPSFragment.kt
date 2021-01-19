@@ -96,6 +96,7 @@ class LiveGPSFragment : Fragment(), HasDefaultViewModelProviderFactory {
     override fun onDestroy() {
         super.onDestroy()
         LogEx.d(Constants.TAG_LIVE_GPS_FRAGMENT, "onDestroy")
+        disposeDisplayTransformations()
     }
 
     override fun onRequestPermissionsResult(
@@ -212,6 +213,15 @@ class LiveGPSFragment : Fragment(), HasDefaultViewModelProviderFactory {
         if (this::fusedLocationProviderClient.isInitialized) {
             fusedLocationProviderClient.removeLocationUpdates(locationCallback)
         }
+    }
+
+    private fun disposeDisplayTransformations() {
+        coordinateTransformation.dispose()
+        altitudeTransformation.dispose()
+        accuracyTransformation.dispose()
+        speedTransformation.dispose()
+        bearingTransformation.dispose()
+        signalQualityTransformation.dispose()
     }
 
     // companion -----------------------------------------------------------------------------------

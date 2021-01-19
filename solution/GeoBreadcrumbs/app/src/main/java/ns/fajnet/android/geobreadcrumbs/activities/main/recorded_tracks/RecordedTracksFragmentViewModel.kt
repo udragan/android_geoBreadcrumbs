@@ -18,7 +18,6 @@ class RecordedTracksFragmentViewModel(application: Application) : AndroidViewMod
 
     // members -------------------------------------------------------------------------------------
 
-    private var isDataLoaded = false
     private var _recordedTracksAdapter = MutableLiveData<RecordedTracksAdapter>()
 
     // properties ----------------------------------------------------------------------------------
@@ -31,24 +30,30 @@ class RecordedTracksFragmentViewModel(application: Application) : AndroidViewMod
     fun loadTracks() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                if (!isDataLoaded) {
-                    LogEx.d(Constants.TAG_RECORDED_TRACKS_FRAGMENT_VM, "load tracks")
-                    isDataLoaded = true
+                LogEx.d(Constants.TAG_RECORDED_TRACKS_FRAGMENT_VM, "load tracks")
 
-                    val tracks =
-                        GeoBreadcrumbsDatabase.getInstance(super.getApplication<AppInit>().applicationContext)
-                            .trackDao
-                            .getAll()
+                val tracks =
+                    GeoBreadcrumbsDatabase.getInstance(super.getApplication<AppInit>().applicationContext)
+                        .trackDao
+                        .getAll()
 
-                    // TODO: remove
-                    //Thread.sleep(5000)
+                // TODO: remove
+                //Thread.sleep(5000)
 
-                    LogEx.d(Constants.TAG_RECORDED_TRACKS_FRAGMENT_VM, "loading finished")
-                    _recordedTracksAdapter.postValue(RecordedTracksAdapter(getApplication<AppInit>().applicationContext, tracks))
-                    LogEx.d(Constants.TAG_RECORDED_TRACKS_FRAGMENT_VM, "adapter set")
-                }
+                LogEx.d(Constants.TAG_RECORDED_TRACKS_FRAGMENT_VM, "loading finished")
+                _recordedTracksAdapter.postValue(
+                    RecordedTracksAdapter(
+                        getApplication<AppInit>().applicationContext,
+                        tracks
+                    )
+                )
+                LogEx.d(Constants.TAG_RECORDED_TRACKS_FRAGMENT_VM, "adapter set")
             }
         }
+    }
+
+    fun releaseAdapter() {
+        _recordedTracksAdapter.postValue(null)
     }
 
     // companion -----------------------------------------------------------------------------------

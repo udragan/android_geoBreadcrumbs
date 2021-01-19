@@ -62,6 +62,12 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        LogEx.d(Constants.TAG_CURRENT_TRACK_FRAGMENT, "onDestroy")
+        disposeDisplayTransformations()
+    }
+
     // HasDefaultViewModelProviderFactory ----------------------------------------------------------
 
     override fun getDefaultViewModelProviderFactory(): ViewModelProvider.Factory {
@@ -210,6 +216,14 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
             .addOnCompleteListener {
                 indeterminateProgressBar.visibility = View.GONE
             }
+    }
+
+    private fun disposeDisplayTransformations() {
+        durationTransformation.dispose()
+        distanceTransformation.dispose()
+        speedTransformation.dispose()
+        headingTransformation.dispose()
+        signalQualityTransformation.dispose()
     }
 
     // companion -----------------------------------------------------------------------------------

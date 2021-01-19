@@ -35,19 +35,21 @@ class CoordinateTransformation(val context: Context) : IDisplayTransformation,
     // OnSharedPreferencesChangedListener ----------------------------------------------------------
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-        LogEx.d(Constants.TAG_TRANSFORMATION_COORDINATE, "preference changed")
-        val defaultValue = context.resources.getStringArray(R.array.unit_coordinate_values)[0]
-        unit = sharedPreferences
-            .getString(
-                context.getString(R.string.settings_preference_unit_coordinate_key),
-                defaultValue
-            )!!
+        if (key == context.getString(R.string.settings_preference_unit_coordinate_key)) {
+            LogEx.d(Constants.TAG_TRANSFORMATION_COORDINATE, "preference changed")
+            val defaultValue = context.resources.getStringArray(R.array.unit_coordinate_values)[0]
+            unit = sharedPreferences
+                .getString(
+                    context.getString(R.string.settings_preference_unit_coordinate_key),
+                    defaultValue
+                )!!
 
-        LogEx.d(
-            Constants.TAG_TRANSFORMATION_COORDINATE,
-            "triggering ${subscribers.size} subscribers"
-        )
-        subscribers.forEach { x -> x.invoke() }
+            LogEx.d(
+                Constants.TAG_TRANSFORMATION_COORDINATE,
+                "triggering ${subscribers.size} subscribers"
+            )
+            subscribers.forEach { x -> x.invoke() }
+        }
     }
 
     // public methods ------------------------------------------------------------------------------

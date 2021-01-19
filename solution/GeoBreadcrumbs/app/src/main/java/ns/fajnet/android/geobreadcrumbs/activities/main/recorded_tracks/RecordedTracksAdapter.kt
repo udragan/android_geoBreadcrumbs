@@ -8,6 +8,8 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.recycler_view_item_recorded_tracks.view.*
 import ns.fajnet.android.geobreadcrumbs.R
+import ns.fajnet.android.geobreadcrumbs.common.Constants
+import ns.fajnet.android.geobreadcrumbs.common.LogEx
 import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.DistanceTransformation
 import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.DurationTransformation
 import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.HeadingTransformation
@@ -24,11 +26,19 @@ class RecordedTracksAdapter(context: Context, private val dataSet: Array<Track>)
     private val distanceTransformation = DistanceTransformation(context)
     private val speedTransformation = SpeedTransformation(context)
     private val headingTransformation = HeadingTransformation()
+    private val settingsChangedHandler = {
+        this.notifyDataSetChanged()
+        LogEx.d(Constants.TAG_RECORDED_TRACKS_ADAPTER, "preferences changed, rebinding viewHolders")
+    }
 
     // overrides -----------------------------------------------------------------------------------
 
+    init {
+        distanceTransformation.subscribe(settingsChangedHandler)
+        speedTransformation.subscribe(settingsChangedHandler)
+    }
+
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
-        // TODO: transformations are not applied when settings are changed!!
         val view = LayoutInflater.from(viewGroup.context)
             .inflate(R.layout.recycler_view_item_recorded_tracks, viewGroup, false)
 
@@ -51,6 +61,14 @@ class RecordedTracksAdapter(context: Context, private val dataSet: Array<Track>)
     }
 
     override fun getItemCount() = dataSet.size
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
+        durationTransformation.dispose()
+        distanceTransformation.dispose()
+        speedTransformation.dispose()
+        headingTransformation.dispose()
+    }
 
     // =============================================================================================
 

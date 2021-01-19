@@ -35,14 +35,13 @@ class RecordedTracksFragment : Fragment(), HasDefaultViewModelProviderFactory {
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
         bindLiveData()
-    }
-
-    override fun onResume() {
-        LogEx.d(Constants.TAG_RECORDED_TRACKS_FRAGMENT, "onResume")
-        super.onResume()
         viewModel.loadTracks()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.releaseAdapter()
+    }
     // HasDefaultViewModelProviderFactory ----------------------------------------------------------
 
     override fun getDefaultViewModelProviderFactory() =
