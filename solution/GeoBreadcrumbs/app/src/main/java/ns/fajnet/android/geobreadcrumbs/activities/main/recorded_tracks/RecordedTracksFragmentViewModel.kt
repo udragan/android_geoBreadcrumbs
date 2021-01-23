@@ -53,6 +53,7 @@ class RecordedTracksFragmentViewModel(application: Application) : AndroidViewMod
     }
 
     fun releaseAdapter() {
+        _recordedTracksAdapter.value?.detach()
         _recordedTracksAdapter.postValue(null)
     }
 

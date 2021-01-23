@@ -4,9 +4,10 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.BaseAdapter
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.recycler_view_item_recorded_tracks.view.*
+import kotlinx.android.synthetic.main.list_view_item_recorded_tracks.view.*
 import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.common.Constants
 import ns.fajnet.android.geobreadcrumbs.common.LogEx
@@ -17,8 +18,7 @@ import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.SpeedTrans
 import ns.fajnet.android.geobreadcrumbs.database.Track
 
 // TODO: think about introducing a TrackModel instead of raw Track (to do calculations only once!)
-class RecordedTracksAdapter(context: Context, private val dataSet: Array<Track>) :
-    RecyclerView.Adapter<RecordedTracksAdapter.ViewHolder>() {
+class RecordedTracksAdapter(context: Context, private val dataSet: Array<Track>) : BaseAdapter() {
 
     // members -------------------------------------------------------------------------------------
 
@@ -31,22 +31,37 @@ class RecordedTracksAdapter(context: Context, private val dataSet: Array<Track>)
         LogEx.d(Constants.TAG_RECORDED_TRACKS_ADAPTER, "preferences changed, rebinding viewHolders")
     }
 
-    // overrides -----------------------------------------------------------------------------------
+    // init / constructors -------------------------------------------------------------------------
 
     init {
         distanceTransformation.subscribe(settingsChangedHandler)
         speedTransformation.subscribe(settingsChangedHandler)
     }
 
-    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(viewGroup.context)
-            .inflate(R.layout.recycler_view_item_recorded_tracks, viewGroup, false)
+    // overrides -----------------------------------------------------------------------------------
 
-        return ViewHolder(view)
-    }
+    override fun getCount(): Int = dataSet.size
 
-    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        val track = dataSet[position]
+    override fun getItem(position: Int): Any = dataSet[position]
+
+    override fun getItemId(position: Int): Long = position.toLong()
+
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+        val view: View
+        val viewHolder: ViewHolder
+
+        if (convertView == null) {
+            view = LayoutInflater.from(parent?.context)
+                .inflate(R.layout.list_view_item_recorded_tracks, parent, false)
+            viewHolder = ViewHolder(view)
+            view.tag = viewHolder
+        } else {
+            view = convertView
+            viewHolder = convertView.tag as ViewHolder
+        }
+
+        val track = getItem(position) as Track
+
         viewHolder.name.text = track.name
         viewHolder.duration.text =
             durationTransformation.transform(track.endTimeMillis - track.startTimeMillis)
@@ -58,12 +73,13 @@ class RecordedTracksAdapter(context: Context, private val dataSet: Array<Track>)
         viewHolder.bearing.text = headingTransformation.transform(track.bearing)
         viewHolder.places.text = track.numberOfPlaces.toString()
         viewHolder.points.text = track.numberOfPoints.toString()
+
+        return view
     }
 
-    override fun getItemCount() = dataSet.size
+    // public methods ------------------------------------------------------------------------------
 
-    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
-        super.onDetachedFromRecyclerView(recyclerView)
+    fun detach() {
         durationTransformation.dispose()
         distanceTransformation.dispose()
         speedTransformation.dispose()
