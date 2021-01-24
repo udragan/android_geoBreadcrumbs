@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ListView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.HasDefaultViewModelProviderFactory
@@ -12,6 +13,7 @@ import kotlinx.android.synthetic.main.fragment_recorded_tracks.*
 import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.common.Constants
 import ns.fajnet.android.geobreadcrumbs.common.LogEx
+import ns.fajnet.android.geobreadcrumbs.common.MultiChoiceModeListener
 
 class RecordedTracksFragment : Fragment(), HasDefaultViewModelProviderFactory {
 
@@ -30,12 +32,18 @@ class RecordedTracksFragment : Fragment(), HasDefaultViewModelProviderFactory {
         super.onActivityCreated(savedInstanceState)
         bindLiveData()
         viewModel.loadTracks()
+
+        with(listView) {
+            choiceMode = ListView.CHOICE_MODE_MULTIPLE_MODAL
+            setMultiChoiceModeListener(MultiChoiceModeListener(this))
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         viewModel.releaseAdapter()
     }
+
     // HasDefaultViewModelProviderFactory ----------------------------------------------------------
 
     override fun getDefaultViewModelProviderFactory() =

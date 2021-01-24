@@ -7,4 +7,6 @@
     <color name="white_text">#ffffff</color>
     <color name="gray_text">#c0c0c0</color>
     <color name="warning">#FF6432</color>
+
+    <color name="list_selection_indicator">#4D5BCFBD</color>
 </resources>
