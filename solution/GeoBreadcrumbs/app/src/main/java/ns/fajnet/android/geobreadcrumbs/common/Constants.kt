@@ -28,6 +28,8 @@ internal class Constants {
         const val TAG_RECORDED_TRACKS_FRAGMENT_VM = "appTag_recordedTracksVM"
         const val TAG_RECORDED_TRACKS_ADAPTER = "appTag_recordedTracksAdapter"
 
+        const val TAG_SERVICE_REPOSITORY = "appTag_service_repository"
+
         const val TAG_GEO_TRACK_SERVICE = "appTag_service"
 
         const val TAG_TRANSFORMATION_COORDINATE = "appTag_transformation_coordinate"

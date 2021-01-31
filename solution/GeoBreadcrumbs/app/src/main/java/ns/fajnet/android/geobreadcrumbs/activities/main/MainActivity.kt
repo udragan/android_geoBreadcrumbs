@@ -8,20 +8,16 @@ import android.os.Bundle
 import android.os.IBinder
 import android.view.Menu
 import android.view.MenuItem
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.activities.settings.SettingsActivity
 import ns.fajnet.android.geobreadcrumbs.common.Constants
 import ns.fajnet.android.geobreadcrumbs.common.LogEx
+import ns.fajnet.android.geobreadcrumbs.repositories.ServiceRepository
 import ns.fajnet.android.geobreadcrumbs.services.GeoTrackService
 
 class MainActivity : AppCompatActivity(), ServiceConnection {
-
-    // members -------------------------------------------------------------------------------------
-
-    private val viewModel: MainActivityViewModel by viewModels()
 
     // overrides -----------------------------------------------------------------------------------
 
@@ -68,12 +64,12 @@ class MainActivity : AppCompatActivity(), ServiceConnection {
 
     override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
         val binder = service as GeoTrackService.MyBinder
-        viewModel.setGeoTrackServiceReference(binder.service)
+        ServiceRepository.setGeoTrackServiceReference(binder.service)
         LogEx.d(Constants.TAG_MAIN_ACTIVITY, "connected to service")
     }
 
     override fun onServiceDisconnected(name: ComponentName?) {
-        viewModel.unsetGeoTrackServiceReference()
+        ServiceRepository.unsetGeoTrackServiceReference()
         LogEx.d(Constants.TAG_MAIN_ACTIVITY, "disconnected from service")
     }
 

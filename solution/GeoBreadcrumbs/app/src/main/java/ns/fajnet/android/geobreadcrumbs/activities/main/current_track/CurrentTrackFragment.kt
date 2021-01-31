@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.HasDefaultViewModelProviderFactory
 import androidx.lifecycle.ViewModelProvider
@@ -14,18 +13,17 @@ import androidx.lifecycle.observe
 import com.google.android.gms.location.LocationServices
 import kotlinx.android.synthetic.main.fragment_current_track.*
 import ns.fajnet.android.geobreadcrumbs.R
-import ns.fajnet.android.geobreadcrumbs.activities.main.MainActivityViewModel
 import ns.fajnet.android.geobreadcrumbs.common.Constants
 import ns.fajnet.android.geobreadcrumbs.common.LogEx
 import ns.fajnet.android.geobreadcrumbs.common.Utils
 import ns.fajnet.android.geobreadcrumbs.common.dialogs.NewPlaceDialog
 import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.*
+import ns.fajnet.android.geobreadcrumbs.repositories.ServiceRepository
 
 class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
 
     // members -------------------------------------------------------------------------------------
 
-    private val activityViewModel: MainActivityViewModel by activityViewModels()
     private val viewModel: CurrentTrackFragmentViewModel by viewModels()
     private lateinit var durationTransformation: DurationTransformation
     private lateinit var distanceTransformation: DistanceTransformation
@@ -95,7 +93,7 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
     }
 
     private fun bindLiveData() {
-        activityViewModel.geoTrackServiceReference.observe(viewLifecycleOwner) { value ->
+        ServiceRepository.geoTrackServiceReference.observe(viewLifecycleOwner) { value ->
             LogEx.d(Constants.TAG_CURRENT_TRACK_FRAGMENT, "serviceReference updated")
             value.recordingActive.observe(viewLifecycleOwner) {
                 if (it) {
@@ -128,8 +126,8 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
     }
 
     private fun unbindLiveData() {
-        activityViewModel.geoTrackServiceReference.removeObservers(viewLifecycleOwner)
-        activityViewModel.geoTrackServiceReference.value?.liveUpdate?.removeObservers(
+        ServiceRepository.geoTrackServiceReference.removeObservers(viewLifecycleOwner)
+        ServiceRepository.geoTrackServiceReference.value?.liveUpdate?.removeObservers(
             viewLifecycleOwner
         )
     }
@@ -185,7 +183,7 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
     private fun stopTrackClick() {
         LogEx.i(Constants.TAG_CURRENT_TRACK_FRAGMENT, "tracking stopped")
         unbindLiveData()
-        viewModel.stopTrack(activityViewModel.geoTrackServiceReference)
+        viewModel.stopTrack(ServiceRepository.geoTrackServiceReference)
     }
 
     @SuppressLint("MissingPermission")
@@ -201,7 +199,7 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
                     { placeName ->
                         LogEx.i(Constants.TAG_CURRENT_TRACK_FRAGMENT, "dialog OK: $placeName")
                         viewModel.addPlace(
-                            activityViewModel.geoTrackServiceReference,
+                            ServiceRepository.geoTrackServiceReference,
                             placeName,
                             it
                         )
