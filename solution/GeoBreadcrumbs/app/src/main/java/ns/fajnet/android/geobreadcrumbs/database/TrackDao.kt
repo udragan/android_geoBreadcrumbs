@@ -50,4 +50,7 @@ interface TrackDao {
     @Transaction
     @Query("SELECT * from tracks_table ORDER BY rowid DESC")
     fun getAllExtended(): List<TrackExtended>
+
+    @Query("SELECT * from tracks_table ORDER BY rowid DESC")
+    fun getAllLive(): LiveData<List<Track>>
 }

@@ -43,6 +43,7 @@ class GeoTrackService : Service() {
     private val mBinder: IBinder = MyBinder()
 
     private lateinit var handleLocationUpdatesJob: Job
+    private lateinit var recordingServiceScope: CoroutineScope
     private lateinit var serviceScope: CoroutineScope
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
@@ -78,6 +79,7 @@ class GeoTrackService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "onDestroy")
+        serviceScope.cancel()
     }
 
     // properties ----------------------------------------------------------------------------------
@@ -101,9 +103,33 @@ class GeoTrackService : Service() {
         addPlace(placeName, location)
     }
 
+    fun renameTrack(track: Track, name: String) {
+        serviceScope.launch {
+            LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "renaming track with id: ${track.id} to $name")
+            val trackDb = GeoBreadcrumbsDatabase.getInstance(applicationContext)
+                .trackDao
+                .get(track.id)
+
+            if (trackDb == null) {
+                LogEx.w(Constants.TAG_GEO_TRACK_SERVICE, "track with id ${track.id} not found")
+                return@launch
+            }
+
+            val updatedTrackDb = trackDb.copy(name = name)
+
+            GeoBreadcrumbsDatabase.getInstance(applicationContext)
+                .trackDao
+                .update(updatedTrackDb)
+
+            LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "track with id: ${track.id} renamed")
+        }
+    }
+
     // private methods -----------------------------------------------------------------------------
 
     private fun initialize() {
+        serviceScope = CoroutineScope(Dispatchers.IO)
+
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "locationCallbackTriggered")
@@ -114,7 +140,7 @@ class GeoTrackService : Service() {
                     return
                 }
 
-                serviceScope.launch {
+                recordingServiceScope.launch {
                     for (location in locationResult.locations) {
                         LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "location received: $location")
 
@@ -197,10 +223,10 @@ class GeoTrackService : Service() {
         }
     }
 
-    private fun initializeServiceScope() {
+    private fun initializeRecordingServiceScope() {
         handleLocationUpdatesJob = Job()
         // CHECK: is Dispatchers.Main the correct one for this CoroutineScope??
-        serviceScope = CoroutineScope(Dispatchers.IO + handleLocationUpdatesJob)
+        recordingServiceScope = CoroutineScope(Dispatchers.IO + handleLocationUpdatesJob)
     }
 
     private fun generateNotification(): Notification {
@@ -230,7 +256,7 @@ class GeoTrackService : Service() {
     private fun subscribeToLocationUpdates() {
         LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "subscribe to location updates")
 
-        serviceScope.launch {
+        recordingServiceScope.launch {
             withContext(Dispatchers.Main) {
                 fusedLocationProviderClient =
                     LocationServices.getFusedLocationProviderClient(applicationContext)
@@ -298,8 +324,8 @@ class GeoTrackService : Service() {
     }
 
     private fun startRecording(startPlaceName: String?) {
-        initializeServiceScope()
-        serviceScope.launch {
+        initializeRecordingServiceScope()
+        recordingServiceScope.launch {
             LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "start recording")
             val sdf = SimpleDateFormat.getDateTimeInstance()
                 .apply { timeZone = TimeZone.getTimeZone("UTC") }
@@ -338,7 +364,7 @@ class GeoTrackService : Service() {
             return
         }
 
-        serviceScope.launch {
+        recordingServiceScope.launch {
             LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "stop recording")
             _recordingActive.postValue(false)
             val trackExtendedDb = GeoBreadcrumbsDatabase.getInstance(applicationContext)
@@ -380,7 +406,7 @@ class GeoTrackService : Service() {
 
             updateLiveTrack(TrackExtendedDto.default(), UpdateType.Reset)
 
-            serviceScope.cancel()
+            recordingServiceScope.cancel()
             stopForeground(true)
         }
     }
@@ -399,7 +425,7 @@ class GeoTrackService : Service() {
             return
         }
 
-        serviceScope.launch {
+        recordingServiceScope.launch {
             LogEx.i(Constants.TAG_GEO_TRACK_SERVICE, "add place $placeName, $location")
 
             if (placeName.isNotBlank()) {

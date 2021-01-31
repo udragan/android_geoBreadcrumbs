@@ -42,6 +42,8 @@
     <string name="recorded_tracks_view_holder_places">Places:</string>
     <string name="recorded_tracks_view_holder_points">Points:</string>
     <string name="recorded_tracks_view_holder_bearing">Bearing:</string>
+    <string name="recorded_tracks_dialog_rename_track_title">Rename track</string>
+    <string name="recorded_tracks_rename_track">Name:</string>
 
     <string name="main_menu_action_settings">Settings</string>
     <string name="main_menu_action_exit">Exit</string>

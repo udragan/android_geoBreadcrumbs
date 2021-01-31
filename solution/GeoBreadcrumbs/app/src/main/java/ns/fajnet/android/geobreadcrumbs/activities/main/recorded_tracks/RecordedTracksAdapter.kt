@@ -18,7 +18,7 @@ import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.SpeedTrans
 import ns.fajnet.android.geobreadcrumbs.database.Track
 
 // TODO: think about introducing a TrackModel instead of raw Track (to do calculations only once!)
-class RecordedTracksAdapter(context: Context, private val dataSet: Array<Track>) : BaseAdapter() {
+class RecordedTracksAdapter(context: Context) : BaseAdapter() {
 
     // members -------------------------------------------------------------------------------------
 
@@ -37,6 +37,14 @@ class RecordedTracksAdapter(context: Context, private val dataSet: Array<Track>)
         distanceTransformation.subscribe(settingsChangedHandler)
         speedTransformation.subscribe(settingsChangedHandler)
     }
+
+    // properties ----------------------------------------------------------------------------------
+
+    var dataSet: Array<Track> = arrayOf()
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
 
     // overrides -----------------------------------------------------------------------------------
 

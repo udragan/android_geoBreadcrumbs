@@ -2,59 +2,28 @@ package ns.fajnet.android.geobreadcrumbs.activities.main.recorded_tracks
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import ns.fajnet.android.geobreadcrumbs.AppInit
-import ns.fajnet.android.geobreadcrumbs.common.Constants
-import ns.fajnet.android.geobreadcrumbs.common.LogEx
 import ns.fajnet.android.geobreadcrumbs.common.singleArgViewModelFactory
-import ns.fajnet.android.geobreadcrumbs.database.GeoBreadcrumbsDatabase
+import ns.fajnet.android.geobreadcrumbs.database.Track
+import ns.fajnet.android.geobreadcrumbs.repositories.ServiceRepository
 
 class RecordedTracksFragmentViewModel(application: Application) : AndroidViewModel(application) {
 
-    // members -------------------------------------------------------------------------------------
-
-    private var _recordedTracksAdapter = MutableLiveData<RecordedTracksAdapter>()
-
     // properties ----------------------------------------------------------------------------------
 
-    val recordedTracksAdapter: LiveData<RecordedTracksAdapter>
-        get() = _recordedTracksAdapter
+    val adapter = RecordedTracksAdapter(application)
 
     // public methods ------------------------------------------------------------------------------
 
-    fun loadTracks() {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                LogEx.d(Constants.TAG_RECORDED_TRACKS_FRAGMENT_VM, "load tracks")
+    fun tracksUpdated(tracks: List<Track>) {
+        adapter.dataSet = tracks.toTypedArray()
+    }
 
-                val tracks =
-                    GeoBreadcrumbsDatabase.getInstance(super.getApplication<AppInit>().applicationContext)
-                        .trackDao
-                        .getAll()
-
-                // TODO: remove
-                //Thread.sleep(5000)
-
-                LogEx.d(Constants.TAG_RECORDED_TRACKS_FRAGMENT_VM, "loading finished")
-                _recordedTracksAdapter.postValue(
-                    RecordedTracksAdapter(
-                        getApplication<AppInit>().applicationContext,
-                        tracks
-                    )
-                )
-                LogEx.d(Constants.TAG_RECORDED_TRACKS_FRAGMENT_VM, "adapter set")
-            }
-        }
+    fun renameTrack(track: Track, name: String) {
+        ServiceRepository.geoTrackServiceReference.value?.renameTrack(track, name)
     }
 
     fun releaseAdapter() {
-        _recordedTracksAdapter.value?.detach()
-        _recordedTracksAdapter.postValue(null)
+        adapter.detach()
     }
 
     // companion -----------------------------------------------------------------------------------

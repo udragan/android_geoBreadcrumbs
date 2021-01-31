@@ -7,9 +7,14 @@ import android.view.MenuItem
 import android.widget.AbsListView
 import android.widget.ListView
 import ns.fajnet.android.geobreadcrumbs.R
+import ns.fajnet.android.geobreadcrumbs.database.Track
 
 class MultiChoiceModeListener(private val listView: ListView) :
     AbsListView.MultiChoiceModeListener {
+
+    // delegates -----------------------------------------------------------------------------------
+
+    lateinit var renameTrackDelegate: (arg: Track) -> Unit
 
     // overrides -----------------------------------------------------------------------------------
 
@@ -44,17 +49,32 @@ class MultiChoiceModeListener(private val listView: ListView) :
         mode.invalidate()
     }
 
-    override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
-        return when (item.itemId) {
+    override fun onActionItemClicked(mode: ActionMode, item: MenuItem) =
+        when (item.itemId) {
             R.id.action_rename -> {
                 LogEx.d(Constants.TAG_RECORDED_TRACKS_FRAGMENT, "rename selected")
+                val checked = listView.checkedItemPositions
+
+                for (i in 0 until listView.adapter.count) {
+                    if (checked[i]) {
+                        renameTrack(listView.getItemAtPosition(i))
+                        break
+                    }
+                }
+
                 mode.finish()
                 true
             }
             else -> false
         }
-    }
 
     override fun onDestroyActionMode(mode: ActionMode) {
+    }
+
+    // private methods -----------------------------------------------------------------------------
+
+    private fun renameTrack(item: Any) {
+        val track = item as Track
+        renameTrackDelegate.invoke(track)
     }
 }

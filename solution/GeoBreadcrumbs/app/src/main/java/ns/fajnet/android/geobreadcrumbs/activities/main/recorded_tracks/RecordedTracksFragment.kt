@@ -8,12 +8,18 @@ import android.widget.ListView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.HasDefaultViewModelProviderFactory
-import androidx.lifecycle.observe
+import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.fragment_recorded_tracks.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import ns.fajnet.android.geobreadcrumbs.R
 import ns.fajnet.android.geobreadcrumbs.common.Constants
 import ns.fajnet.android.geobreadcrumbs.common.LogEx
 import ns.fajnet.android.geobreadcrumbs.common.MultiChoiceModeListener
+import ns.fajnet.android.geobreadcrumbs.common.dialogs.RenameTrackDialog
+import ns.fajnet.android.geobreadcrumbs.database.GeoBreadcrumbsDatabase
+import ns.fajnet.android.geobreadcrumbs.database.Track
 
 class RecordedTracksFragment : Fragment(), HasDefaultViewModelProviderFactory {
 
@@ -31,11 +37,15 @@ class RecordedTracksFragment : Fragment(), HasDefaultViewModelProviderFactory {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         bindLiveData()
-        viewModel.loadTracks()
 
         with(listView) {
             choiceMode = ListView.CHOICE_MODE_MULTIPLE_MODAL
-            setMultiChoiceModeListener(MultiChoiceModeListener(this))
+            val listener = MultiChoiceModeListener(this)
+
+            listener.renameTrackDelegate = { renameTrackHandler(it) }
+
+            setMultiChoiceModeListener(listener)
+            adapter = viewModel.adapter
         }
     }
 
@@ -52,10 +62,23 @@ class RecordedTracksFragment : Fragment(), HasDefaultViewModelProviderFactory {
     // private methods -----------------------------------------------------------------------------
 
     private fun bindLiveData() {
-        viewModel.recordedTracksAdapter.observe(viewLifecycleOwner) {
-            listView.adapter = it
-            LogEx.d(Constants.TAG_RECORDED_TRACKS_FRAGMENT, "recycler view set up")
-        }
+        GeoBreadcrumbsDatabase.getInstance(requireActivity())
+            .trackDao
+            .getAllLive()
+            .observe(viewLifecycleOwner,
+                Observer<List<Track>> {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        LogEx.e(Constants.TAG_RECORDED_TRACKS_FRAGMENT, "observer triggered")
+                        viewModel.tracksUpdated(it)
+                    }
+                }
+            )
+    }
+
+    private fun renameTrackHandler(track: Track) {
+        RenameTrackDialog(track) {
+            viewModel.renameTrack(track, it)
+        }.show(childFragmentManager, "")
     }
 
     // companion -----------------------------------------------------------------------------------
