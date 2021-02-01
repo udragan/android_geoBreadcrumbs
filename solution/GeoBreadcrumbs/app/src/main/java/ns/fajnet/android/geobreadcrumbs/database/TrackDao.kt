@@ -24,7 +24,10 @@ interface TrackDao {
     fun delete(track: Track)
 
     @Query("DELETE FROM tracks_table WHERE rowid = :id")
-    fun deleteById(id: Int)
+    fun deleteById(id: Long)
+
+    @Query("DELETE FROM tracks_table WHERE rowid in (:ids)")
+    fun deleteMultiple(ids: List<Long>)
 
     @Query("DELETE FROM tracks_table")
     fun clear()

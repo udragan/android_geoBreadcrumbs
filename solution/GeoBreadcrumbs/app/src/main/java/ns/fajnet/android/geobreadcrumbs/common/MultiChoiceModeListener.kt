@@ -15,6 +15,7 @@ class MultiChoiceModeListener(private val listView: ListView) :
     // delegates -----------------------------------------------------------------------------------
 
     lateinit var renameTrackDelegate: (arg: Track) -> Unit
+    lateinit var deleteTracksDelegate: (arg: List<Long>) -> Unit
 
     // overrides -----------------------------------------------------------------------------------
 
@@ -65,6 +66,21 @@ class MultiChoiceModeListener(private val listView: ListView) :
                 mode.finish()
                 true
             }
+            R.id.action_delete -> {
+                LogEx.d(Constants.TAG_RECORDED_TRACKS_FRAGMENT, "delete selected")
+                val items = mutableListOf<Any>()
+                val checked = listView.checkedItemPositions
+
+                for (i in 0 until listView.adapter.count) {
+                    if (checked[i]) {
+                        items.add(listView.getItemAtPosition(i))
+                    }
+                }
+
+                deleteTracks(items)
+                mode.finish()
+                true
+            }
             else -> false
         }
 
@@ -74,7 +90,12 @@ class MultiChoiceModeListener(private val listView: ListView) :
     // private methods -----------------------------------------------------------------------------
 
     private fun renameTrack(item: Any) {
-        val track = item as Track
-        renameTrackDelegate.invoke(track)
+        renameTrackDelegate.invoke(item as Track)
+    }
+
+    private fun deleteTracks(items: MutableList<Any>) {
+        deleteTracksDelegate.invoke(items.map {
+            (it as Track).id
+        })
     }
 }

@@ -43,6 +43,7 @@ class RecordedTracksFragment : Fragment(), HasDefaultViewModelProviderFactory {
             val listener = MultiChoiceModeListener(this)
 
             listener.renameTrackDelegate = { renameTrackHandler(it) }
+            listener.deleteTracksDelegate = { deleteTracksHandler(it) }
 
             setMultiChoiceModeListener(listener)
             adapter = viewModel.adapter
@@ -68,7 +69,7 @@ class RecordedTracksFragment : Fragment(), HasDefaultViewModelProviderFactory {
             .observe(viewLifecycleOwner,
                 Observer<List<Track>> {
                     CoroutineScope(Dispatchers.Main).launch {
-                        LogEx.e(Constants.TAG_RECORDED_TRACKS_FRAGMENT, "observer triggered")
+                        LogEx.d(Constants.TAG_RECORDED_TRACKS_FRAGMENT, "observer triggered")
                         viewModel.tracksUpdated(it)
                     }
                 }
@@ -79,6 +80,10 @@ class RecordedTracksFragment : Fragment(), HasDefaultViewModelProviderFactory {
         RenameTrackDialog(track) {
             viewModel.renameTrack(track, it)
         }.show(childFragmentManager, "")
+    }
+
+    private fun deleteTracksHandler(tracks: List<Long>) {
+        viewModel.deleteTracks(tracks)
     }
 
     // companion -----------------------------------------------------------------------------------

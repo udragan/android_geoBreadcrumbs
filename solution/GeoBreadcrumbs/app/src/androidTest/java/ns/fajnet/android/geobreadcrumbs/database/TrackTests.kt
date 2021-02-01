@@ -90,6 +90,24 @@ class TrackTests {
 
     @Test
     @Throws(Exception::class)
+    fun should_writeAndDeleteSelectedTracks() {
+        // arrange
+        val track = Track(1)
+        val track2 = Track(2)
+        val track3 = Track(3)
+        val expectedTracksCount = 1
+        // act
+        trackDao.insert(track)
+        trackDao.insert(track2)
+        trackDao.insert(track3)
+        trackDao.deleteMultiple(arrayListOf(track.id, track2.id))
+        val result = trackDao.getAll()
+        // assert
+        assertEquals(expectedTracksCount, result.count())
+    }
+
+    @Test
+    @Throws(Exception::class)
     fun should_writeAndDeleteAllTracks() {
         // arrange
         val track = Track(1)

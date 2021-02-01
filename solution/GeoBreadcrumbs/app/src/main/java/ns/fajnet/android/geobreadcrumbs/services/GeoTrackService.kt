@@ -125,6 +125,24 @@ class GeoTrackService : Service() {
         }
     }
 
+    fun deleteTracks(trackIds: List<Long>) {
+        serviceScope.launch {
+            LogEx.d(
+                Constants.TAG_GEO_TRACK_SERVICE,
+                "deleting tracks ${trackIds.joinToString { it.toString() }}"
+            )
+
+            GeoBreadcrumbsDatabase.getInstance(applicationContext)
+                .trackDao
+                .deleteMultiple(trackIds)
+
+            LogEx.d(
+                Constants.TAG_GEO_TRACK_SERVICE,
+                "tracks ${trackIds.joinToString { it.toString() }} deleted"
+            )
+        }
+    }
+
     // private methods -----------------------------------------------------------------------------
 
     private fun initialize() {

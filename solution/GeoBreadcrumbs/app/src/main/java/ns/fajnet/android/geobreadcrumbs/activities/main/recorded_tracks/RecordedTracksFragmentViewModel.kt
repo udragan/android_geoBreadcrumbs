@@ -22,6 +22,10 @@ class RecordedTracksFragmentViewModel(application: Application) : AndroidViewMod
         ServiceRepository.geoTrackServiceReference.value?.renameTrack(track, name)
     }
 
+    fun deleteTracks(trackIds: List<Long>) {
+        ServiceRepository.geoTrackServiceReference.value?.deleteTracks(trackIds)
+    }
+
     fun releaseAdapter() {
         adapter.detach()
     }
