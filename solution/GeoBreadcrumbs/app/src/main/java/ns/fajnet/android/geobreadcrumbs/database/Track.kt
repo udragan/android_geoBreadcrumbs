@@ -32,10 +32,10 @@ data class Track(
     val bearing: Float = 0F,
 
     @ColumnInfo(name = "no_of_places")
-    val numberOfPlaces: Int = 0, // TODO: think about this, is it needed??
+    val numberOfPlaces: Int = 0,
 
     @ColumnInfo(name = "no_of_points")
-    val numberOfPoints: Int = 0, // TODO: think about this, is it needed??
+    val numberOfPoints: Int = 0,
 
     @ColumnInfo(name = "status")
     val status: Int = -1

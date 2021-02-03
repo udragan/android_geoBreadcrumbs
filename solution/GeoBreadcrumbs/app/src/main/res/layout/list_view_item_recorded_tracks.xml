@@ -19,13 +19,26 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/name"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/default_component_margin"
-                android:text="@string/default_text_placeholder"
-                android:textSize="@dimen/typography_input" />
+                android:layout_height="match_parent">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/default_component_margin"
+                    android:text="@string/default_text_placeholder"
+                    android:textSize="@dimen/typography_input" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/isRecording"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/ic_recording_white_24"
+                    android:tint="@color/dark_red" />
+            </RelativeLayout>
         </androidx.cardview.widget.CardView>
 
         <TableLayout

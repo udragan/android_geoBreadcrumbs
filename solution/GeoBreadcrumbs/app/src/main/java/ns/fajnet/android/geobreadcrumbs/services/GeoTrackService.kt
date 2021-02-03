@@ -24,10 +24,7 @@ import ns.fajnet.android.geobreadcrumbs.database.GeoBreadcrumbsDatabase
 import ns.fajnet.android.geobreadcrumbs.database.Place
 import ns.fajnet.android.geobreadcrumbs.database.Point
 import ns.fajnet.android.geobreadcrumbs.database.Track
-import ns.fajnet.android.geobreadcrumbs.dtos.PlaceDto
-import ns.fajnet.android.geobreadcrumbs.dtos.PointDto
-import ns.fajnet.android.geobreadcrumbs.dtos.TrackDto
-import ns.fajnet.android.geobreadcrumbs.dtos.TrackExtendedDto
+import ns.fajnet.android.geobreadcrumbs.dtos.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -352,7 +349,7 @@ class GeoTrackService : Service() {
             // TODO: set track name to startPlaceName if not empty
             val newTrackDb = GeoBreadcrumbsDatabase.getInstance(applicationContext)
                 .trackDao
-                .insertAndRetrieve(Track(name = utcTime))
+                .insertAndRetrieve(Track(name = utcTime, status = TrackStatus.Started.ordinal))
             val initialPlaces = mutableListOf<PlaceDto>()
 
             // TODO: startPointName not empty -> insert new place also (when/if places are implemented)
@@ -413,7 +410,7 @@ class GeoTrackService : Service() {
                     calculateOverallBearing(trackExtended.points),
                     trackExtended.places.size,
                     trackExtended.points.size,
-                    1 // TODO: status enum
+                    TrackStatus.Stopped.ordinal
                 )
 
                 GeoBreadcrumbsDatabase.getInstance(applicationContext)

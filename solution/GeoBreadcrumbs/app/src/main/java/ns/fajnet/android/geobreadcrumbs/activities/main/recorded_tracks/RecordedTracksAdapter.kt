@@ -4,7 +4,11 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
+import android.view.animation.LinearInterpolator
 import android.widget.BaseAdapter
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.list_view_item_recorded_tracks.view.*
@@ -16,6 +20,8 @@ import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.DurationTr
 import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.HeadingTransformation
 import ns.fajnet.android.geobreadcrumbs.common.displayTransformations.SpeedTransformation
 import ns.fajnet.android.geobreadcrumbs.database.Track
+import ns.fajnet.android.geobreadcrumbs.dtos.TrackStatus
+
 
 // TODO: think about introducing a TrackModel instead of raw Track (to do calculations only once!)
 class RecordedTracksAdapter(context: Context) : BaseAdapter() {
@@ -29,6 +35,12 @@ class RecordedTracksAdapter(context: Context) : BaseAdapter() {
     private val settingsChangedHandler = {
         this.notifyDataSetChanged()
         LogEx.d(Constants.TAG_RECORDED_TRACKS_ADAPTER, "preferences changed, rebinding viewHolders")
+    }
+    private val recordingAnimation = AlphaAnimation(0.5F, 0F).also {
+        it.duration = 500 // duration - half a second
+        it.interpolator = LinearInterpolator()
+        it.repeatCount = Animation.INFINITE
+        it.repeatMode = Animation.REVERSE
     }
 
     // init / constructors -------------------------------------------------------------------------
@@ -82,6 +94,14 @@ class RecordedTracksAdapter(context: Context) : BaseAdapter() {
         viewHolder.places.text = track.numberOfPlaces.toString()
         viewHolder.points.text = track.numberOfPoints.toString()
 
+        if (track.status == TrackStatus.Started.ordinal) {
+            viewHolder.isRecording.visibility = View.VISIBLE
+            viewHolder.isRecording.startAnimation(recordingAnimation)
+        } else {
+            viewHolder.isRecording.clearAnimation()
+            viewHolder.isRecording.visibility = View.INVISIBLE
+        }
+
         return view
     }
 
@@ -105,5 +125,6 @@ class RecordedTracksAdapter(context: Context) : BaseAdapter() {
         val bearing: AppCompatTextView = view.bearing
         val places: AppCompatTextView = view.places
         val points: AppCompatTextView = view.points
+        val isRecording: AppCompatImageView = view.isRecording
     }
 }
