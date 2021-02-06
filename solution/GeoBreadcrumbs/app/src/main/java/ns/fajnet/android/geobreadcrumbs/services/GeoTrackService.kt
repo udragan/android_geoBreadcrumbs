@@ -61,7 +61,9 @@ class GeoTrackService : Service() {
         startForeground(Constants.SERVICE_ID_GEO_TRACK, generateNotification())
 
         if (checkPrerequisites()) {
-            startRecording(intent?.getStringExtra(EXTRA_START_POINT_NAME))
+            val startPlaceName = intent?.getStringExtra(EXTRA_START_POINT_NAME)
+            val startLocation = intent?.getParcelableExtra<Location>(EXTRA_START_LOCATION)
+            startRecording(startPlaceName, startLocation)
         } else {
             stopSelf()
         }
@@ -338,28 +340,41 @@ class GeoTrackService : Service() {
         _liveUpdate.postValue(liveTrack.track)
     }
 
-    private fun startRecording(startPlaceName: String?) {
+    private fun startRecording(startPlaceName: String?, location: Location?) {
         initializeRecordingServiceScope()
         recordingServiceScope.launch {
             LogEx.d(Constants.TAG_GEO_TRACK_SERVICE, "start recording")
-            val sdf = SimpleDateFormat.getDateTimeInstance()
-                .apply { timeZone = TimeZone.getTimeZone("UTC") }
-            val utcTime: String = sdf.format(Date())
+            var trackName: String
 
-            // TODO: set track name to startPlaceName if not empty
+            if (!startPlaceName.isNullOrBlank()) {
+                trackName = startPlaceName
+            } else {
+                val sdf = SimpleDateFormat.getDateTimeInstance()
+                    .apply { timeZone = TimeZone.getTimeZone("UTC") }
+                trackName = sdf.format(Date())
+            }
+
             val newTrackDb = GeoBreadcrumbsDatabase.getInstance(applicationContext)
                 .trackDao
-                .insertAndRetrieve(Track(name = utcTime, status = TrackStatus.Started.ordinal))
+                .insertAndRetrieve(Track(name = trackName, status = TrackStatus.Started.ordinal))
             val initialPlaces = mutableListOf<PlaceDto>()
 
-            // TODO: startPointName not empty -> insert new place also (when/if places are implemented)
-            // TODO: provide location to extract place data
-            if (!startPlaceName.isNullOrBlank()) {
-                val startPlaceDb = Place(trackId = newTrackDb.id, name = startPlaceName)
+            if (!startPlaceName.isNullOrBlank() && location != null) {
+                val startPlaceDb = Place(
+                    trackId = newTrackDb.id,
+                    name = startPlaceName,
+                    longitude = location.longitude,
+                    latitude = location.latitude,
+                    altitude = location.altitude,
+                    locationFixTime = location.time
+                )
                 GeoBreadcrumbsDatabase.getInstance(applicationContext)
                     .placeDao
                     .insert(startPlaceDb)
                 initialPlaces.add(PlaceDto.fromDb(startPlaceDb))
+                GeoBreadcrumbsDatabase.getInstance(applicationContext)
+                    .trackDao
+                    .update(newTrackDb.copy(numberOfPlaces = 1))
             }
 
             val trackExtended = TrackExtendedDto(
@@ -545,6 +560,7 @@ class GeoTrackService : Service() {
         // extras ----------------------------------------------------------------------------------
 
         const val EXTRA_START_POINT_NAME = "extra_start_point_name"
+        const val EXTRA_START_LOCATION = "extra_start_location"
     }
 }
 

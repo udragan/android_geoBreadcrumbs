@@ -12,6 +12,7 @@ import ns.fajnet.android.geobreadcrumbs.common.Constants
 import ns.fajnet.android.geobreadcrumbs.common.LogEx
 import ns.fajnet.android.geobreadcrumbs.common.gps.GpsStatus
 import ns.fajnet.android.geobreadcrumbs.common.singleArgViewModelFactory
+import ns.fajnet.android.geobreadcrumbs.repositories.ServiceRepository
 import ns.fajnet.android.geobreadcrumbs.services.GeoTrackService
 
 class CurrentTrackFragmentViewModel(application: Application) : AndroidViewModel(application) {
@@ -35,11 +36,12 @@ class CurrentTrackFragmentViewModel(application: Application) : AndroidViewModel
 
     // public methods ------------------------------------------------------------------------------
 
-    fun startTrack(startPointName: String) {
+    fun startTrack(startPointName: String, location: Location?) {
         LogEx.i(Constants.TAG_CURRENT_TRACK_FRAGMENT_VM, "start track")
         _gpsStatus.initialize()
         val intent = Intent(context, GeoTrackService::class.java)
         intent.putExtra(GeoTrackService.EXTRA_START_POINT_NAME, startPointName)
+        intent.putExtra(GeoTrackService.EXTRA_START_LOCATION, location)
         ContextCompat.startForegroundService(context, intent)
     }
 
@@ -49,9 +51,9 @@ class CurrentTrackFragmentViewModel(application: Application) : AndroidViewModel
         _gpsStatus.dispose()
     }
 
-    fun addPlace(service: LiveData<GeoTrackService>, placeName: String, location: Location?) {
+    fun addPlace(placeName: String, location: Location?) {
         LogEx.i(Constants.TAG_CURRENT_TRACK_FRAGMENT_VM, "add place: $placeName, $location")
-        service.value?.addPlaceToTrack(placeName, location)
+        ServiceRepository.geoTrackServiceReference.value?.addPlaceToTrack(placeName, location)
     }
 
     // companion -----------------------------------------------------------------------------------

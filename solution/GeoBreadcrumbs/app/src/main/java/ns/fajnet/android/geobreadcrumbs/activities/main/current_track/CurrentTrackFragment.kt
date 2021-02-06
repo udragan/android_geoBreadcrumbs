@@ -166,7 +166,7 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
                     it,
                     { placeName ->
                         LogEx.i(Constants.TAG_CURRENT_TRACK_FRAGMENT, "dialog OK: $placeName")
-                        viewModel.startTrack(placeName)
+                        viewModel.startTrack(placeName, it)
                     },
                     {
                         LogEx.i(Constants.TAG_CURRENT_TRACK_FRAGMENT, "dialog Cancel")
@@ -198,11 +198,7 @@ class CurrentTrackFragment : Fragment(), HasDefaultViewModelProviderFactory {
                     it,
                     { placeName ->
                         LogEx.i(Constants.TAG_CURRENT_TRACK_FRAGMENT, "dialog OK: $placeName")
-                        viewModel.addPlace(
-                            ServiceRepository.geoTrackServiceReference,
-                            placeName,
-                            it
-                        )
+                        viewModel.addPlace(placeName, it)
                     },
                     {
                         LogEx.i(Constants.TAG_CURRENT_TRACK_FRAGMENT, "dialog Cancel")
