@@ -42,6 +42,8 @@
     <string name="recorded_tracks_view_holder_places">Places:</string>
     <string name="recorded_tracks_view_holder_points">Points:</string>
     <string name="recorded_tracks_view_holder_bearing">Bearing:</string>
+    <string name="recorded_tracks_dialog_confirm_delete_title">Delete selected track(s)</string>
+    <string name="recorded_tracks_dialog_confirm_delete_message">Confirm deletion of selected track(s)?</string>
     <string name="recorded_tracks_dialog_rename_track_title">Rename track</string>
     <string name="recorded_tracks_rename_track">Name:</string>
 

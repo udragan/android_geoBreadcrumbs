@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.HasDefaultViewModelProviderFactory
@@ -83,7 +84,16 @@ class RecordedTracksFragment : Fragment(), HasDefaultViewModelProviderFactory {
     }
 
     private fun deleteTracksHandler(tracks: List<Long>) {
-        viewModel.deleteTracks(tracks)
+        val builder = AlertDialog.Builder(requireContext())
+            .setTitle(R.string.recorded_tracks_dialog_confirm_delete_title)
+            .setMessage(R.string.recorded_tracks_dialog_confirm_delete_message)
+            .setPositiveButton(R.string.dialog_button_ok) { _, _ ->
+                viewModel.deleteTracks(tracks)
+            }
+            .setNegativeButton(R.string.dialog_button_cancel) { _, _ ->
+            }
+
+        builder.show()
     }
 
     // companion -----------------------------------------------------------------------------------
