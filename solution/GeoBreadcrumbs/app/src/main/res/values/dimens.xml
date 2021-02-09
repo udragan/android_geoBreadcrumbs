@@ -9,6 +9,7 @@
     <dimen name="default_container_margin">16dp</dimen>
     <dimen name="default_component_margin">8dp</dimen>
     <dimen name="default_progress_bar_elevation">100dp</dimen>
+    <dimen name="default_tab_indicator_height">4dp</dimen>
 
     <!-- typography guidelines https://learnui.design/blog/android-material-design-font-size-guidelines.html -->
     <dimen name="typography_title">20sp</dimen>
